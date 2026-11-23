@@ -462,6 +462,7 @@
             </div>
 
             <div id="exec-logs" class="bg-[#FAF5EB] rounded-xl p-3 text-left space-y-2 min-h-[104px] border-[1.5px] border-[#8C6A4A]/60 text-xs text-[#241B15]"></div>
+            <div id="exec-skip-hint" class="text-[10px] text-[#7A5434] mt-2 font-medium">Tap anywhere to continue faster ⏩</div>
         </div>
     </div>
 </div>
@@ -551,6 +552,7 @@
                 <span id="retro-stars-display" class="text-sm tracking-wide">⭐⭐⭐</span>
             </div>
             <div id="retro-stars-criteria" class="space-y-1 text-[11px] text-[#241B15]"></div>
+            <div id="retro-scope-feedback" class="hidden mt-2 pt-2 border-t border-[#C58F2A]/40 text-[11px] leading-snug"></div>
         </div>
 
         <!-- Project Retrospective Selection (Populated dynamically per chapter) -->
@@ -688,7 +690,7 @@
         },
 
         2: {
-            subtitle: 'Level 2 • Siniawan Night Market (RM 2,500 • 10 Days)',
+            subtitle: 'Level 2 • Siniawan Night Market (RM 2,500 • 6 Days)',
             time: { unit: 'Day', units: 'Days', effort: ['Day', 'Days'], turn: 'Workday', turnIcon: '☀️', previous: 'yesterday' },
             lowBudgetThreshold: 400,
             crashEnabled: false,
@@ -696,11 +698,11 @@
             exec: { icon: '🏮', subtitle: 'Your crew is building at Siniawan Night Market...' },
             startGuidance: '<strong>Step 1 (WBS 100% Rule):</strong> Tap a deliverable card, then tap its matching <strong>WBS Work Package</strong> (or Out of Scope).',
             tutorial: {
-                chapterLine: '📦 <strong>Ch 2 • Siniawan Stall (RM 2,500 • 10 Days):</strong> Build via <strong>WBS 100% Rule</strong>',
+                chapterLine: '📦 <strong>Ch 2 • Siniawan Stall (RM 2,500 • 6 Days):</strong> Build via <strong>WBS 100% Rule</strong>',
                 lifecycleLine: '2️⃣ <strong>Level 2 • Work Breakdown Structure (WBS):</strong> Decompose Work Packages &amp; multi-day Tasks (100% Rule).'
             },
             brief: {
-                tag: 'Chapter 2 • Community Expansion (RM 2,500 • 10 Days)',
+                tag: 'Chapter 2 • Community Expansion (RM 2,500 • 6 Days)',
                 title: 'Siniawan Night Market Heritage Stall',
                 text: () => 'Impressed by your Main Bazaar Charter, Auntie Mei refers you to the Siniawan Heritage Committee! Scale up 5× using the <strong>WBS 100% Rule</strong> across multi-day tasks.',
                 counter: (st) => {
@@ -713,7 +715,7 @@
                 headline: (win, pct) => win ? 'Siniawan Night Market Stall Complete! 🏮' : `Market Stall Incomplete (${pct}%)`,
                 sub: (win) => win
                     ? 'Your WBS-driven pavilion drew crowds across Bau! The Carpenter Street Heritage Guild just offered a RM 15,000, 6-week shophouse restoration.'
-                    : 'Match team skills (+25% speed) and manage stamina to finish all 6 decomposed Tasks within 10 days.',
+                    : 'Match specialists to Tasks, manage stamina, and watch your 6-day deadline to finish all 6 Tasks.',
                 badge: () => ({ icon: '📦', title: 'WBS 100% Rule Specialist', desc: 'Decomposing high-level Work Packages into granular, multi-day Tasks eliminates ambiguity and scales your crew to bigger projects.' }),
                 actions: (win) => win
                     ? [
@@ -727,7 +729,7 @@
             retroPrompts: {
                 well: [
                     '📦 Applying the WBS 100% Rule decomposed the Siniawan stall cleanly and kept excluded wok equipment out of scope.',
-                    '⚡ Pairing Uncle Lim, Kak Salmah, and Danny to matching skills (+25% speed) with Rest breaks prevented Burnout.'
+                    '⚡ Matching Uncle Lim, Kak Salmah, and Danny to their specialist skills with Rest breaks kept velocity high and prevented Burnout.'
                 ],
                 improve: [
                     '🔗 Starting prerequisite tasks early (Timber Frame & Display Counter) avoids idle days on dependent tasks.',
@@ -744,11 +746,11 @@
                 'They want a multi-bay <strong>Kek Lapis &amp; Teh Tarik pavilion</strong> for the night market: five times the budget and far too much to keep in your head. Uncle Lim, Kak Salmah and Danny are on board, but a one-page charter won’t be enough anymore.',
                 'Before work begins, you must break the whole job down so that <strong>nothing is missed and nothing extra sneaks in</strong>.'
             ],
-            stats: [['💰', 'Budget', 'RM 2,500'], ['📅', 'Time', '10 Days'], ['👥', 'Crew', '3 Artisans']],
+            stats: [['💰', 'Budget', 'RM 2,500'], ['📅', 'Time', '6 Days'], ['👥', 'Crew', '3 Artisans']],
             skillLabel: 'New skills this chapter',
             skills: [
                 '📦 <strong>Work Breakdown Structure (WBS):</strong> map every deliverable into Work Packages using the <strong>100% Rule</strong>.',
-                '⚡ <strong>Assign &amp; Stamina:</strong> match specialists to Tasks (+25% speed) and rest them before burnout.',
+                '⚡ <strong>Assign &amp; Stamina:</strong> pick specialists to save a full day, let them continue multi-day work, and rest before burnout.',
                 '🚫 <strong>Out of Scope:</strong> some deliverables don’t belong, so keep them out of the WBS.'
             ],
             carryTitle: '📜 Carried over from your signed Charter',
@@ -970,14 +972,14 @@
         },
         {
             badge: 'Step 3 of 3 • Execution & Team',
-            title: '1-Tap Assign, Stamina & Work Cycles',
+            title: 'Pick Specialists, Stamina & Work Cycles',
             subtitle: 'Decompose, Assign & Execute',
             illustration: `
                 <svg viewBox="0 0 280 86" shape-rendering="geometricPrecision" class="w-full h-[84px] rounded-xl border border-[#8C6A4A]/50 bg-[#FAF5EB] block">
                     <rect x="16" y="14" width="76" height="58" rx="8" fill="#FFFDF9" stroke="#5C3A21" stroke-width="1.4"/>
                     <text x="54" y="34" text-anchor="middle" font-size="14">⚡</text>
-                    <text x="54" y="49" text-anchor="middle" fill="#241B15" font-size="7.5" font-weight="700">1-Tap Assign</text>
-                    <text x="54" y="61" text-anchor="middle" fill="#2E6F40" font-size="7" font-weight="700">+25% Skill Match</text>
+                    <text x="54" y="49" text-anchor="middle" fill="#241B15" font-size="7.5" font-weight="700">Pick Specialist</text>
+                    <text x="54" y="61" text-anchor="middle" fill="#2E6F40" font-size="7" font-weight="700">Saves 1 Full Turn</text>
 
                     <rect x="102" y="14" width="76" height="58" rx="8" fill="#FFF9E6" stroke="#C58F2A" stroke-width="1.4"/>
                     <text x="140" y="34" text-anchor="middle" font-size="14">☕</text>
@@ -992,7 +994,7 @@
             `,
             body: `
                 <p class="text-xs text-[#241B15] leading-relaxed">
-                    Tap <strong>Assign</strong> on any ready Task to pair the best specialist (<strong>Uncle Lim</strong>, <strong>Kak Salmah</strong>, or <strong>Danny</strong>) for a <strong>+25% speed boost</strong>.
+                    Tap <strong>Assign</strong> on any ready Task to pick a team member (<strong>Uncle Lim</strong>, <strong>Kak Salmah</strong>, or <strong>Danny</strong>). Matching specialists save a full turn—and assigned artisans automatically continue multi-day work until finished or fatigued (&lt;35% stamina).
                 </p>
                 <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
                     <div>☕ Schedule <strong>Rest Breaks</strong> before stamina drops below 35% to prevent <strong>Burnout</strong> (-50% speed).</div>
@@ -2008,7 +2010,7 @@
                 subtitle: LEVELS[2].subtitle,
                 phase: 'wbs_build', // 'wbs_build' -> 'execution'
                 day: 1,
-                maxDays: 10,
+                maxDays: 6,
                 budget: 2500,
                 initialBudget: 2500,
                 contingencyReserve: 0,
@@ -2020,12 +2022,18 @@
 
                 signedCharterSummary: {
                     objective: 'Build a multi-bay Kek Lapis & Teh Tarik pavilion for Siniawan Night Market',
-                    constraints: 'RM 2,500 Budget • 10 Days Schedule',
+                    constraints: 'RM 2,500 Budget • 6 Days Schedule',
                     outOfScope: 'No Gas-Fired Wok Kitchen or Permanent Brick Plumbing'
                 },
 
                 selectedWbsCardId: null,
                 bouncedWbsCardId: null,
+                selectedAssignTaskId: null,
+                clientRequestResolved: false,
+                scopeDecisionOutcome: null,
+                roofKitEventResolved: false,
+                roofKitBought: false,
+                acceptedScopeCreep: false,
                 wbsBounceCount: 0,
                 burnoutIncidents: 0,
                 wbsAuthorized: false,
@@ -2077,6 +2085,7 @@
                         progress: 0,
                         paid: false,
                         assignedArtisanId: null,
+                        persisted: false,
                         flavor: 'cuts and lashes cured bamboo and belian timber poles for the stall frame'
                     },
                     {
@@ -2091,6 +2100,7 @@
                         progress: 0,
                         paid: false,
                         assignedArtisanId: null,
+                        persisted: false,
                         flavor: 'secures the weatherproof canopy roof onto the timber posts'
                     },
                     {
@@ -2105,6 +2115,7 @@
                         progress: 0,
                         paid: false,
                         assignedArtisanId: null,
+                        persisted: false,
                         flavor: 'transports wooden-framed glass display cases from Bau town'
                     },
                     {
@@ -2119,6 +2130,7 @@
                         progress: 0,
                         paid: false,
                         assignedArtisanId: null,
+                        persisted: false,
                         flavor: 'arranges Kek Lapis, steamed pandan kuih trays, and twin brass Teh Tarik dispensers'
                     },
                     {
@@ -2133,6 +2145,7 @@
                         progress: 0,
                         paid: false,
                         assignedArtisanId: null,
+                        persisted: false,
                         flavor: 'strings warm red and gold lanterns across the market street'
                     },
                     {
@@ -2147,6 +2160,7 @@
                         progress: 0,
                         paid: false,
                         assignedArtisanId: null,
+                        persisted: false,
                         flavor: 'hand-letters the evening festival menu items on the teak signage'
                     }
                 ],
@@ -2177,6 +2191,18 @@
             crashCount: 0,
             isExecuting: false,
             retroChoice: { wentWell: 0, toImprove: 0 },
+
+            signedCharterSummary: {
+                objective: 'Restore Carpenter St. pre-war shophouse facade, Peranakan kopi bar, rattan dining hall & heritage signboard',
+                constraints: 'RM 15,000 Operating Budget (+RM 2,000 Reserve) • 6 Weeks Schedule',
+                outOfScope: 'No street-side performance stage, road closures, or second-floor hotel rooms'
+            },
+
+            selectedAssignTaskId: null,
+            clientRequestResolved: false,
+            scopeDecisionOutcome: null,
+            acceptedScopeCreep: false,
+            monsoonHitCount: 0,
 
             workPackages: [
                 {
@@ -2220,6 +2246,7 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
+                    persisted: false,
                     flavor: 'restores and refinishes the two-storey louvered belian shutters'
                 },
                 {
@@ -2236,6 +2263,7 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
+                    persisted: false,
                     flavor: 'mounts the woven split-bamboo sunshade across the shophouse frontage'
                 },
                 {
@@ -2244,14 +2272,15 @@
                     workPackageId: 'wp-interior',
                     title: 'Tile Peranakan Kopi Counter',
                     cost: 3200,
-                    effort: 2,
+                    effort: 1,
                     skill: 'Culinary',
                     outdoor: false,
                     deps: [],
-                    critical: true,
+                    critical: false,
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
+                    persisted: false,
                     flavor: 'lays hand-glazed Peranakan mosaic tiles across the marble kopi bar'
                 },
                 {
@@ -2268,6 +2297,7 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
+                    persisted: false,
                     flavor: 'installs and calibrates the commercial brass kopi boiler and espresso bar'
                 },
                 {
@@ -2284,6 +2314,7 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
+                    persisted: false,
                     flavor: 'delivers handwoven Serian rattan dining sets and marble-top tables'
                 },
                 {
@@ -2300,6 +2331,7 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
+                    persisted: false,
                     flavor: 'hoists the gilded Kopitiam signboard and completes Heritage Guild sign-off'
                 }
             ],
@@ -2676,8 +2708,26 @@
         renderAll();
     }
 
-    // One-Tap Smart Auto-Assign: Picks best available team member (matching skill first, then highest stamina)
-    function autoAssignTask(taskId, event) {
+    const SPECIALIST_SPEED = 100;
+    const OFFSKILL_SPEED = 68; // Effort 1 -> 68% (2 turns), Effort 2 -> 34% (3 turns, zero 99% trap!)
+
+    function computeTurnSpeed(task, artisan, crashed = false) {
+        const effort = task.effort || 1;
+        const rawSpeed = artisan.skill === task.skill ? SPECIALIST_SPEED : OFFSKILL_SPEED;
+        let speed = Math.round(rawSpeed / effort);
+        if (artisan.stamina < 35) speed = Math.round(speed * 0.5);
+        if (crashed && getLevelCfg().crashEnabled) speed += CRASH_SPEED_BONUS;
+        return Math.max(1, speed);
+    }
+
+    function computeRemainingTurns(task, artisan, crashed = false) {
+        const remaining = Math.max(0, 100 - (task.progress || 0));
+        if (remaining <= 0) return 0;
+        return Math.ceil(remaining / computeTurnSpeed(task, artisan, crashed));
+    }
+
+    // Inline 3-Artisan Picker Toggle & Unassign
+    function openTaskAssignPicker(taskId, event) {
         if (event) event.stopPropagation();
         if (state.isExecuting) return;
 
@@ -2692,12 +2742,14 @@
             return;
         }
 
-        // If already assigned, clicking the main pill unassigns cleanly
+        // If already assigned, tapping the card unassigns cleanly
         if (task.assignedArtisanId) {
             const existing = state.artisans.find(a => a.id === task.assignedArtisanId);
             if (existing) existing.assignedTaskId = null;
             task.assignedArtisanId = null;
             task.crashed = false;
+            task.persisted = false;
+            state.selectedAssignTaskId = null;
             SoundFX.woodClick();
             updateGuidance(`Unassigned team member from <strong>${task.title}</strong>.`);
             renderAll();
@@ -2713,32 +2765,74 @@
 
         const available = state.artisans.filter(a => !a.assignedTaskId && !a.resting);
         if (available.length === 0) {
+            state.selectedAssignTaskId = null;
             SoundFX.alertPop();
             showToast('All team members are currently assigned or resting.', 'info');
             updateGuidance('All team members are assigned or resting. Tap <strong>Start Workday</strong> below to execute!');
+            renderAll();
             return;
         }
 
-        // Rank by: 1) Matching skill (+1000 score), 2) Highest stamina
-        available.sort((a, b) => {
-            const scoreA = (a.skill === task.skill ? 1000 : 0) + a.stamina;
-            const scoreB = (b.skill === task.skill ? 1000 : 0) + b.stamina;
-            return scoreB - scoreA;
-        });
-
-        const chosen = available[0];
-        chosen.assignedTaskId = task.id;
-        task.assignedArtisanId = chosen.id;
-
         SoundFX.woodClick();
-        const isMatch = chosen.skill === task.skill;
-        const badgeText = isMatch ? `⚡ ${chosen.name} matched (+25% speed!)` : `👷 ${chosen.name} assigned`;
-        showToast(badgeText, 'success');
-        updateGuidance(`Assigned <strong>${chosen.name}</strong> to <strong>${task.title}</strong>${isMatch ? ' (+25% Skill Match Speed!)' : ''}.`);
+        state.selectedAssignTaskId = (state.selectedAssignTaskId === taskId) ? null : taskId;
+        if (state.selectedAssignTaskId) {
+            updateGuidance(`Pick an artisan for <strong>${task.title}</strong> (${task.skill} specialist saves a full ${getTimeUnit(false).toLowerCase()}).`);
+        }
         renderAll();
     }
 
-    // Optional Swap button to cycle to another available team member
+    function assignArtisanToTask(taskId, artisanId, event) {
+        if (event) event.stopPropagation();
+        if (state.isExecuting) return;
+
+        const task = state.tasks.find(t => t.id === taskId);
+        const artisan = state.artisans.find(a => a.id === artisanId);
+        if (!task || !artisan || task.progress >= 100 || artisan.resting) return;
+        if (!isTaskUnlocked(task)) return;
+
+        if (artisan.assignedTaskId === task.id) {
+            state.selectedAssignTaskId = null;
+            renderAll();
+            return;
+        }
+        if (artisan.assignedTaskId) {
+            SoundFX.alertPop();
+            showToast(`${artisan.name} is already assigned to another Task.`, 'info');
+            return;
+        }
+        if (!task.paid && state.budget < task.cost) {
+            SoundFX.alertPop();
+            showToast(`⚠️ Insufficient Budget! Need RM ${task.cost.toLocaleString()}.`, 'warn');
+            return;
+        }
+
+        if (task.assignedArtisanId) {
+            const prevArtisan = state.artisans.find(a => a.id === task.assignedArtisanId);
+            if (prevArtisan) prevArtisan.assignedTaskId = null;
+        }
+
+        artisan.assignedTaskId = task.id;
+        task.assignedArtisanId = artisan.id;
+        task.persisted = false;
+        state.selectedAssignTaskId = null;
+
+        SoundFX.woodClick();
+        const isMatch = artisan.skill === task.skill;
+        const turns = computeRemainingTurns(task, artisan, task.crashed);
+        const unit = getLevelCfg().time.effort[turns === 1 ? 0 : 1];
+        const badgeText = isMatch
+            ? `⚡ ${artisan.name} assigned (Specialist • ~${turns} ${unit})`
+            : `👷 ${artisan.name} assigned (Off-skill • ~${turns} ${unit})`;
+        showToast(badgeText, isMatch ? 'success' : 'info');
+        if (artisan.stamina < 35) {
+            updateGuidance(`⚠️ <strong>${artisan.name}</strong> has low stamina (${artisan.stamina}%) — consider ☕ Rest to avoid -50% Burnout speed!`);
+        } else {
+            updateGuidance(`Assigned <strong>${artisan.name}</strong> to <strong>${task.title}</strong> (${isMatch ? 'Specialist' : 'Off-skill'} • ~${turns} ${unit}).`);
+        }
+        renderAll();
+    }
+
+    // Optional Swap button to open the inline picker for another available team member
     function swapTaskArtisan(taskId, event) {
         if (event) event.stopPropagation();
         if (state.isExecuting) return;
@@ -2746,23 +2840,18 @@
         const task = state.tasks.find(t => t.id === taskId);
         if (!task || !task.assignedArtisanId) return;
 
-        const currentArt = state.artisans.find(a => a.id === task.assignedArtisanId);
         const otherAvailable = state.artisans.filter(a => !a.assignedTaskId && !a.resting && a.id !== task.assignedArtisanId);
-
         if (otherAvailable.length === 0) {
             SoundFX.alertPop();
             showToast('No other unassigned team members available to swap.', 'info');
             return;
         }
 
-        const nextArt = otherAvailable[0];
-        if (currentArt) currentArt.assignedTaskId = null;
-        nextArt.assignedTaskId = task.id;
-        task.assignedArtisanId = nextArt.id;
-
         SoundFX.woodClick();
-        showToast(`🔄 Swapped to ${nextArt.name} (${nextArt.skill})`, 'info');
-        updateGuidance(`Swapped assignment on <strong>${task.title}</strong> to <strong>${nextArt.name}</strong>.`);
+        state.selectedAssignTaskId = (state.selectedAssignTaskId === taskId) ? null : taskId;
+        if (state.selectedAssignTaskId) {
+            updateGuidance(`Pick an available artisan to replace the current assignment on <strong>${task.title}</strong>.`);
+        }
         renderAll();
     }
 
@@ -2808,9 +2897,14 @@
         SoundFX.coffeeClink();
         if (!artisan.resting && artisan.assignedTaskId) {
             const prevTask = state.tasks.find(t => t.id === artisan.assignedTaskId);
-            if (prevTask) prevTask.assignedArtisanId = null;
+            if (prevTask) {
+                prevTask.assignedArtisanId = null;
+                prevTask.crashed = false;
+                prevTask.persisted = false;
+            }
             artisan.assignedTaskId = null;
         }
+        state.selectedAssignTaskId = null;
         artisan.resting = !artisan.resting;
         if (artisan.resting) {
             showToast(`☕ ${artisan.name} scheduled for Rest Break (+45% Stamina)`, 'info');
@@ -2850,13 +2944,15 @@
         }
 
         const activeAssignments = state.tasks.filter(t => t.assignedArtisanId && t.progress < 100);
-        if (activeAssignments.length === 0) {
+        const restingArtisans = state.artisans.filter(a => a.resting);
+        if (activeAssignments.length === 0 && restingArtisans.length === 0) {
             SoundFX.alertPop();
-            showToast('Tap Assign on at least one ready Task first.', 'warn');
-            updateGuidance(`Tap <strong>Assign</strong> on at least one ready Task before starting the ${turnWord}.`);
+            showToast('Assign a Task or schedule a Rest Break first.', 'warn');
+            updateGuidance(`Assign a Task or schedule a <strong>☕ Rest Break</strong> before starting the ${turnWord}.`);
             return;
         }
 
+        state.selectedAssignTaskId = null;
         state.isExecuting = true;
         SoundFX.coffeeClink();
 
@@ -2876,9 +2972,17 @@
         progressBar.style.width = '0%';
         overlay.classList.remove('hidden');
 
-        const isRainDay = (state.hasWeatherRisk && state.day === 3);
-        const rainLostOutdoorDay = (isRainDay && !state.tarpBought && Math.random() < 0.5);
+        const isMonsoonWindow = (state.level === 3 && state.hasWeatherRisk && (state.day === 3 || state.day === 4));
+        const hasOutdoorAssigned = activeAssignments.some(t => t.outdoor);
+        // If unmitigated during Weeks 3-4: 50% chance on Week 3; if spared on Week 3, 75% chance on Week 4 when outdoor work runs.
+        const rainChance = (state.day === 4 && (state.monsoonHitCount || 0) === 0) ? 0.75 : 0.5;
+        const rainLostOutdoorDay = Boolean(isMonsoonWindow && hasOutdoorAssigned && !state.tarpBought && Math.random() < rainChance);
+        if (rainLostOutdoorDay) state.monsoonHitCount = (state.monsoonHitCount || 0) + 1;
+
         const logLines = [];
+        const completedToday = [];
+        const pausedForFatigue = [];
+        const continuingToday = [];
 
         // Ready = unfinished, unassigned Tasks whose prerequisites are done (used to spot idle crew).
         let readyLeft = state.tasks.filter(t =>
@@ -2899,8 +3003,7 @@
                     state.idleWithWorkCount = (state.idleWithWorkCount || 0) + 1;
                     readyLeft--;
                 }
-                artisan.stamina = Math.min(100, artisan.stamina + 15);
-                logLines.push(`🌿 <strong>${artisan.name}</strong> assisted with site prep (+15% Stamina).`);
+                logLines.push(`🌿 <strong>${artisan.name}</strong> waited on site (use ☕ Rest to recover stamina).`);
                 return;
             }
 
@@ -2912,19 +3015,12 @@
                 task.paid = true;
             }
 
-            const effort = task.effort || 1;
-            let rawSpeed = 100;
-            if (artisan.skill === task.skill) {
-                rawSpeed += 25;
-            } else {
+            if (artisan.skill !== task.skill) {
                 state.mismatchCount = (state.mismatchCount || 0) + 1;
             }
 
-            let speed = Math.round(rawSpeed / effort);
-
             const isBurnedOut = artisan.stamina < 35;
             if (isBurnedOut) {
-                speed = Math.round(speed * 0.5);
                 state.burnoutIncidents = (state.burnoutIncidents || 0) + 1;
             }
 
@@ -2932,8 +3028,9 @@
             if (isCrashed) {
                 state.budget -= CRASH_COST;
                 state.crashCount = (state.crashCount || 0) + 1;
-                speed += CRASH_SPEED_BONUS;
             }
+
+            let speed = computeTurnSpeed(task, artisan, isCrashed);
 
             let note = `🔨 <strong>${artisan.name}</strong> ${task.flavor}.`;
             if (rainLostOutdoorDay && task.outdoor) {
@@ -2945,7 +3042,7 @@
                 }
                 if (isCrashed) {
                     note += ` <span class="text-[#9E3514] font-bold">(⚡ Crashed: +50% speed, -RM ${CRASH_COST.toLocaleString()})</span>`;
-                } else if (isRainDay && task.outdoor && state.tarpBought) {
+                } else if (isMonsoonWindow && task.outdoor && state.tarpBought) {
                     note += ` <span class="text-[#2E6F40] font-bold">(Heavy-duty tarp Risk Mitigation active!)</span>`;
                 }
             }
@@ -2960,32 +3057,65 @@
 
             const staminaDrain = 35 + (isCrashed ? CRASH_EXTRA_STAMINA : 0);
             artisan.stamina = Math.max(0, artisan.stamina - staminaDrain);
-            artisan.assignedTaskId = null;
-            task.assignedArtisanId = null;
             task.crashed = false;
+
+            if (task.progress >= 100) {
+                artisan.assignedTaskId = null;
+                task.assignedArtisanId = null;
+                task.persisted = false;
+                completedToday.push(task.title);
+            } else if (artisan.stamina < 35) {
+                artisan.assignedTaskId = null;
+                task.assignedArtisanId = null;
+                task.persisted = false;
+                pausedForFatigue.push(`${artisan.name} (${artisan.stamina}%) on ${task.title}`);
+            } else {
+                // Management by Exception: stay assigned automatically for the next turn
+                task.persisted = true;
+                continuingToday.push(`${artisan.name} → ${task.title}`);
+            }
         });
 
+        const execSummary = { rainLostOutdoorDay, completedToday, pausedForFatigue, continuingToday };
         let step = 0;
-        const totalSteps = 20;
+        const totalSteps = 12;
+        let overlayFinished = false;
+        let finishTimer = null;
+
+        function completeOverlay(immediate = false) {
+            if (overlayFinished) return;
+            overlayFinished = true;
+            clearInterval(interval);
+            if (finishTimer) clearTimeout(finishTimer);
+            overlay.onclick = null;
+            if (immediate) {
+                progressBar.style.width = '100%';
+            }
+            overlay.classList.add('hidden');
+            state.isExecuting = false;
+            finishDay(execSummary);
+        }
+
+        overlay.onclick = () => {
+            SoundFX.woodClick();
+            completeOverlay(true);
+        };
+
         const interval = setInterval(() => {
             step++;
             const pct = Math.min(100, Math.round((step / totalSteps) * 100));
             progressBar.style.width = pct + '%';
 
-            if (step === 4 && logLines[0]) appendExecLog(logLines[0]);
-            if (step === 10 && logLines[1]) appendExecLog(logLines[1]);
-            if (step === 16 && logLines[2]) appendExecLog(logLines[2]);
+            if (step === 2 && logLines[0]) appendExecLog(logLines[0]);
+            if (step === 5 && logLines[1]) appendExecLog(logLines[1]);
+            if (step === 9 && logLines[2]) appendExecLog(logLines[2]);
 
             if (step >= totalSteps) {
                 clearInterval(interval);
                 SoundFX.taskComplete();
-                setTimeout(() => {
-                    overlay.classList.add('hidden');
-                    state.isExecuting = false;
-                    finishDay(rainLostOutdoorDay);
-                }, 650);
+                finishTimer = setTimeout(() => completeOverlay(false), 320);
             }
-        }, 90);
+        }, 60);
         renderDiorama();
     }
 
@@ -2996,7 +3126,13 @@
         document.getElementById('exec-logs').appendChild(div);
     }
 
-    function finishDay(rainLostOutdoorDay) {
+    function finishDay(execSummary = {}) {
+        const {
+            rainLostOutdoorDay = false,
+            pausedForFatigue = [],
+            continuingToday = []
+        } = execSummary;
+
         const allTasksDone = state.tasks.every(t => t.progress >= 100);
 
         if (allTasksDone) {
@@ -3016,44 +3152,202 @@
         state.day += 1;
         renderAll();
 
-        // Level 3 Mid-Project Event Modals
+        const isTaskDone = (id) => {
+            const t = state.tasks.find(x => x.id === id);
+            return Boolean(t && t.progress >= 100);
+        };
+
         const unitLabel = getTimeUnit(false);
         const prevUnitWord = getLevelCfg().time.previous;
-        if (state.level === 3 && state.day === 2) {
+        if (state.level === 2 && state.day === 3 && !state.clientRequestResolved) {
+            triggerL2ClientRequestModal();
+        } else if (state.level === 2 && state.day === 4 && !state.roofKitEventResolved && !isTaskDone('l2-t2')) {
+            triggerL2RoofKitModal();
+        } else if (state.level === 3 && state.day === 2 && !state.clientRequestResolved) {
             triggerScopeCreepModal();
         } else if (state.level === 3 && state.day === 3 && !state.weatherRiskResolved) {
             triggerWeatherRiskModal();
         } else if (rainLostOutdoorDay) {
             showToast('🌧️ Monsoon rain delayed outdoor tasks!', 'warn');
-            updateGuidance(`⚠️ Monsoon rain delayed outdoor work ${prevUnitWord}! Tap <strong>Assign</strong> for <strong>${unitLabel} ${state.day}</strong>.`);
+            updateGuidance(`⚠️ Monsoon rain delayed outdoor work ${prevUnitWord}! Check team stamina for <strong>${unitLabel} ${state.day}</strong>.`);
+        } else if (pausedForFatigue.length > 0 || continuingToday.length > 0) {
+            const notes = [];
+            if (pausedForFatigue.length > 0) {
+                notes.push(`⚠️ Paused (&lt;35% stamina): <strong>${pausedForFatigue.join(', ')}</strong> — schedule ☕ Rest or swap!`);
+            }
+            if (continuingToday.length > 0) {
+                notes.push(`↻ Continuing: <strong>${continuingToday.join(', ')}</strong>.`);
+            }
+            updateGuidance(`<strong>${unitLabel} ${state.day}:</strong> ${notes.join(' ')}`);
         } else {
             updateGuidance(`Start of <strong>${unitLabel} ${state.day}</strong>! Check team stamina and tap <strong>Assign</strong> on ready Tasks.`);
         }
     }
 
-    // Level 3 — Week 2 Event: Stakeholder Scope Creep Change Request
+    const NEUTRAL_MODAL_BTN = 'w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#8C6A4A] bg-[#FFFDF9] hover:bg-[#F1E7D3] transition cursor-pointer';
+
+    function renderCharterReferenceBox(summary) {
+        if (!summary) return '';
+        return `
+            <div class="mb-2.5 p-2.5 rounded-lg bg-[#F1E7D3] border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-0.5 leading-snug">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-[#5C3A21]">📜 Approved Charter Baseline</div>
+                <div><strong>Objective:</strong> ${summary.objective}</div>
+                <div><strong>Constraints:</strong> ${summary.constraints}</div>
+                <div><strong>Out of Scope:</strong> ${summary.outOfScope}</div>
+            </div>
+        `;
+    }
+
+    // Level 2 — Day 3 Event: Siniawan Committee Request (Genuinely In-Scope Quality/Usability)
+    function triggerL2ClientRequestModal() {
+        SoundFX.alertPop();
+        const modal = document.getElementById('event-modal');
+        document.getElementById('modal-emoji').textContent = '🏮';
+        document.getElementById('modal-tag').textContent = 'Day 3 • Stakeholder Request';
+        document.getElementById('modal-title').textContent = 'Siniawan Committee Visit';
+        document.getElementById('modal-body').innerHTML = `
+            ${renderCharterReferenceBox(state.signedCharterSummary)}
+            <div>
+                A Siniawan Heritage Committee member checks the pavilion: <em>“Before night-market opening, please add <strong>bilingual Bahasa &amp; English price labels</strong> to the menu board and <strong>food-safe sneeze guards</strong> on the Kek Lapis display so visitors can read prices and food meets hygiene rules. Materials are <strong>RM 150</strong>, same 6-day opening.”</em>
+            </div>
+        `;
+
+        document.getElementById('modal-actions').innerHTML = `
+            <button type="button" onclick="resolveL2ClientRequest('accept')" class="${NEUTRAL_MODAL_BTN}">
+                <div class="text-xs font-bold text-[#241B15]">1. Accept within current plan (-RM 150 materials)</div>
+                <div class="text-[11px] text-[#5A4D41]">Cover materials from spare operating budget while keeping the 6-day opening.</div>
+            </button>
+            <button type="button" onclick="resolveL2ClientRequest('reject')" class="${NEUTRAL_MODAL_BTN}">
+                <div class="text-xs font-bold text-[#241B15]">2. Decline — Out of Scope (RM 0)</div>
+                <div class="text-[11px] text-[#5A4D41]">Turn down the request and finish the pavilion without labels or sneeze guards.</div>
+            </button>
+            <button type="button" onclick="resolveL2ClientRequest('backlog')" class="${NEUTRAL_MODAL_BTN}">
+                <div class="text-xs font-bold text-[#241B15]">3. Defer to Phase 2 Backlog (RM 0)</div>
+                <div class="text-[11px] text-[#5A4D41]">Log price labels and sneeze guards for after the night-market opening.</div>
+            </button>
+            <button type="button" onclick="resolveL2ClientRequest('change_request')" class="${NEUTRAL_MODAL_BTN}">
+                <div class="text-xs font-bold text-[#241B15]">4. Request Formal Change Order (+RM 150, +1 Day)</div>
+                <div class="text-[11px] text-[#5A4D41]">Ask the committee to amend the contract and extend the deadline by 1 day.</div>
+            </button>
+        `;
+        modal.classList.remove('hidden');
+    }
+
+    function resolveL2ClientRequest(choice) {
+        SoundFX.woodClick();
+        state.clientRequestResolved = true;
+        document.getElementById('event-modal').classList.add('hidden');
+
+        if (choice === 'accept') {
+            state.budget -= 150;
+            state.goodwillStars += 1;
+            state.scopeDecisionOutcome = 'in_scope_accepted';
+            showToast('✅ Accepted In-Scope usability (-RM 150, +1 Goodwill)', 'success');
+            updateGuidance('✅ <strong>Recognized as In-Scope!</strong> Bilingual labels &amp; food hygiene fit the approved stall Charter (-RM 150, +1 Goodwill).');
+        } else if (choice === 'reject') {
+            state.goodwillStars -= 1;
+            state.scopeDecisionOutcome = 'in_scope_rejected';
+            showToast('⚠️ Declined an In-Scope requirement (-1 Goodwill)', 'warn');
+            updateGuidance('⚠️ <strong>Careful:</strong> Readable menus and food hygiene were part of delivering a working stall (In-Scope). Stakeholder trust dipped.');
+        } else if (choice === 'backlog') {
+            state.goodwillStars -= 1;
+            state.scopeDecisionOutcome = 'in_scope_deferred';
+            showToast('⚠️ Deferred core hygiene & pricing (-1 Goodwill)', 'warn');
+            updateGuidance('⚠️ <strong>Careful:</strong> Food hygiene and clear pricing can’t wait until Phase 2! Check the Charter before deferring core usability.');
+        } else {
+            state.budget -= 150;
+            state.scopeDecisionOutcome = 'in_scope_overformal';
+            showToast('📋 Committee pushed back: already In-Scope (-RM 150)', 'info');
+            updateGuidance('📋 <strong>Committee pushed back:</strong> Basic menu labels &amp; hygiene are already In-Scope, not a schedule change (-RM 150, no extra day).');
+        }
+        renderAll();
+    }
+
+    // Level 2 — Day 4 Event: Budget vs. Schedule Trade-Off (Pre-Cut Canopy Roof Kit)
+    function triggerL2RoofKitModal() {
+        SoundFX.alertPop();
+        const modal = document.getElementById('event-modal');
+        document.getElementById('modal-emoji').textContent = '🪚';
+        document.getElementById('modal-tag').textContent = 'Day 4 • Schedule vs. Budget Trade-Off';
+        document.getElementById('modal-title').textContent = 'Bau Sawmill Pre-Cut Roof Offer';
+        document.getElementById('modal-body').innerHTML = `
+            A Bau timber supplier has a pre-cut canopy roof kit ready today. Buying it for <strong>RM 150</strong> immediately completes <strong>+50% of Install Pitched Canopy Roof</strong> (saving 1 full workday), or you can stick with manual framing at <strong>RM 0</strong>.
+        `;
+
+        const unpaidCoreCost = state.tasks.filter(t => !t.paid).reduce((s, t) => s + t.cost, 0);
+        const canAffordKit = (state.budget - unpaidCoreCost) >= 150;
+
+        document.getElementById('modal-actions').innerHTML = `
+            <button type="button" onclick="resolveL2RoofKit('buy')" ${canAffordKit ? '' : 'disabled'} class="${canAffordKit ? NEUTRAL_MODAL_BTN : 'w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#8C6A4A] bg-[#EFE6D4] opacity-60 cursor-not-allowed'}">
+                <div class="text-xs font-bold text-[#241B15]">1. Buy Pre-Cut Roof Kit (-RM 150, +50% Canopy Roof progress)</div>
+                <div class="text-[11px] text-[#5A4D41]">${canAffordKit ? 'Spend RM 150 spare budget to save a workday on the roof.' : 'Insufficient spare operating budget after reserving remaining Tasks.'}</div>
+            </button>
+            <button type="button" onclick="resolveL2RoofKit('decline')" class="${NEUTRAL_MODAL_BTN}">
+                <div class="text-xs font-bold text-[#241B15]">2. Stick with Standard Build (RM 0, keep budget intact)</div>
+                <div class="text-[11px] text-[#5A4D41]">Keep your remaining RM ${state.budget.toLocaleString()} budget and assemble the roof manually.</div>
+            </button>
+        `;
+        modal.classList.remove('hidden');
+    }
+
+    function resolveL2RoofKit(choice) {
+        SoundFX.woodClick();
+        state.roofKitEventResolved = true;
+        document.getElementById('event-modal').classList.add('hidden');
+
+        const unpaidCoreCost = state.tasks.filter(t => !t.paid).reduce((s, t) => s + t.cost, 0);
+        if (choice === 'buy' && (state.budget - unpaidCoreCost) >= 150) {
+            state.budget -= 150;
+            state.roofKitBought = true;
+            const t2 = state.tasks.find(t => t.id === 'l2-t2');
+            if (t2) {
+                t2.progress = Math.min(100, t2.progress + 50);
+                if (t2.progress >= 100 && t2.assignedArtisanId) {
+                    const art = state.artisans.find(a => a.id === t2.assignedArtisanId);
+                    if (art) art.assignedTaskId = null;
+                    t2.assignedArtisanId = null;
+                    t2.persisted = false;
+                }
+            }
+            showToast('🪚 Pre-Cut Roof Kit bought (-RM 150, +50% Canopy Roof)', 'info');
+            updateGuidance('🪚 <strong>Schedule Boosted!</strong> Bought Pre-Cut Roof Kit (-RM 150) — Canopy Roof jumped +50%.');
+        } else {
+            showToast('💰 Standard manual framing chosen (RM 0)', 'info');
+            updateGuidance('💰 <strong>Budget Preserved!</strong> Kept RM 150 saved and stayed with standard roof framing.');
+        }
+        renderAll();
+    }
+
+    // Level 3 — Week 2 Event: Neighborhood Committee Request (Neutral Framing; Player Decides)
     function triggerScopeCreepModal() {
         SoundFX.alertPop();
         const modal = document.getElementById('event-modal');
         document.getElementById('modal-emoji').textContent = '🎤';
-        document.getElementById('modal-tag').textContent = 'Week 2 Event • Scope Creep & Change Control';
-        document.getElementById('modal-title').textContent = 'Stakeholder Scope Creep Request';
+        document.getElementById('modal-tag').textContent = 'Week 2 • Stakeholder Request';
+        document.getElementById('modal-title').textContent = 'Neighborhood Committee Request';
         document.getElementById('modal-body').innerHTML = `
-            A neighborhood committee representative visits Carpenter Street: <em>“Since your crew is already restoring the shophouse facade, can you also build a <strong>street-side acoustic performance stage</strong> for the grand opening? We have <strong>RM 0 extra budget</strong> and still want to open in Week 6!”</em>
+            ${renderCharterReferenceBox(state.signedCharterSummary)}
+            <div>
+                A neighborhood committee representative visits Carpenter Street: <em>“Since your crew is already restoring the shophouse facade, can you also build a <strong>street-side acoustic performance stage</strong> for opening night? We’re hoping you can fit it into your existing budget and Week 6 deadline—unless you insist on a formal guild budget amendment.”</em>
+            </div>
         `;
 
         document.getElementById('modal-actions').innerHTML = `
-            <button type="button" onclick="resolveScopeCreep('reject')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#8C6A4A] bg-[#FFFDF9] hover:bg-[#F1E7D3] transition cursor-pointer">
-                <div class="text-xs font-bold text-[#241B15]">1. Reject — Out of Scope</div>
-                <div class="text-[11px] text-[#5A4D41]">Reference the approved Heritage Guild Charter to prevent Scope Creep.</div>
+            <button type="button" onclick="resolveScopeCreep('accept_free')" class="${NEUTRAL_MODAL_BTN}">
+                <div class="text-xs font-bold text-[#241B15]">1. Accept within current plan (RM 0 extra budget, Week 6)</div>
+                <div class="text-[11px] text-[#5A4D41]">Squeeze the acoustic stage into the active build using existing budget and deadline.</div>
             </button>
-            <button type="button" onclick="resolveScopeCreep('backlog')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-2 border-[#2E6F40] bg-[#2E6F40]/10 hover:bg-[#2E6F40]/15 transition cursor-pointer">
-                <div class="text-xs font-bold text-[#235732]">2. Defer to Phase 2 Backlog ⭐</div>
-                <div class="text-[11px] text-[#2F593D]">Record the stage in the Phase 2 Backlog so current Scope and Week 6 Schedule stay protected.</div>
+            <button type="button" onclick="resolveScopeCreep('reject')" class="${NEUTRAL_MODAL_BTN}">
+                <div class="text-xs font-bold text-[#241B15]">2. Decline politely — Out of Scope</div>
+                <div class="text-[11px] text-[#5A4D41]">Cite the approved Charter boundary and keep the project focused on the kopitiam.</div>
             </button>
-            <button type="button" onclick="resolveScopeCreep('approve')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#C58F2A] bg-[#FFF9E6] hover:bg-[#F5E6BC] transition cursor-pointer">
-                <div class="text-xs font-bold text-[#7A5404]">3. Approve Change Request (+RM 2,000, +1 Week)</div>
-                <div class="text-[11px] text-[#5C4108]">Re-baseline the Iron Triangle with +RM 2,000 Budget, +1 Week Schedule, and 1 Stage Task.</div>
+            <button type="button" onclick="resolveScopeCreep('backlog')" class="${NEUTRAL_MODAL_BTN}">
+                <div class="text-xs font-bold text-[#241B15]">3. Defer to Phase 2 Backlog</div>
+                <div class="text-[11px] text-[#5A4D41]">Record the stage for a future phase so current Scope and Week 6 Schedule stay protected.</div>
+            </button>
+            <button type="button" onclick="resolveScopeCreep('change_request')" class="${NEUTRAL_MODAL_BTN}">
+                <div class="text-xs font-bold text-[#241B15]">4. Negotiate Formal Change Request (+RM 2,000, +1 Week)</div>
+                <div class="text-[11px] text-[#5A4D41]">Re-baseline Budget, Schedule, and Scope together with +RM 2,000, +1 Week, and 1 Stage Task.</div>
             </button>
         `;
         modal.classList.remove('hidden');
@@ -3061,18 +3355,47 @@
 
     function resolveScopeCreep(choice) {
         SoundFX.woodClick();
+        state.clientRequestResolved = true;
         document.getElementById('event-modal').classList.add('hidden');
 
-        if (choice === 'reject') {
-            showToast('🛡️ Rejected — Out of Scope!', 'success');
-            updateGuidance('🛡️ <strong>Scope Protected!</strong> Rejected the unapproved addition to protect the Week 6 Grand Opening.');
+        if (choice === 'accept_free') {
+            state.acceptedScopeCreep = true;
+            state.scopeDecisionOutcome = 'creep_accepted';
+            state.tasks.push({
+                id: 't-stage',
+                crashed: false,
+                workPackageId: 'wp-furnishings',
+                title: 'Build Acoustic Stage (Unfunded Addition)',
+                cost: 800,
+                effort: 1,
+                skill: 'Carpentry',
+                outdoor: true,
+                deps: ['t1'],
+                critical: false,
+                progress: 0,
+                paid: false,
+                assignedArtisanId: null,
+                persisted: false,
+                flavor: 'constructs the unbudgeted acoustic stage using operating funds'
+            });
+            const wpFurn = state.workPackages.find(w => w.id === 'wp-furnishings');
+            if (wpFurn && !wpFurn.taskIds.includes('t-stage')) wpFurn.taskIds.push('t-stage');
+            showToast('⚠️ Scope Creep! Added unfunded Stage (-RM 800, +0 Weeks)', 'warn');
+            updateGuidance('⚠️ <strong>Uncontrolled Scope Creep!</strong> Added the Acoustic Stage (-RM 800 from operating budget, +0 Weeks) despite the Charter exclusion.');
+        } else if (choice === 'reject') {
+            state.scopeDecisionOutcome = 'rejected';
+            showToast('🛡️ Scope Protected — Out of Scope!', 'success');
+            updateGuidance('🛡️ <strong>Scope Protected!</strong> Cited the Charter exclusion to decline the unbudgeted stage.');
         } else if (choice === 'backlog') {
             state.goodwillStars += 1;
-            showToast('⭐ Deferred to Phase 2 Backlog!', 'success');
-            updateGuidance('⭐ <strong>Deferred to Phase 2 Backlog!</strong> Request logged without disrupting current Scope or Schedule.');
-        } else if (choice === 'approve') {
+            state.scopeDecisionOutcome = 'backlog';
+            showToast('📋 Logged in Phase 2 Backlog (+1 Goodwill)!', 'success');
+            updateGuidance('📋 <strong>Logged in Phase 2 Backlog!</strong> Protected Week 6 while keeping stakeholders heard (+1 Goodwill).');
+        } else if (choice === 'change_request') {
             state.budget += 2000;
             state.maxDays += 1;
+            state.goodwillStars += 1;
+            state.scopeDecisionOutcome = 'change_request';
             state.tasks.push({
                 id: 't-stage',
                 crashed: false,
@@ -3087,12 +3410,13 @@
                 progress: 0,
                 paid: false,
                 assignedArtisanId: null,
+                persisted: false,
                 flavor: 'constructs the approved acoustic stage using the re-baselined budget'
             });
             const wpFurn = state.workPackages.find(w => w.id === 'wp-furnishings');
-            if (wpFurn) wpFurn.taskIds.push('t-stage');
-            showToast('⚖️ Change Request Approved (+RM 2,000, +1 Week)', 'info');
-            updateGuidance('⚖️ <strong>Change Request Approved!</strong> Added +RM 2,000 Budget, +1 Week Schedule, and the Acoustic Stage Task.');
+            if (wpFurn && !wpFurn.taskIds.includes('t-stage')) wpFurn.taskIds.push('t-stage');
+            showToast('⚖️ Formal Change Request Approved (+RM 2,000, +1 Week, +1 Goodwill)', 'info');
+            updateGuidance('⚖️ <strong>Formal Change Request Approved!</strong> Re-baselined Budget (+RM 2,000), Schedule (+1 Week), and Scope (+1 Goodwill).');
         }
         renderAll();
     }
@@ -3102,21 +3426,21 @@
         SoundFX.alertPop();
         const modal = document.getElementById('event-modal');
         document.getElementById('modal-emoji').textContent = '🌧️';
-        document.getElementById('modal-tag').textContent = 'Week 3 Event • Risk Mitigation';
+        document.getElementById('modal-tag').textContent = 'Week 3 • Risk Forecast';
         document.getElementById('modal-title').textContent = 'Monsoon Rain Forecast';
         document.getElementById('modal-body').innerHTML = `
-            Heavy monsoon rain squalls are rolling across Kuching toward Carpenter Street! Outdoor Carpentry tasks face a <strong>50% probability of losing 1 full week</strong> unless mitigated. You have <strong>RM ${state.contingencyReserve.toLocaleString()}</strong> in your <strong>Contingency Reserve</strong>.
+            Heavy monsoon squalls are forecast across <strong>Weeks 3–4</strong> over Carpenter Street! Unprotected outdoor Carpentry risks losing a full week during the monsoon window. You have <strong>RM ${state.contingencyReserve.toLocaleString()}</strong> in your <strong>Contingency Reserve</strong>.
         `;
 
         const canAffordTarp = state.contingencyReserve >= 1200;
         document.getElementById('modal-actions').innerHTML = `
-            <button type="button" onclick="resolveWeatherRisk('mitigate')" ${canAffordTarp ? '' : 'disabled'} class="w-full min-h-[44px] text-left p-3 rounded-xl border-2 ${canAffordTarp ? 'border-[#2E6F40] bg-[#2E6F40]/10 hover:bg-[#2E6F40]/15 cursor-pointer' : 'border-[#8C6A4A] bg-[#EFE6D4] opacity-60 cursor-not-allowed'} transition">
-                <div class="text-xs font-bold text-[#235732]">1. Risk Mitigation: Deploy Heavy-Duty Tarps (-RM 1,200 Reserve)</div>
-                <div class="text-[11px] text-[#2F593D]">Use Contingency Reserve to shelter all outdoor shophouse work (0 rain delay).</div>
+            <button type="button" onclick="resolveWeatherRisk('mitigate')" ${canAffordTarp ? '' : 'disabled'} class="${canAffordTarp ? NEUTRAL_MODAL_BTN : 'w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#8C6A4A] bg-[#EFE6D4] opacity-60 cursor-not-allowed'}">
+                <div class="text-xs font-bold text-[#241B15]">1. Risk Mitigation: Deploy Heavy-Duty Tarps (-RM 1,200 Reserve)</div>
+                <div class="text-[11px] text-[#5A4D41]">Use Contingency Reserve to shelter all outdoor shophouse work across Weeks 3–4 (0 rain delay).</div>
             </button>
-            <button type="button" onclick="resolveWeatherRisk('accept')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#C85A32] bg-[#FFFDF9] hover:bg-[#F1E7D3] transition cursor-pointer">
-                <div class="text-xs font-bold text-[#9E3514]">2. Absorb Risk (RM 0, 50% Chance of 1-Week Delay)</div>
-                <div class="text-[11px] text-[#5A4D41]">Keep your Contingency Reserve intact and hope the monsoon squall clears.</div>
+            <button type="button" onclick="resolveWeatherRisk('accept')" class="${NEUTRAL_MODAL_BTN}">
+                <div class="text-xs font-bold text-[#241B15]">2. Absorb Risk (RM 0 Reserve, Risk Delay in Weeks 3–4)</div>
+                <div class="text-[11px] text-[#5A4D41]">Keep your Contingency Reserve intact and accept weather exposure on outdoor work.</div>
             </button>
         `;
         modal.classList.remove('hidden');
@@ -3133,8 +3457,8 @@
             showToast('🛡️ Heavy-duty tarps deployed (-RM 1,200 Reserve)', 'success');
             updateGuidance('🛡️ <strong>Risk Mitigation Active!</strong> Heavy-duty tarps deployed (-RM 1,200 Contingency Reserve). Outdoor tasks have 0 rain delay.');
         } else {
-            showToast('🎲 Risk absorbed — watch outdoor tasks this week!', 'warn');
-            updateGuidance('🎲 <strong>Risk Absorbed!</strong> Tap <strong>Assign</strong> for Week 3—outdoor work has a 50% chance of rain delay.');
+            showToast('🎲 Risk absorbed — watch outdoor tasks in Weeks 3–4!', 'warn');
+            updateGuidance('🎲 <strong>Risk Absorbed!</strong> Tap <strong>Assign</strong> for Week 3—outdoor work faces rain delay risk across Weeks 3–4.');
         }
         renderAll();
     }
@@ -3159,27 +3483,45 @@
         if (state.level === 2) {
             const c1 = Boolean(isVictory);
             const c2 = c1 && (state.burnoutIncidents || 0) === 0 && (state.wbsBounceCount || 0) <= 1;
-            const c3 = c1 && state.budget >= 300 && (state.wbsBounceCount || 0) === 0 && (state.burnoutIncidents || 0) === 0;
+            const c3 = c1 && state.scopeDecisionOutcome === 'in_scope_accepted' && state.budget >= 150 && (state.wbsBounceCount || 0) === 0 && (state.burnoutIncidents || 0) === 0;
             return {
                 stars: (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0),
                 criteria: [
-                    { met: c1, label: 'Complete 100% Scope (6/6 WBS Tasks) within 10 days' },
+                    { met: c1, label: 'Complete 100% Scope (6/6 WBS Tasks) within 6 days' },
                     { met: c2, label: `Zero team Burnout (${state.burnoutIncidents || 0} incidents) & ≤ 1 WBS bounce` },
-                    { met: c3, label: `Save ≥ RM 300 budget (RM ${state.budget.toLocaleString()} saved) with 0 WBS bounces` }
+                    { met: c3, label: `Deliver In-Scope request, save ≥ RM 150 (RM ${state.budget.toLocaleString()} saved) & 0 WBS bounces` }
                 ]
             };
         }
         const c1 = Boolean(isVictory);
-        const c2 = c1 && (state.burnoutIncidents || 0) === 0;
-        const c3 = c2 && (daysRemaining >= 1 || totalSaved >= 1500);
+        const c2 = c1 && (state.burnoutIncidents || 0) === 0 && !state.acceptedScopeCreep;
+        const c3 = c2 && daysRemaining >= 1 && totalSaved >= 1500;
         return {
             stars: (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0),
             criteria: [
-                { met: c1, label: 'Complete 100% Scope within 6-week schedule & budget' },
-                { met: c2, label: `Zero team Burnout across weekly execution (${state.burnoutIncidents || 0} incidents)` },
-                { met: c3, label: `Finish ≥ 1 Week early (${daysRemaining}w left) or save ≥ RM 1,500 (RM ${totalSaved.toLocaleString()})` }
+                { met: c1, label: 'Complete 100% Scope within schedule & budget' },
+                { met: c2, label: `Zero team Burnout (${state.burnoutIncidents || 0} incidents) & no unbudgeted Scope Creep` },
+                { met: c3, label: `Finish ≥ 1 Week early (${daysRemaining}w left) with ≥ RM 1,500 saved (RM ${totalSaved.toLocaleString()})` }
             ]
         };
+    }
+
+    function getScopeFeedbackMessage() {
+        const outcome = state.scopeDecisionOutcome;
+        if (!outcome || state.level === 1) return null;
+        const gw = state.goodwillStars || 0;
+        const gwLabel = gw > 0 ? `+${gw}` : `${gw}`;
+        const map = {
+            in_scope_accepted: { warn: false, text: `🤝 Stakeholder Goodwill: ${gwLabel} • Included in-scope bilingual labels & food hygiene within plan.` },
+            in_scope_rejected: { warn: true, text: `🤝 Stakeholder Goodwill: ${gwLabel} • Declined core usability & hygiene already implied by the stall Charter.` },
+            in_scope_deferred: { warn: true, text: `🤝 Stakeholder Goodwill: ${gwLabel} • Deferred core pricing & food hygiene that were needed for opening day.` },
+            in_scope_overformal: { warn: false, text: `🤝 Stakeholder Goodwill: ${gwLabel} • Requested a schedule extension for items already in scope.` },
+            backlog: { warn: false, text: `🤝 Stakeholder Goodwill: ${gwLabel} • Properly deferred out-of-scope stage to Phase 2 Backlog.` },
+            rejected: { warn: false, text: `🤝 Stakeholder Goodwill: ${gwLabel} • Protected scope by declining the out-of-scope stage.` },
+            change_request: { warn: false, text: `🤝 Stakeholder Goodwill: ${gwLabel} • Used formal Change Control to re-baseline budget, schedule & scope.` },
+            creep_accepted: { warn: true, text: `⚠️ Scope Creep Warning (Goodwill ${gwLabel}) • Accepted an unfunded stage outside the Charter.` }
+        };
+        return map[outcome] || null;
     }
 
     function openRetrospective(isVictory) {
@@ -3218,6 +3560,18 @@
                 <span class="leading-snug">${c.label}</span>
             </div>
         `).join('');
+
+        const scopeFeedbackEl = document.getElementById('retro-scope-feedback');
+        if (scopeFeedbackEl) {
+            const fb = getScopeFeedbackMessage();
+            if (fb) {
+                scopeFeedbackEl.textContent = fb.text;
+                scopeFeedbackEl.className = `mt-2 pt-2 border-t border-[#C58F2A]/40 text-[11px] leading-snug font-semibold ${fb.warn ? 'text-[#9E3514]' : 'text-[#235732]'}`;
+            } else {
+                scopeFeedbackEl.textContent = '';
+                scopeFeedbackEl.className = 'hidden mt-2 pt-2 border-t border-[#C58F2A]/40 text-[11px] leading-snug';
+            }
+        }
 
         const lvlRetro = getLevelCfg().retroPrompts;
         state.retroChoice = { wentWell: 0, toImprove: 0 };
@@ -3365,7 +3719,7 @@
             hints.push({
                 icon: '🎯',
                 title: `${state.mismatchCount} assignment${state.mismatchCount > 1 ? 's' : ''} outside the specialist’s skill`,
-                text: 'A matching specialist works +25% faster: Carpentry → Uncle Lim, Culinary → Kak Salmah, Logistics → Danny.'
+                text: 'Specialists work at 100% speed while off-skill artisans work at 68% (adding an extra day): Carpentry → Uncle Lim, Culinary → Kak Salmah, Logistics → Danny.'
             });
         }
 
@@ -3550,6 +3904,9 @@
                         ${state.tarpBought ? '✓ Mitigated' : 'Active Reserve'}
                     </span>
                 </div>
+                <div class="mt-1.5 pt-1.5 border-t border-[#8C6A4A]/35 text-[10px] text-[#3D2412] leading-snug">
+                    <strong>📜 Approved Charter:</strong> ${state.signedCharterSummary.objective} • <strong>Out of Scope:</strong> ${state.signedCharterSummary.outOfScope}
+                </div>
             `;
         } else {
             ctxBanner.classList.add('hidden');
@@ -3717,13 +4074,59 @@
                     cardStyle += ' bg-[#FFFDF9] border-[#8C6A4A] hover:border-[#C85A32]';
                 }
 
+                const isPickerOpen = state.selectedAssignTaskId === task.id && unlocked && !isDone;
+                const unitShort = state.level === 3 ? 'w' : 'd';
+                const pickerHtml = isPickerOpen ? `
+                    <div onclick="event.stopPropagation()" class="mt-2.5 pt-2 border-t border-[#8C6A4A]/40">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#5C3A21]">Pick Artisan (${task.skill} Task)</span>
+                            <button type="button" onclick="openTaskAssignPicker('${task.id}', event)" class="text-[10px] font-bold text-[#7A5434] hover:text-[#241B15] cursor-pointer">Close ✕</button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            ${state.artisans.map(a => {
+                                const isCurrent = task.assignedArtisanId === a.id;
+                                const isBusy = Boolean(a.assignedTaskId && a.assignedTaskId !== task.id);
+                                const isAvailable = !a.resting && !isBusy && !isCurrent;
+                                const turns = computeRemainingTurns(task, a, task.crashed);
+                                const isLow = a.stamina < 35;
+                                if (!isAvailable) {
+                                    const reason = isCurrent ? 'Current' : a.resting ? '☕ Resting' : 'Busy';
+                                    return `
+                                        <button type="button" disabled class="p-1.5 rounded-lg border border-[#8C6A4A]/45 bg-[#EFE6D4] opacity-60 cursor-not-allowed text-left min-w-0">
+                                            <div class="flex items-center justify-between gap-1">
+                                                ${getArtisanPortraitSVG(a.id, 18)}
+                                                <span class="text-[9px] font-bold font-mono-crisp ${isLow ? 'text-[#B91C1C]' : 'text-[#5A4D41]'}">${a.stamina}%</span>
+                                            </div>
+                                            <div class="text-[10px] font-bold text-[#3D2412] mt-1 truncate">${a.name}</div>
+                                            <div class="text-[9px] font-semibold text-[#7A5434] truncate">${reason}</div>
+                                        </button>
+                                    `;
+                                }
+                                return `
+                                    <button type="button" onclick="assignArtisanToTask('${task.id}', '${a.id}', event)" class="p-1.5 rounded-lg border-[1.5px] border-[#8C6A4A] bg-[#FFFDF5] hover:bg-[#F1E7D3] transition cursor-pointer text-left min-w-0">
+                                        <div class="flex items-center justify-between gap-1">
+                                            ${getArtisanPortraitSVG(a.id, 18)}
+                                            <span class="text-[9px] font-bold font-mono-crisp ${isLow ? 'text-[#B91C1C]' : 'text-[#5C3A21]'}">${isLow ? '⚠️' : ''}${a.stamina}%</span>
+                                        </div>
+                                        <div class="text-[10px] font-bold text-[#241B15] mt-1 truncate">${a.name}</div>
+                                        <div class="flex items-center justify-between gap-1 mt-0.5">
+                                            <span class="text-[9px] font-medium text-[#5A4D41] truncate">${a.skill}</span>
+                                            <span class="text-[9px] font-bold font-mono-crisp text-[#3D2412] shrink-0">~${turns}${unitShort}</span>
+                                        </div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                ` : '';
+
                 return `
                     <div class="relative pl-4">
                         <!-- Visual WBS Tree Elbow Connector -->
                         <div class="absolute left-0 top-0 bottom-1/2 w-3 border-l-2 border-b-2 border-[#8C6A4A]/65 rounded-bl-md pointer-events-none"></div>
                         ${tIdx < wpTasks.length - 1 ? `<div class="absolute left-0 top-1/2 bottom-0 border-l-2 border-[#8C6A4A]/65 pointer-events-none"></div>` : ''}
 
-                        <div id="card-${task.id}" onclick="autoAssignTask('${task.id}', event)" class="${cardStyle} cursor-pointer">
+                        <div id="card-${task.id}" onclick="openTaskAssignPicker('${task.id}', event)" class="${cardStyle} cursor-pointer">
                             <div class="flex items-start justify-between gap-2">
                                 <div class="flex-1 min-w-0">
                                     <div class="flex flex-wrap items-center gap-1 mb-1">
@@ -3741,6 +4144,7 @@
                                         </span>
                                         ${task.critical ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#C85A32]/15 text-[#943011] border border-[#C85A32]/30 font-bold">🔥 Critical Path</span>` : ''}
                                         ${task.outdoor ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#2B5783]/12 text-[#1E4063] border border-[#2B5783]/25 font-semibold">🌤️ Outdoor</span>` : ''}
+                                        ${task.persisted && assignedArtisan ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35 font-bold">↻ Continuing</span>` : ''}
                                         ${task.crashed ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#9E3514] text-white font-bold">⚡ Crashed +50%</span>` : ''}
                                     </div>
 
@@ -3768,7 +4172,7 @@
                                     ` : ''}
                                 </div>
 
-                                <!-- One-Tap Auto-Assign Action Column -->
+                                <!-- Inline Picker Trigger / Assigned Pill -->
                                 <div class="shrink-0 flex flex-col items-end justify-center gap-1">
                                     ${isDone ? `
                                         <span class="px-2 py-1 rounded-lg bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40 text-[10px] font-bold">Complete</span>
@@ -3779,7 +4183,7 @@
                                             ${getArtisanPortraitSVG(assignedArtisan.id, 20)}
                                             <div class="text-left leading-none">
                                                 <div class="text-[10px] font-bold">${assignedArtisan.name.split(' ')[0]}</div>
-                                                <div class="text-[9px] font-medium">${assignedArtisan.skill === task.skill ? '+25% Boost' : 'Assigned'}</div>
+                                                <div class="text-[9px] font-medium">${assignedArtisan.skill === task.skill ? 'Specialist' : 'Off-skill'}</div>
                                             </div>
                                         </div>
                                         <div class="flex items-center gap-1">
@@ -3793,12 +4197,13 @@
                                             ` : ''}
                                         </div>
                                     ` : `
-                                        <button type="button" onclick="autoAssignTask('${task.id}', event)" class="min-h-[34px] px-2.5 py-1.5 rounded-lg bg-[#2E6F40] hover:bg-[#235732] text-white text-[10px] font-bold border border-[#1B4226] shadow-sm cursor-pointer">
-                                            ⚡ Assign
+                                        <button type="button" onclick="openTaskAssignPicker('${task.id}', event)" class="min-h-[34px] px-2.5 py-1.5 rounded-lg ${isPickerOpen ? 'bg-[#C85A32] border-[#7A2A10]' : 'bg-[#2E6F40] hover:bg-[#235732] border-[#1B4226]'} text-white text-[10px] font-bold border shadow-sm cursor-pointer">
+                                            ${isPickerOpen ? 'Pick ↓' : '⚡ Assign'}
                                         </button>
                                     `}
                                 </div>
                             </div>
+                            ${pickerHtml}
                         </div>
                     </div>
                 `;
@@ -4008,8 +4413,8 @@
 
                     <div class="mt-1 pt-1 border-t border-[#8C6A4A]/30 flex items-center justify-between gap-1">
                         ${statusTag}
-                        <button type="button" onclick="toggleRestBreak('${a.id}', event)" title="Rest Break (+45% Stamina)" class="artisan-rest-btn min-h-[26px] px-1.5 py-0.5 rounded bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A]/60 text-[9px] font-bold text-[#3D2412] shrink-0 cursor-pointer">
-                            ${a.resting ? 'Cancel' : '☕ Rest'}
+                        <button type="button" onclick="toggleRestBreak('${a.id}', event)" title="Rest Break (+45% Stamina)" class="artisan-rest-btn min-h-[26px] px-1.5 py-0.5 rounded border text-[9px] font-bold shrink-0 cursor-pointer ${!a.resting && !a.assignedTaskId && isBurnedOut ? 'bg-[#FEE2E2] hover:bg-[#FECACA] border-[#B91C1C] text-[#991B1B]' : 'bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[#8C6A4A]/60 text-[#3D2412]'}">
+                            ${a.resting ? 'Cancel' : (!a.assignedTaskId && isBurnedOut ? '☕ Rest!' : '☕ Rest')}
                         </button>
                     </div>
                 </div>
