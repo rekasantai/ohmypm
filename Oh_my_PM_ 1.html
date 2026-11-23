@@ -1,0 +1,3100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Oh my PM! — A RekaSantai Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --parchment: #FAF5EB;
+            --parchment-deep: #F1E7D3;
+            --ink: #241B15;
+            --teak: #5C3A21;
+            --teak-dark: #3D2412;
+            --terracotta: #C85A32;
+            --pandan: #2E6F40;
+            --brass: #C58F2A;
+            --vermilion: #B91C1C;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            font-size: clamp(14px, 1.8vw, 16px);
+            height: 100%;
+        }
+
+        body {
+            background-color: #2A1C12;
+            background-image: radial-gradient(circle at 50% 20%, #3E2A1B 0%, #1F140D 100%);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            height: 100dvh;
+            width: 100%;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1, h2, h3, .font-serif-cozy {
+            font-family: 'Fraunces', Georgia, serif;
+            letter-spacing: -0.015em;
+        }
+
+        .font-mono-crisp {
+            font-family: 'JetBrains Mono', monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Adaptive Shell: Locked 100dvh across Folded Portrait & Unfolded Two-Pane Duo/Tablet */
+        #app-shell {
+            width: 100%;
+            max-width: 1180px;
+            height: 100dvh;
+            max-height: 100dvh;
+            background-color: var(--parchment);
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr;
+            overflow: hidden;
+            padding-left: env(safe-area-inset-left, 0px);
+            padding-right: env(safe-area-inset-right, 0px);
+        }
+
+        #left-stage {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 0;
+            background-color: var(--parchment);
+        }
+
+        #right-stage {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 0;
+            overflow: hidden;
+            background-color: var(--parchment);
+        }
+
+        #left-diorama-wrap {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        #diorama-svg-el {
+            height: clamp(104px, 16dvh, 134px);
+        }
+
+        /* Narrow Folded Cover Screen (< 360px) Compact Safeguards */
+        @media (max-width: 359px) {
+            .hud-metric-pill {
+                padding-left: 0.35rem !important;
+                padding-right: 0.35rem !important;
+            }
+            .hud-metric-val {
+                font-size: 10px !important;
+            }
+            .artisan-card-item {
+                padding: 0.375rem !important;
+            }
+            .artisan-card-name {
+                font-size: 10px !important;
+            }
+            .artisan-rest-btn {
+                padding-left: 0.3rem !important;
+                padding-right: 0.3rem !important;
+                font-size: 8.5px !important;
+            }
+        }
+
+        /* Unfolded iPhone Duo / Wide Inner Screen / Tablet (>= 600px) Two-Pane Studio */
+        @media (min-width: 600px) {
+            body {
+                padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+            }
+            #app-shell {
+                grid-template-columns: 44% 56%;
+                grid-template-rows: 1fr;
+                border-left: 1px solid #4A321C;
+                border-right: 1px solid #4A321C;
+                box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+            }
+            #left-stage {
+                border-right: 2px solid #7A5434;
+                background: linear-gradient(180deg, #F6EEDC 0%, #EFE2C6 100%);
+                overflow-y: auto;
+                padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+            }
+            #left-diorama-wrap {
+                flex: 1;
+                justify-content: space-between;
+            }
+            #diorama-svg-el {
+                height: clamp(168px, 28dvh, 240px);
+            }
+            #right-stage {
+                padding-top: max(0.25rem, env(safe-area-inset-top, 0px));
+            }
+        }
+
+        .paper-card {
+            background-color: #FFFDF9;
+            border: 1.5px solid #8C6A4A;
+            box-shadow: 0 2px 0 #8C6A4A;
+            transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+        }
+
+        .paper-card.selected-task {
+            border-color: var(--terracotta);
+            box-shadow: 0 0 0 2px rgba(200, 90, 50, 0.25), 0 2px 0 var(--terracotta);
+        }
+
+        .teak-panel {
+            background: linear-gradient(180deg, #684226 0%, #5C3A21 100%);
+            border-bottom: 2px solid #3D2412;
+            color: #FDF9F0;
+            padding-top: calc(0.65rem + env(safe-area-inset-top, 0px));
+        }
+
+        .teak-dock {
+            background-color: #F3E9D4;
+            border-top: 2px solid #7A5434;
+            padding-bottom: calc(0.625rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        #balance-beam {
+            transform-origin: 120px 26px;
+            transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+        }
+
+        @keyframes sealStamp {
+            0% { transform: scale(1.6) rotate(-14deg); opacity: 0; }
+            70% { transform: scale(0.98) rotate(-3deg); opacity: 1; }
+            100% { transform: scale(1) rotate(-4deg); opacity: 1; }
+        }
+        .animate-seal {
+            animation: sealStamp 0.36s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes crispFadeUp {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-crisp-in {
+            animation: crispFadeUp 0.22s ease-out forwards;
+        }
+
+        @keyframes gentleShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-3px); }
+        }
+        .animate-bounce-back {
+            animation: gentleShake 0.32s ease-in-out;
+        }
+
+        /* Live Diorama Animations */
+        @keyframes dioramaSteam {
+            0% { transform: translateY(0) scale(0.95); opacity: 0.75; }
+            50% { transform: translateY(-4px) scale(1.05); opacity: 0.45; }
+            100% { transform: translateY(-8px) scale(1.12); opacity: 0; }
+        }
+        .diorama-steam {
+            animation: dioramaSteam 2.2s ease-out infinite;
+        }
+        .diorama-steam-delay {
+            animation: dioramaSteam 2.2s ease-out 1.1s infinite;
+        }
+
+        @keyframes artisanCraftBob {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-2.5px) rotate(-2deg); }
+        }
+        .artisan-working-bob {
+            animation: artisanCraftBob 0.75s ease-in-out infinite;
+        }
+
+        @keyframes sparkFloat {
+            0%, 100% { opacity: 0.3; transform: scale(0.85); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+        .diorama-sparkle {
+            animation: sparkFloat 1.3s ease-in-out infinite;
+        }
+
+        @keyframes blueprintPulse {
+            0%, 100% { stroke-opacity: 0.5; }
+            50% { stroke-opacity: 1; }
+        }
+        .diorama-active-blueprint {
+            animation: blueprintPulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes dioramaPopIn {
+            0% { opacity: 0; transform: scale(0.94); }
+            70% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .diorama-layer-done {
+            animation: dioramaPopIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Guaranteed High-Z-Index Welcome & Tutorial Overlay */
+        #tutorial-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background-color: rgba(36, 27, 21, 0.84);
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: calc(1rem + env(safe-area-inset-top, 0px)) calc(1rem + env(safe-area-inset-right, 0px)) calc(1rem + env(safe-area-inset-bottom, 0px)) calc(1rem + env(safe-area-inset-left, 0px));
+        }
+
+        #tutorial-overlay.tutorial-hidden {
+            display: none !important;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #B49474;
+            border-radius: 4px;
+        }
+
+        #celebration-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10000;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="celebration-canvas"></canvas>
+
+<div id="app-shell">
+    <!-- Toast Notification Banner -->
+    <div id="toast-container" class="pointer-events-none fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[390px] flex flex-col items-center gap-1.5"></div>
+
+    <!-- LEFT STAGE: Header HUD, Iron Triangle & Permanently Visible Live Diorama -->
+    <div id="left-stage">
+        <!-- TOP HEADER: Prominent "Oh my PM!" Title, Minimal "by RekaSantai" Pill & Iron Triangle HUD -->
+        <header class="teak-panel px-3.5 pb-2.5 z-30 shrink-0">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <!-- Game Icon -->
+                    <div id="game-title-icon" class="shrink-0"></div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <h1 class="text-[18px] font-extrabold tracking-tight text-[#FFFDF8] leading-none">Oh my PM!</h1>
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-[#3D2412] border border-[#8C5E35] text-[9px] font-semibold text-[#DECBA8]">
+                                by RekaSantai
+                            </span>
+                        </div>
+                        <p id="header-commission-subtitle" class="text-[11px] font-medium text-[#EBD9BC] mt-1 truncate">Level 1 • Main Bazaar Coffee Cart</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <button id="btn-tutorial" type="button" onclick="openTutorialModal(0)" aria-label="Open Guide" class="min-h-[36px] px-2.5 py-1.5 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] text-[#FAF0DC] text-xs font-bold border border-[#C58F2A] flex items-center gap-1 transition cursor-pointer">
+                        <span>?</span> <span>Guide</span>
+                    </button>
+                    <button id="btn-mute" type="button" onclick="toggleMute()" aria-label="Toggle Sound" class="w-9 h-9 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] text-[#FAF0DC] flex items-center justify-center border border-[#9E6E43] transition text-sm cursor-pointer">
+                        🔊
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sequential Lifecycle Level Switcher Tabs -->
+            <nav aria-label="Project Lifecycle Levels" class="grid grid-cols-3 gap-1.5 mb-2 bg-[#3D2412] p-1 rounded-xl border border-[#8C5E35]">
+                <button id="tab-lvl-1" type="button" onclick="switchLevel(1)" class="min-h-[36px] py-1.5 px-1 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                    <span>📜</span> <span>L1: Charter</span>
+                </button>
+                <button id="tab-lvl-2" type="button" onclick="switchLevel(2)" class="min-h-[36px] py-1.5 px-1 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                    <span>📦</span> <span>L2: WBS</span>
+                </button>
+                <button id="tab-lvl-3" type="button" onclick="switchLevel(3)" class="min-h-[36px] py-1.5 px-1 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                    <span>🗓️</span> <span>L3: Schedule</span>
+                </button>
+            </nav>
+
+            <!-- Iron Triangle HUD & Interactive SVG Balance Scale -->
+            <div class="bg-[#3D2412] rounded-xl p-2 border border-[#C58F2A]">
+                <div class="flex items-center justify-between text-[10px] px-1 mb-0.5">
+                    <span class="font-bold uppercase tracking-wider text-[#F6D365]">⚖️ Iron Triangle Balance</span>
+                    <span id="scale-status-text" class="font-semibold text-[#A7F3D0]">Balanced &amp; Steady</span>
+                </div>
+
+                <svg viewBox="0 0 240 44" shape-rendering="geometricPrecision" class="w-full h-8 overflow-visible block">
+                    <path d="M120 2 L120 14 M114 6 Q120 0 126 6" stroke="#C58F2A" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <circle cx="120" cy="16" r="3.5" fill="#F6D365" stroke="#241B15" stroke-width="1.2"/>
+
+                    <g id="balance-beam">
+                        <line x1="28" y1="26" x2="212" y2="26" stroke="#C58F2A" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Left Pan: Budget & Schedule -->
+                        <line x1="38" y1="26" x2="30" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                        <line x1="38" y1="26" x2="46" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                        <path d="M26 38 Q38 44 50 38 Z" fill="#C58F2A" stroke="#241B15" stroke-width="0.8"/>
+                        <text x="38" y="20" text-anchor="middle" fill="#FDE68A" font-size="7.5" font-weight="700" letter-spacing="0.3">BUDGET &amp; TIME</text>
+
+                        <!-- Center Brass Counterweight -->
+                        <rect x="114" y="21" width="12" height="10" rx="2" fill="#C85A32" stroke="#FFFDF8" stroke-width="1"/>
+
+                        <!-- Right Pan: Scope -->
+                        <line x1="202" y1="26" x2="194" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                        <line x1="202" y1="26" x2="210" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                        <path d="M190 38 Q202 44 214 38 Z" fill="#C85A32" stroke="#241B15" stroke-width="0.8"/>
+                        <text x="202" y="20" text-anchor="middle" fill="#FECACA" font-size="7.5" font-weight="700" letter-spacing="0.3">SCOPE</text>
+                    </g>
+                </svg>
+
+                <!-- 3 Core Iron Triangle Pill Meters -->
+                <div class="grid grid-cols-3 gap-1.5 mt-1">
+                    <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
+                        <div class="text-[10px] font-medium text-[#DECBA8]">💰 Budget</div>
+                        <div id="hud-budget" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#F6D365] truncate">RM 350</div>
+                    </div>
+                    <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
+                        <div class="text-[10px] font-medium text-[#DECBA8]">📅 Schedule</div>
+                        <div id="hud-day" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#FFFDF8] truncate">2 Days Left</div>
+                    </div>
+                    <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
+                        <div class="text-[10px] font-medium text-[#DECBA8]">📐 Scope</div>
+                        <div id="hud-scope" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#A7F3D0] truncate">0/4 Charter</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- LIVE CROSS-SECTION DIORAMA SCENE & UNFOLDED PROJECT BRIEF -->
+        <div id="left-diorama-wrap" class="px-3 pt-2 pb-1.5 shrink-0">
+            <section id="live-diorama-card" aria-label="Live Restoration Diorama" class="rounded-xl overflow-hidden border-[1.5px] border-[#7A5434] bg-[#FFFDF9] shadow-[0_2px_0_#7A5434]">
+                <div id="diorama-viewport" class="relative w-full"></div>
+            </section>
+
+            <!-- Wide / Unfolded Duo Project Brief & PM Concept Reference Card -->
+            <div id="wide-brief-card" class="hidden min-[600px]:block mt-2.5 paper-card rounded-xl p-3 bg-[#FFFDF9]"></div>
+        </div>
+    </div>
+
+    <!-- RIGHT STAGE: Guidance, Scrollable Charter/WBS Tree Board & Sticky Bottom Team Dock -->
+    <div id="right-stage">
+        <!-- CONTEXTUAL LEVEL BANNER (Approved Charter Summary in L2 OR Contingency Reserve in L3) -->
+        <div id="context-banner" class="hidden mx-3 mt-1.5 min-[600px]:mt-2.5 px-3 py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] shrink-0"></div>
+
+        <!-- ADVISOR GUIDANCE BANNER -->
+        <div id="guidance-strip" class="mx-3 mt-1.5 min-[600px]:mt-2.5 px-3 py-2 rounded-xl bg-[#FFFDF9] border-[1.5px] border-[#C58F2A] text-xs text-[#241B15] flex items-center gap-2 shrink-0">
+            <span class="text-sm shrink-0">💡</span>
+            <span id="guidance-text" class="leading-snug">Tap a statement from Auntie Mei, then tap its matching <strong>Project Charter</strong> slot.</span>
+        </div>
+
+        <!-- MAIN WORKSPACE (Level 1 Project Charter OR Level 2/3 Inline WBS Tree & Schedule Board) -->
+        <main id="board-container" class="relative flex-1 min-h-0 px-3 pt-2 pb-4 overflow-y-auto overscroll-contain">
+            <!-- LEVEL 1 VIEW: Project Charter -->
+            <div id="charter-workspace" class="hidden space-y-3"></div>
+
+            <!-- LEVEL 2 & 3 VIEW: Inline WBS Tree & Schedule Board -->
+            <div id="wbs-tree-workspace" class="hidden space-y-3"></div>
+        </main>
+
+        <!-- BOTTOM DOCK: Team Roster, Primary CTA & Subtle RekaSantai Footer Credit -->
+        <footer id="bottom-dock" class="teak-dock px-3 pt-2 z-30 shrink-0">
+            <div id="artisan-dock-wrapper">
+                <div class="flex items-center justify-between mb-1.5 px-0.5">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#3D2412]">👷 Project Team Roster</span>
+                    <span id="selected-artisan-pill" class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35 truncate max-w-[185px]">
+                        Tap Assign on any Task
+                    </span>
+                </div>
+
+                <div id="artisans-dock" class="grid grid-cols-3 gap-1.5 sm:gap-2 mb-2"></div>
+            </div>
+
+            <button id="btn-primary-action" type="button" onclick="handlePrimaryCTA()" class="w-full min-h-[44px] py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer">
+                <span>☀️ Start Workday</span>
+            </button>
+
+            <!-- Subtle studio credit -->
+            <div class="mt-1.5 pt-1 border-t border-[#8C6A4A]/30 flex items-center justify-center gap-1.5 text-[10px] font-medium text-[#5C3A21]/80">
+                <span>Oh my PM! • A RekaSantai Game</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- EXECUTION OVERLAY (Workday Progress Simulation) -->
+    <div id="execution-overlay" class="hidden absolute inset-0 z-40 bg-[#241B15]/80 flex items-center justify-center p-4">
+        <div class="paper-card w-full max-w-[400px] rounded-2xl p-5 text-center animate-crisp-in border-2 border-[#5C3A21]">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#F1E7D3] text-3xl mb-2 border-[1.5px] border-[#8C6A4A]">
+                ☕
+            </div>
+            <h3 id="exec-title" class="text-lg font-bold text-[#5C3A21]">Executing Day 1 Workday</h3>
+            <p id="exec-subtitle" class="text-xs font-medium text-[#5A4D41] mt-0.5 mb-4">Your team is building on site in Sarawak...</p>
+
+            <div class="w-full h-3.5 bg-[#F1E7D3] rounded-full overflow-hidden p-0.5 border-[1.5px] border-[#8C6A4A] mb-3">
+                <div id="exec-progress-bar" class="h-full bg-[#2E6F40] rounded-full transition-all duration-150" style="width: 0%"></div>
+            </div>
+
+            <div id="exec-logs" class="bg-[#FAF5EB] rounded-xl p-3 text-left space-y-2 min-h-[104px] border-[1.5px] border-[#8C6A4A]/60 text-xs text-[#241B15]"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 3-STEP INTERACTIVE WELCOME & TUTORIAL MODAL (Open by Default on Launch, z-index: 9999) -->
+<div id="tutorial-overlay" role="dialog" aria-modal="true" aria-labelledby="tut-modal-title">
+    <div class="paper-card w-full max-w-[440px] max-h-[90dvh] rounded-2xl p-5 animate-crisp-in border-2 border-[#5C3A21] flex flex-col overflow-hidden shadow-2xl">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between pb-3 mb-3 border-b-[1.5px] border-[#8C6A4A]/40 shrink-0">
+            <div class="flex items-center gap-2.5">
+                <div id="tutorial-game-icon" class="shrink-0"></div>
+                <div>
+                    <div class="text-base font-extrabold font-serif-cozy text-[#5C3A21] leading-none">Oh my PM!</div>
+                    <div class="text-[10px] font-semibold text-[#7A5434] mt-1">A RekaSantai Game • Field Guide</div>
+                </div>
+            </div>
+            <button type="button" onclick="closeTutorialModal()" class="min-h-[36px] px-3 py-1 rounded-lg bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A] text-xs font-bold text-[#3D2412] transition cursor-pointer">
+                Skip ✕
+            </button>
+        </div>
+
+        <!-- Scrollable Step Body -->
+        <div id="tutorial-step-content" class="flex-1 min-h-0 overflow-y-auto pr-0.5"></div>
+
+        <!-- Footer Controls: Back, Clickable Step Indicator Dots (1, 2, 3), Next / Start Level 1 -->
+        <div class="mt-4 pt-3 border-t-[1.5px] border-[#8C6A4A]/40 flex items-center justify-between gap-2 shrink-0">
+            <button id="tut-btn-back" type="button" onclick="changeTutorialStep(-1)" class="min-h-[42px] px-3.5 py-2 rounded-xl bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[1.5px] border-[#8C6A4A] text-xs font-bold text-[#3D2412] transition cursor-pointer">
+                ← Back
+            </button>
+
+            <div id="tutorial-dots" class="flex items-center gap-2"></div>
+
+            <button id="tut-btn-next" type="button" onclick="changeTutorialStep(1)" class="min-h-[42px] px-4 py-2 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white text-xs font-bold border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
+                Next →
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Mid-Project Event (Stakeholder Scope Creep Change Request / Monsoon Risk Mitigation) -->
+<div id="event-modal" class="hidden fixed inset-0 z-50 bg-[#241B15]/85 flex items-center justify-center p-4">
+    <div class="paper-card max-w-[400px] w-full rounded-2xl p-5 animate-crisp-in border-2 border-[#5C3A21]">
+        <div class="flex items-center gap-2.5 mb-2.5">
+            <span id="modal-emoji" class="text-3xl">🎤</span>
+            <div>
+                <span id="modal-tag" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#C85A32]/15 text-[#9E3514] border border-[#C85A32]/30">Change Control</span>
+                <h3 id="modal-title" class="text-base font-bold text-[#241B15] mt-1">Stakeholder Change Request</h3>
+            </div>
+        </div>
+        <p id="modal-body" class="text-xs text-[#241B15] leading-relaxed bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-4"></p>
+        <div id="modal-actions" class="space-y-2"></div>
+    </div>
+</div>
+
+<!-- MODAL: Level Completion & Project Retrospective -->
+<div id="retro-modal" class="hidden fixed inset-0 z-50 bg-[#241B15]/85 flex items-center justify-center p-3 overflow-y-auto">
+    <div class="paper-card max-w-[410px] w-full rounded-2xl p-5 animate-crisp-in border-2 border-[#C58F2A] my-auto">
+        <div class="text-center mb-3">
+            <span id="retro-phase-tag" class="inline-block px-3 py-1 rounded-full bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40 text-[11px] font-bold mb-1.5">📜 Phase 1 Complete • Initiating</span>
+            <h2 id="retro-headline" class="text-xl font-bold text-[#5C3A21]">Project Complete!</h2>
+            <p id="retro-sub" class="text-xs font-medium text-[#5A4D41] mt-0.5">Review your Iron Triangle performance and capture lessons learned.</p>
+        </div>
+
+        <!-- Iron Triangle Final Scorecard -->
+        <div class="grid grid-cols-3 gap-2 bg-[#FAF5EB] p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A] mb-3 text-center">
+            <div>
+                <div class="text-[10px] font-semibold text-[#5A4D41]">Budget Saved</div>
+                <div id="retro-budget" class="text-sm font-bold font-mono-crisp text-[#2E6F40]">RM 120</div>
+            </div>
+            <div>
+                <div class="text-[10px] font-semibold text-[#5A4D41]">Days Remaining</div>
+                <div id="retro-days" class="text-sm font-bold font-mono-crisp text-[#5C3A21]">1 Day</div>
+            </div>
+            <div>
+                <div class="text-[10px] font-semibold text-[#5A4D41]">Scope &amp; Quality</div>
+                <div id="retro-quality" class="text-sm font-bold text-[#C58F2A]">100% ✅</div>
+            </div>
+        </div>
+
+        <!-- Project Retrospective Selection -->
+        <div id="retro-reflection-section" class="space-y-2.5 mb-3">
+            <div>
+                <label class="block text-[11px] font-bold text-[#2E6F40] mb-1">✅ Project Retrospective — What Went Well</label>
+                <div class="grid grid-cols-1 gap-1.5">
+                    <button type="button" onclick="selectRetro('wentWell', 0, this)" class="retro-opt-well min-h-[42px] text-left text-xs p-2.5 rounded-xl border-2 border-[#2E6F40] bg-[#FFF9E6] transition cursor-pointer">
+                        📐 Approving the Project Charter and WBS early kept Scope clear and prevented wasted effort.
+                    </button>
+                    <button type="button" onclick="selectRetro('wentWell', 1, this)" class="retro-opt-well min-h-[42px] text-left text-xs p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#2E6F40]/10 transition cursor-pointer">
+                        ☕ Scheduling Rest breaks prevented team Burnout and kept productivity steady.
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-[#C85A32] mb-1">📝 Project Retrospective — What to Improve</label>
+                <div class="grid grid-cols-1 gap-1.5">
+                    <button type="button" onclick="selectRetro('toImprove', 0, this)" class="retro-opt-improve min-h-[42px] text-left text-xs p-2.5 rounded-xl border-2 border-[#C85A32] bg-[#FFF9E6] transition cursor-pointer">
+                        🔗 Prioritizing Critical Path tasks first prevents downstream Dependency delays.
+                    </button>
+                    <button type="button" onclick="selectRetro('toImprove', 1, this)" class="retro-opt-improve min-h-[42px] text-left text-xs p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#C85A32]/10 transition cursor-pointer">
+                        🛡️ Using Contingency Reserve for Risk Mitigation and Change Control protects Schedule and Budget.
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unlocked PM Principle Badge -->
+        <div id="retro-badge-box" class="bg-[#FFF9E6] p-3 rounded-xl border-[1.5px] border-[#C58F2A] mb-4">
+            <div class="flex items-center gap-2 mb-1">
+                <span id="badge-icon" class="text-2xl">🏅</span>
+                <div>
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-[#8C6106]">PM Principle Badge Unlocked</div>
+                    <div id="badge-title" class="text-sm font-bold text-[#241B15]">Project Charter Architect</div>
+                </div>
+            </div>
+            <p id="badge-desc" class="text-xs text-[#241B15] leading-relaxed">
+                A clear Project Charter defines Objective, Constraints, Success Criteria, and Out-of-Scope boundaries before execution begins.
+            </p>
+        </div>
+
+        <div id="retro-footer-actions" class="space-y-2"></div>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // 1. GAME EMBLEM INJECTION
+    // ==========================================
+    function getGameIconSVG(size = 34) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 36 36" shape-rendering="geometricPrecision" class="block">
+            <rect x="1.5" y="1.5" width="33" height="33" rx="9" fill="#FAF5EB" stroke="#C58F2A" stroke-width="2"/>
+            <!-- Mini Clipboard -->
+            <rect x="8" y="8" width="14" height="19" rx="2.5" fill="#FFFDF9" stroke="#5C3A21" stroke-width="1.5"/>
+            <rect x="12" y="6.5" width="6" height="3" rx="1" fill="#C58F2A" stroke="#241B15" stroke-width="1"/>
+            <path d="M10.5 13.5 L12 15 L14.5 12" fill="none" stroke="#2E6F40" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="16" y1="13.5" x2="19.5" y2="13.5" stroke="#5C3A21" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M10.5 19 L12 20.5 L14.5 17.5" fill="none" stroke="#2E6F40" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="16" y1="19" x2="19.5" y2="19" stroke="#5C3A21" stroke-width="1.2" stroke-linecap="round"/>
+            <!-- Foreground Kopi Cup -->
+            <path d="M18.5 19.5 H28.5 L27.2 26.5 C27 27.8 25.8 28.5 23.5 28.5 C21.2 28.5 20 27.8 19.8 26.5 Z" fill="#FFFDF9" stroke="#241B15" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M28.5 21.2 H30.2 C31.1 21.2 31.6 21.8 31.6 22.8 C31.6 23.8 31.1 24.4 30.2 24.4 H27.8" fill="none" stroke="#241B15" stroke-width="1.3" stroke-linecap="round"/>
+            <line x1="19" y1="22.5" x2="28" y2="22.5" stroke="#2E6F40" stroke-width="1.2"/>
+            <path d="M22 17 Q21.2 15 22.5 13.5" fill="none" stroke="#C85A32" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M25.5 17 Q26.3 15 25 13.5" fill="none" stroke="#C85A32" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>`;
+    }
+
+    function injectBrandingElements() {
+        const titleIcon = document.getElementById('game-title-icon');
+        const tutIcon = document.getElementById('tutorial-game-icon');
+        if (titleIcon) titleIcon.innerHTML = getGameIconSVG(34);
+        if (tutIcon) tutIcon.innerHTML = getGameIconSVG(36);
+    }
+
+    // ==========================================
+    // 2. TOAST NOTIFICATION SYSTEM
+    // ==========================================
+    function showToast(message, tone = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const styles = {
+            info: 'bg-[#3D2412] text-[#FFFDF8] border-[#C58F2A]',
+            success: 'bg-[#235732] text-[#FFFDF8] border-[#A7F3D0]',
+            warn: 'bg-[#943011] text-[#FFFDF8] border-[#FDE68A]'
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `px-3.5 py-2 rounded-xl border-[1.5px] text-xs font-semibold shadow-md animate-crisp-in text-center ${styles[tone] || styles.info}`;
+        toast.innerHTML = message;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.25s ease';
+            setTimeout(() => toast.remove(), 260);
+        }, 2300);
+    }
+
+    // ==========================================
+    // 3. 3-STEP INTERACTIVE WELCOME & TUTORIAL
+    // ==========================================
+    let tutorialState = {
+        showTutorial: true,
+        step: 0
+    };
+
+    const TUTORIAL_STEPS = [
+        {
+            badge: 'Step 1 of 3 • Welcome',
+            title: 'Welcome to Oh my PM!',
+            subtitle: 'A RekaSantai Game',
+            illustration: `
+                <svg viewBox="0 0 280 86" shape-rendering="geometricPrecision" class="w-full h-[84px] rounded-xl border border-[#8C6A4A]/50 bg-[#F5E8CE] block">
+                    <rect x="0" y="72" width="280" height="14" fill="#C85A32"/>
+                    <rect x="18" y="14" width="244" height="58" fill="#FFFDF9" stroke="#5C3A21" stroke-width="1.4"/>
+                    <rect x="88" y="8" width="104" height="16" rx="3" fill="#5C3A21" stroke="#C58F2A" stroke-width="1.4"/>
+                    <text x="140" y="18.5" text-anchor="middle" fill="#F6D365" font-family="Fraunces, serif" font-weight="700" font-size="8">OH MY PM!</text>
+                    <rect x="44" y="42" width="76" height="30" rx="2" fill="#8C5227" stroke="#241B15" stroke-width="1.2"/>
+                    <path d="M38 42 L48 30 L116 30 L126 42 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.2"/>
+                    <rect x="156" y="46" width="80" height="26" rx="2" fill="#E6F4EA" stroke="#241B15" stroke-width="1.2"/>
+                    <rect x="172" y="34" width="14" height="12" rx="2" fill="#C58F2A" stroke="#241B15" stroke-width="1.1"/>
+                    <path d="M179 31 Q177 27 180 24" stroke="#C85A32" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+                </svg>
+            `,
+            body: `
+                <p class="text-xs text-[#241B15] leading-relaxed">
+                    Restore heritage Sarawakian shops across Main Bazaar, Siniawan Night Market, and Carpenter Street by mastering real <strong>Project Management</strong> step-by-step.
+                </p>
+                <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
+                    <div>📜 <strong>Level 1:</strong> Define &amp; approve a <strong>Project Charter</strong></div>
+                    <div>📦 <strong>Level 2:</strong> Decompose Scope into a <strong>Work Breakdown Structure (WBS)</strong></div>
+                    <div>🗓️ <strong>Level 3:</strong> Manage <strong>Schedule</strong>, <strong>Dependencies</strong> &amp; <strong>Change Requests</strong></div>
+                </div>
+            `
+        },
+        {
+            badge: 'Step 2 of 3 • Core Framework',
+            title: 'The Iron Triangle & Lifecycle',
+            subtitle: 'Scope • Schedule • Budget',
+            illustration: `
+                <svg viewBox="0 0 280 86" shape-rendering="geometricPrecision" class="w-full h-[84px] rounded-xl border border-[#8C6A4A]/50 bg-[#3D2412] block">
+                    <line x1="140" y1="10" x2="140" y2="26" stroke="#C58F2A" stroke-width="2.2"/>
+                    <circle cx="140" cy="28" r="4" fill="#F6D365"/>
+                    <line x1="52" y1="36" x2="228" y2="36" stroke="#C58F2A" stroke-width="3" stroke-linecap="round"/>
+                    <rect x="28" y="42" width="66" height="24" rx="5" fill="#29170B" stroke="#F6D365" stroke-width="1.2"/>
+                    <text x="61" y="57" text-anchor="middle" fill="#F6D365" font-size="8" font-weight="700">💰 BUDGET</text>
+                    <rect x="107" y="48" width="66" height="24" rx="5" fill="#29170B" stroke="#FFFDF8" stroke-width="1.2"/>
+                    <text x="140" y="63" text-anchor="middle" fill="#FFFDF8" font-size="8" font-weight="700">📅 SCHEDULE</text>
+                    <rect x="186" y="42" width="66" height="24" rx="5" fill="#29170B" stroke="#A7F3D0" stroke-width="1.2"/>
+                    <text x="219" y="57" text-anchor="middle" fill="#A7F3D0" font-size="8" font-weight="700">📐 SCOPE</text>
+                </svg>
+            `,
+            body: `
+                <p class="text-xs text-[#241B15] leading-relaxed">
+                    Every project balances <strong>Scope</strong>, <strong>Schedule</strong>, and <strong>Budget</strong>. Progress sequentially through the PM lifecycle:
+                </p>
+                <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
+                    <div>1️⃣ <strong>Project Charter (L1):</strong> Lock Objective, Constraints, Success Criteria &amp; Out of Scope.</div>
+                    <div>2️⃣ <strong>Work Breakdown Structure / WBS (L2):</strong> Decompose Work Packages into concrete 1-day Tasks.</div>
+                    <div>3️⃣ <strong>Schedule, Dependencies &amp; Change Control (L3):</strong> Protect the Critical Path and Contingency Reserve.</div>
+                </div>
+            `
+        },
+        {
+            badge: 'Step 3 of 3 • Execution & Team',
+            title: 'One-Tap Assign, Stamina & Day Cycle',
+            subtitle: 'Decompose, Assign & Start Workday',
+            illustration: `
+                <svg viewBox="0 0 280 86" shape-rendering="geometricPrecision" class="w-full h-[84px] rounded-xl border border-[#8C6A4A]/50 bg-[#FAF5EB] block">
+                    <rect x="16" y="14" width="76" height="58" rx="8" fill="#FFFDF9" stroke="#5C3A21" stroke-width="1.4"/>
+                    <text x="54" y="34" text-anchor="middle" font-size="14">⚡</text>
+                    <text x="54" y="49" text-anchor="middle" fill="#241B15" font-size="7.5" font-weight="700">1-Tap Assign</text>
+                    <text x="54" y="61" text-anchor="middle" fill="#2E6F40" font-size="7" font-weight="700">+25% Skill Match</text>
+
+                    <rect x="102" y="14" width="76" height="58" rx="8" fill="#FFF9E6" stroke="#C58F2A" stroke-width="1.4"/>
+                    <text x="140" y="34" text-anchor="middle" font-size="14">☕</text>
+                    <text x="140" y="49" text-anchor="middle" fill="#5C3A21" font-size="7.5" font-weight="700">Rest Breaks</text>
+                    <text x="140" y="61" text-anchor="middle" fill="#8C6106" font-size="7" font-weight="700">+45% Stamina</text>
+
+                    <rect x="188" y="14" width="76" height="58" rx="8" fill="#FCEEE8" stroke="#C85A32" stroke-width="1.4"/>
+                    <text x="226" y="34" text-anchor="middle" font-size="14">☀️</text>
+                    <text x="226" y="49" text-anchor="middle" fill="#9E3514" font-size="7.5" font-weight="700">Start Workday</text>
+                    <text x="226" y="61" text-anchor="middle" fill="#241B15" font-size="7" font-weight="700">Build Diorama</text>
+                </svg>
+            `,
+            body: `
+                <p class="text-xs text-[#241B15] leading-relaxed">
+                    Tap <strong>Assign</strong> on any ready Task to automatically pair the best-skilled team member (<strong>Uncle Lim</strong>, <strong>Kak Salmah</strong>, or <strong>Danny</strong>) for a <strong>+25% speed boost</strong>.
+                </p>
+                <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
+                    <div>☕ Use <strong>Rest Breaks</strong> before stamina drops below 35% to prevent <strong>Burnout</strong> (-50% speed).</div>
+                    <div>🔗 Respect task <strong>Dependencies</strong> and advance days with <strong>Start Workday</strong> to complete the live diorama!</div>
+                </div>
+            `
+        }
+    ];
+
+    function openTutorialModal(stepIndex = 0) {
+        tutorialState.showTutorial = true;
+        tutorialState.step = Math.max(0, Math.min(TUTORIAL_STEPS.length - 1, stepIndex));
+        renderTutorialModal();
+    }
+
+    function closeTutorialModal() {
+        SoundFX.woodClick();
+        tutorialState.showTutorial = false;
+        renderTutorialModal();
+    }
+
+    function changeTutorialStep(delta) {
+        SoundFX.woodClick();
+        const next = tutorialState.step + delta;
+        if (next < 0) return;
+        if (next >= TUTORIAL_STEPS.length) {
+            closeTutorialModal();
+            return;
+        }
+        tutorialState.step = next;
+        renderTutorialModal();
+    }
+
+    function renderTutorialModal() {
+        const overlay = document.getElementById('tutorial-overlay');
+        if (!overlay) return;
+
+        if (!tutorialState.showTutorial) {
+            overlay.classList.add('tutorial-hidden');
+            return;
+        }
+
+        overlay.classList.remove('tutorial-hidden');
+        const step = TUTORIAL_STEPS[tutorialState.step];
+        const contentEl = document.getElementById('tutorial-step-content');
+        const dotsEl = document.getElementById('tutorial-dots');
+        const backBtn = document.getElementById('tut-btn-back');
+        const nextBtn = document.getElementById('tut-btn-next');
+
+        contentEl.innerHTML = `
+            <div class="space-y-2.5 animate-crisp-in">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35 text-[10px] font-bold">
+                        ${step.badge}
+                    </span>
+                    <span class="text-[10px] font-semibold text-[#7A5434]">${step.subtitle}</span>
+                </div>
+                <h2 id="tut-modal-title" class="text-lg font-bold text-[#5C3A21] leading-snug">${step.title}</h2>
+                ${step.illustration}
+                ${step.body}
+            </div>
+        `;
+
+        dotsEl.innerHTML = TUTORIAL_STEPS.map((_, idx) => {
+            const isActive = idx === tutorialState.step;
+            return `
+                <button type="button" onclick="openTutorialModal(${idx})" aria-label="Tutorial Step ${idx + 1}" class="w-7 h-7 rounded-full text-[11px] font-bold font-mono-crisp transition cursor-pointer flex items-center justify-center ${isActive ? 'bg-[#C85A32] text-white border border-[#7A2A10] scale-105' : 'bg-[#F1E7D3] text-[#5C3A21] border border-[#8C6A4A]/60 hover:bg-[#E4D4B5]'}">
+                    ${idx + 1}
+                </button>
+            `;
+        }).join('');
+
+        backBtn.style.visibility = tutorialState.step === 0 ? 'hidden' : 'visible';
+        if (tutorialState.step === TUTORIAL_STEPS.length - 1) {
+            nextBtn.textContent = 'Start Level 1 🚀';
+            nextBtn.className = 'min-h-[42px] px-4 py-2 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white text-xs font-bold border-2 border-[#7A2A10] border-b-4 transition cursor-pointer';
+        } else {
+            nextBtn.textContent = 'Next →';
+            nextBtn.className = 'min-h-[42px] px-4 py-2 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white text-xs font-bold border-2 border-[#1B4226] border-b-4 transition cursor-pointer';
+        }
+    }
+
+    // ==========================================
+    // 4. HIGH-DPI RETINA CONFETTI CANVAS ENGINE
+    // ==========================================
+    const RetinaConfetti = (() => {
+        const canvas = document.getElementById('celebration-canvas');
+        const ctx = canvas ? canvas.getContext('2d') : null;
+        let particles = [];
+        let animId = null;
+
+        function resizeCanvas() {
+            if (!canvas || !ctx) return;
+            const dpr = Math.max(1, window.devicePixelRatio || 1);
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            canvas.width = Math.floor(width * dpr);
+            canvas.height = Math.floor(height * dpr);
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function launch() {
+            if (!canvas || !ctx) return;
+            resizeCanvas();
+            const colors = ['#C58F2A', '#C85A32', '#2E6F40', '#B91C1C', '#5C3A21'];
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            particles = Array.from({ length: 48 }, () => ({
+                x: w * 0.5 + (Math.random() - 0.5) * 140,
+                y: h * 0.35,
+                vx: (Math.random() - 0.5) * 7,
+                vy: -Math.random() * 6 - 2,
+                size: Math.floor(Math.random() * 5) + 5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rot: Math.random() * Math.PI * 2,
+                vrot: (Math.random() - 0.5) * 0.2,
+                life: 85
+            }));
+            if (animId) cancelAnimationFrame(animId);
+            tick();
+        }
+
+        function tick() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.22;
+                p.rot += p.vrot;
+                p.life -= 1;
+
+                ctx.save();
+                ctx.translate(Math.round(p.x), Math.round(p.y));
+                ctx.rotate(p.rot);
+                ctx.globalAlpha = Math.max(0, Math.min(1, p.life / 30));
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+                ctx.restore();
+            });
+            particles = particles.filter(p => p.life > 0);
+            if (particles.length > 0) {
+                animId = requestAnimationFrame(tick);
+            } else {
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        return { launch, resizeCanvas };
+    })();
+
+    // ==========================================
+    // 5. CRISP VECTOR ARTISAN PORTRAITS & DIORAMA
+    // ==========================================
+    function getArtisanPortraitSVG(id, size = 28) {
+        if (id === 'lim') {
+            return `<svg width="${size}" height="${size}" viewBox="0 0 32 32" shape-rendering="geometricPrecision" class="shrink-0 block">
+                <rect x="1" y="1" width="30" height="30" rx="8" fill="#F1E7D3" stroke="#5C3A21" stroke-width="1.5"/>
+                <circle cx="16" cy="18" r="8" fill="#D9A377" stroke="#241B15" stroke-width="1.4"/>
+                <path d="M8 14 C8 9, 24 9, 24 14 Z" fill="#3D2412" stroke="#241B15" stroke-width="1.4"/>
+                <rect x="10.5" y="15.5" width="4.5" height="3.5" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1.2"/>
+                <rect x="17" y="15.5" width="4.5" height="3.5" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1.2"/>
+                <line x1="15" y1="17" x2="17" y2="17" stroke="#241B15" stroke-width="1.2"/>
+                <path d="M13.5 21.5 Q16 23.5 18.5 21.5" stroke="#241B15" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+            </svg>`;
+        }
+        if (id === 'salmah') {
+            return `<svg width="${size}" height="${size}" viewBox="0 0 32 32" shape-rendering="geometricPrecision" class="shrink-0 block">
+                <rect x="1" y="1" width="30" height="30" rx="8" fill="#FCEEE8" stroke="#C85A32" stroke-width="1.5"/>
+                <path d="M7 27 C7 12, 25 12, 25 27 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.4"/>
+                <circle cx="16" cy="17.5" r="6.5" fill="#E0AC82" stroke="#241B15" stroke-width="1.4"/>
+                <circle cx="13.8" cy="16.8" r="1" fill="#241B15"/>
+                <circle cx="18.2" cy="16.8" r="1" fill="#241B15"/>
+                <path d="M14 20 Q16 22 18 20" stroke="#241B15" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+            </svg>`;
+        }
+        return `<svg width="${size}" height="${size}" viewBox="0 0 32 32" shape-rendering="geometricPrecision" class="shrink-0 block">
+            <rect x="1" y="1" width="30" height="30" rx="8" fill="#E6F2EA" stroke="#2E6F40" stroke-width="1.5"/>
+            <circle cx="16" cy="19" r="7.5" fill="#C98F63" stroke="#241B15" stroke-width="1.4"/>
+            <path d="M5 14 L16 6 L27 14 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1.4" stroke-linejoin="round"/>
+            <circle cx="13.5" cy="18" r="1" fill="#241B15"/>
+            <circle cx="18.5" cy="18" r="1" fill="#241B15"/>
+            <path d="M13.5 21.5 Q16 23.5 18.5 21.5" stroke="#241B15" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        </svg>`;
+    }
+
+    function getDioramaTimeOfDay() {
+        const allDone = state.tasks && state.tasks.every(t => t.progress >= 100);
+        if (allDone) {
+            return {
+                label: '🏮 Dusk Glow',
+                skyTop: '#2D223C',
+                skyBottom: '#C85A32',
+                ambientTint: 'rgba(255, 196, 92, 0.14)'
+            };
+        }
+        if (state.isExecuting) {
+            return {
+                label: '🌤️ Golden Afternoon',
+                skyTop: '#F3B45A',
+                skyBottom: '#FCE5B4',
+                ambientTint: 'rgba(246, 180, 68, 0.12)'
+            };
+        }
+        return {
+            label: '☀️ Morning Sun',
+            skyTop: '#CFE8F3',
+            skyBottom: '#FAF0D7',
+            ambientTint: 'rgba(255, 250, 235, 0.04)'
+        };
+    }
+
+    function getMiniArtisanDioramaSVG(artisan, x, y, mode) {
+        const isBurnoutRisk = artisan.stamina < 35;
+        let hatAndHead = '';
+        let tunicColor = '#5C3A21';
+
+        if (artisan.id === 'lim') {
+            tunicColor = '#4B6B88';
+            hatAndHead = `
+                <circle cx="0" cy="-16" r="5" fill="#D9A377" stroke="#241B15" stroke-width="1.1"/>
+                <path d="M-5 -18.5 C-5 -22, 5 -22, 5 -18.5 Z" fill="#3D2412" stroke="#241B15" stroke-width="1"/>
+                <rect x="-3.2" y="-17.2" width="2.6" height="2" rx="0.5" fill="#FFFDF9" stroke="#241B15" stroke-width="0.8"/>
+                <rect x="0.6" y="-17.2" width="2.6" height="2" rx="0.5" fill="#FFFDF9" stroke="#241B15" stroke-width="0.8"/>
+            `;
+        } else if (artisan.id === 'salmah') {
+            tunicColor = '#C85A32';
+            hatAndHead = `
+                <path d="M-5.5 -10 C-5.5 -21, 5.5 -21, 5.5 -10 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.1"/>
+                <circle cx="0" cy="-15.5" r="4.2" fill="#E0AC82" stroke="#241B15" stroke-width="1"/>
+                <circle cx="-1.3" cy="-16" r="0.7" fill="#241B15"/>
+                <circle cx="1.3" cy="-16" r="0.7" fill="#241B15"/>
+            `;
+        } else {
+            tunicColor = '#2E6F40';
+            hatAndHead = `
+                <circle cx="0" cy="-15.5" r="4.8" fill="#C98F63" stroke="#241B15" stroke-width="1.1"/>
+                <path d="M-7.5 -18.5 L0 -23.5 L7.5 -18.5 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1.1" stroke-linejoin="round"/>
+                <circle cx="-1.4" cy="-15.8" r="0.7" fill="#241B15"/>
+                <circle cx="1.4" cy="-15.8" r="0.7" fill="#241B15"/>
+            `;
+        }
+
+        if (mode === 'resting') {
+            return `
+                <g transform="translate(${x}, ${y})">
+                    <rect x="-6" y="-4" width="12" height="2.5" rx="1" fill="#8C582B" stroke="#241B15" stroke-width="1"/>
+                    <line x1="-4" y1="-1.5" x2="-5" y2="5" stroke="#3D2412" stroke-width="1.3"/>
+                    <line x1="4" y1="-1.5" x2="5" y2="5" stroke="#3D2412" stroke-width="1.3"/>
+                    <rect x="-4.5" y="-11" width="9" height="7" rx="2.5" fill="${tunicColor}" stroke="#241B15" stroke-width="1.1"/>
+                    ${hatAndHead}
+                    <rect x="5" y="-12" width="4" height="4.5" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="0.9"/>
+                    <line x1="5" y1="-10" x2="9" y2="-10" stroke="#2E6F40" stroke-width="0.9"/>
+                    <path d="M7 -14 Q6 -16.5 7.5 -19" stroke="#FFFDF9" stroke-width="1.1" fill="none" stroke-linecap="round" class="diorama-steam"/>
+                    <rect x="-14" y="-31" width="28" height="7.5" rx="3.5" fill="#FFF9E6" stroke="#8C6106" stroke-width="0.8"/>
+                    <text x="0" y="-25.5" text-anchor="middle" fill="#5C3A21" font-size="4.8" font-weight="700">☕ REST</text>
+                </g>
+            `;
+        }
+
+        const sweatMarkup = isBurnoutRisk ? `
+            <path d="M7.5 -20 C9 -18, 9 -16.2, 7.5 -16.2 C6 -16.2, 6 -18, 7.5 -20 Z" fill="#38BDF8" stroke="#1E3A8A" stroke-width="0.7"/>
+        ` : '';
+
+        return `
+            <g transform="translate(${x}, ${y})">
+                <g class="artisan-working-bob">
+                    <line x1="-2.2" y1="-4" x2="-2.5" y2="4" stroke="#241B15" stroke-width="1.6" stroke-linecap="round"/>
+                    <line x1="2.2" y1="-4" x2="2.5" y2="4" stroke="#241B15" stroke-width="1.6" stroke-linecap="round"/>
+                    <rect x="-5" y="-11.5" width="10" height="8" rx="3" fill="${tunicColor}" stroke="#241B15" stroke-width="1.1"/>
+                    <line x1="4" y1="-9" x2="9" y2="-12" stroke="#D9A377" stroke-width="1.8" stroke-linecap="round"/>
+                    <circle cx="10.5" cy="-13" r="1.8" fill="#F6D365" class="diorama-sparkle"/>
+                    ${hatAndHead}
+                    ${sweatMarkup}
+                </g>
+            </g>
+        `;
+    }
+
+    function getTaskLayerState(taskId) {
+        const task = state.tasks.find(t => t.id === taskId);
+        if (!task) return 'blueprint';
+        if (task.progress >= 100) return 'done';
+        if (task.assignedArtisanId || task.progress > 0) return 'active';
+        return 'blueprint';
+    }
+
+    function renderDioramaLayerWrapper(layerState, completedSVG, blueprintSVG, activeSparklePos) {
+        if (layerState === 'done') {
+            return `<g class="diorama-layer-done">${completedSVG}</g>`;
+        }
+        const activeClass = layerState === 'active' ? 'diorama-active-blueprint' : '';
+        const sparkle = (layerState === 'active' && activeSparklePos) ? `
+            <g transform="translate(${activeSparklePos.x}, ${activeSparklePos.y})" class="diorama-sparkle">
+                <circle cx="0" cy="0" r="3" fill="#F6D365" stroke="#C85A32" stroke-width="0.9"/>
+                <path d="M-5 0 L5 0 M0 -5 L0 5" stroke="#F6D365" stroke-width="1.1" stroke-linecap="round"/>
+            </g>
+        ` : '';
+        return `
+            <g opacity="${layerState === 'active' ? '0.9' : '0.45'}" class="${activeClass}">
+                ${blueprintSVG}
+            </g>
+            ${sparkle}
+        `;
+    }
+
+    function buildLevel1DioramaSVG() {
+        const s1 = getTaskLayerState('l1-t1');
+        const s2 = getTaskLayerState('l1-t2');
+        const s3 = getTaskLayerState('l1-t3');
+
+        const cartLayer = renderDioramaLayerWrapper(
+            s1,
+            `<rect x="118" y="64" width="114" height="36" rx="3" fill="#8C5227" stroke="#241B15" stroke-width="1.5"/>
+            <line x1="118" y1="76" x2="232" y2="76" stroke="#5C3A21" stroke-width="1.2"/>
+            <line x1="156" y1="64" x2="156" y2="100" stroke="#5C3A21" stroke-width="1.2"/>
+            <line x1="194" y1="64" x2="194" y2="100" stroke="#5C3A21" stroke-width="1.2"/>
+            <rect x="114" y="60" width="122" height="5" rx="2" fill="#D9A76A" stroke="#241B15" stroke-width="1.4"/>
+            <line x1="124" y1="32" x2="124" y2="60" stroke="#3D2412" stroke-width="2.2"/>
+            <line x1="226" y1="32" x2="226" y2="60" stroke="#3D2412" stroke-width="2.2"/>
+            <path d="M110 34 L122 20 L228 20 L240 34 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M134 20 L128 34 L144 34 L148 20 Z M164 20 L162 34 L178 34 L180 20 Z M196 20 L198 34 L214 34 L210 20 Z" fill="#FFFDF5"/>
+            <circle cx="138" cy="103" r="9" fill="#5C3A21" stroke="#241B15" stroke-width="1.5"/>
+            <circle cx="138" cy="103" r="3" fill="#C58F2A" stroke="#241B15" stroke-width="1"/>
+            <circle cx="212" cy="103" r="9" fill="#5C3A21" stroke="#241B15" stroke-width="1.5"/>
+            <circle cx="212" cy="103" r="3" fill="#C58F2A" stroke="#241B15" stroke-width="1"/>
+            <rect x="145" y="80" width="60" height="13" rx="2" fill="#FFF9E6" stroke="#241B15" stroke-width="1"/>
+            <text x="175" y="89" text-anchor="middle" fill="#5C3A21" font-family="Fraunces, serif" font-weight="700" font-size="6.5">KOPI MEI</text>`,
+            `<rect x="118" y="64" width="114" height="36" rx="3" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <path d="M112 34 L122 20 L228 20 L238 34 Z" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <line x1="124" y1="34" x2="124" y2="64" stroke="#5C3A21" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <line x1="226" y1="34" x2="226" y2="64" stroke="#5C3A21" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <circle cx="138" cy="103" r="9" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <circle cx="212" cy="103" r="9" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>`,
+            { x: 175, y: 52 }
+        );
+
+        const stockLayer = renderDioramaLayerWrapper(
+            s2,
+            `<rect x="130" y="48" width="12" height="12" rx="2" fill="#E6F4EA" stroke="#241B15" stroke-width="1.1"/>
+            <rect x="131" y="52" width="10" height="7" fill="#68A357"/>
+            <rect x="130" y="46" width="12" height="2.5" rx="1" fill="#C85A32" stroke="#241B15" stroke-width="0.9"/>
+            <rect x="148" y="53" width="18" height="7" rx="1.5" fill="#FCE7F3" stroke="#241B15" stroke-width="1.1"/>
+            <line x1="148" y1="56.5" x2="166" y2="56.5" stroke="#DB2777" stroke-width="1.5"/>
+            <rect x="206" y="47" width="13" height="13" rx="1.5" fill="#C58F2A" stroke="#241B15" stroke-width="1.1"/>
+            <text x="212.5" y="55.5" text-anchor="middle" fill="#241B15" font-size="5" font-weight="700">KOPI</text>`,
+            `<rect x="130" y="48" width="12" height="12" rx="2" fill="none" stroke="#2E6F40" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <rect x="148" y="53" width="18" height="7" rx="1.5" fill="none" stroke="#2E6F40" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <rect x="206" y="47" width="13" height="13" rx="1.5" fill="none" stroke="#2E6F40" stroke-width="1.2" stroke-dasharray="3 3"/>`,
+            { x: 148, y: 44 }
+        );
+
+        const brewLayer = renderDioramaLayerWrapper(
+            s3,
+            `<path d="M174 60 L176 47 L190 47 L192 60 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M190 52 L197 48" stroke="#C58F2A" stroke-width="2" stroke-linecap="round"/>
+            <path d="M177 46 Q183 41 189 46 Z" fill="#C85A32" stroke="#241B15" stroke-width="1"/>
+            <path d="M181 40 Q179 35 182 30" stroke="#FFFDF9" stroke-width="1.4" fill="none" stroke-linecap="round" class="diorama-steam"/>
+            <path d="M186 41 Q188 36 185 31" stroke="#FFFDF9" stroke-width="1.4" fill="none" stroke-linecap="round" class="diorama-steam-delay"/>
+            <rect x="196" y="55" width="6" height="5" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1"/>
+            <line x1="196" y1="57.5" x2="202" y2="57.5" stroke="#2E6F40" stroke-width="1"/>
+            <circle cx="132" cy="39" r="4" fill="#F6D365" stroke="#B91C1C" stroke-width="1.2"/>
+            <circle cx="218" cy="39" r="4" fill="#F6D365" stroke="#B91C1C" stroke-width="1.2"/>`,
+            `<path d="M174 60 L176 47 L190 47 L192 60 Z" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <circle cx="132" cy="39" r="4" fill="none" stroke="#C85A32" stroke-width="1.1" stroke-dasharray="2 2"/>
+            <circle cx="218" cy="39" r="4" fill="none" stroke="#C85A32" stroke-width="1.1" stroke-dasharray="2 2"/>`,
+            { x: 184, y: 42 }
+        );
+
+        return {
+            backdrop: `
+                <rect x="0" y="0" width="360" height="122" fill="url(#diorama-sky)"/>
+                <rect x="18" y="8" width="324" height="102" fill="#F5E8CE" stroke="#7A5434" stroke-width="1.2"/>
+                <rect x="34" y="24" width="36" height="48" rx="2" fill="#2E6F40" stroke="#241B15" stroke-width="1.3"/>
+                <line x1="52" y1="24" x2="52" y2="72" stroke="#241B15" stroke-width="1.2"/>
+                <path d="M38 32 H48 M38 38 H48 M38 44 H48 M38 50 H48 M56 32 H66 M56 38 H66 M56 44 H66 M56 50 H66" stroke="#A7F3D0" stroke-width="1.1"/>
+                <path d="M294 94 L297 108 L311 108 L314 94 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.2"/>
+                <path d="M304 94 Q292 80 286 84 M304 94 Q304 75 304 72 M304 94 Q316 80 322 84" stroke="#2E6F40" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <rect x="0" y="0" width="22" height="112" fill="#E6D2B1" stroke="#5C3A21" stroke-width="1.4"/>
+                <rect x="338" y="0" width="22" height="112" fill="#E6D2B1" stroke="#5C3A21" stroke-width="1.4"/>
+                <path d="M22 22 Q54 4 86 4 L274 4 Q306 4 338 22 L338 0 L22 0 Z" fill="#D9BC91" stroke="#5C3A21" stroke-width="1.4"/>
+                <rect x="0" y="108" width="360" height="14" fill="#B85332" stroke="#3D2412" stroke-width="1.3"/>
+            `,
+            layers: cartLayer + stockLayer + brewLayer,
+            stationCoords: {
+                'l1-t1': { x: 102, y: 105 },
+                'l1-t2': { x: 248, y: 105 },
+                'l1-t3': { x: 175, y: 105 }
+            },
+            restSlots: [{ x: 52, y: 104 }, { x: 280, y: 104 }, { x: 324, y: 104 }]
+        };
+    }
+
+    function buildLevel2DioramaSVG() {
+        const s1 = getTaskLayerState('l2-t1');
+        const s2 = getTaskLayerState('l2-t2');
+        const s3 = getTaskLayerState('l2-t3');
+        const s4 = getTaskLayerState('l2-t4');
+        const s5 = getTaskLayerState('l2-t5');
+        const s6 = getTaskLayerState('l2-t6');
+
+        const frameLayer = renderDioramaLayerWrapper(
+            s1,
+            `<rect x="108" y="66" width="144" height="42" rx="2" fill="#A6743E" stroke="#241B15" stroke-width="1.5"/>
+            <path d="M114 72 H246 M114 80 H246 M114 88 H246 M114 96 H246" stroke="#7A5024" stroke-width="1.1"/>
+            <rect x="112" y="28" width="6" height="80" rx="2" fill="#C58F2A" stroke="#241B15" stroke-width="1.3"/>
+            <rect x="242" y="28" width="6" height="80" rx="2" fill="#C58F2A" stroke="#241B15" stroke-width="1.3"/>
+            <rect x="104" y="63" width="152" height="5" rx="2" fill="#E3B96B" stroke="#241B15" stroke-width="1.3"/>`,
+            `<rect x="108" y="66" width="144" height="42" rx="2" fill="none" stroke="#8C6106" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <line x1="115" y1="28" x2="115" y2="108" stroke="#8C6106" stroke-width="1.5" stroke-dasharray="3 3"/>
+            <line x1="245" y1="28" x2="245" y2="108" stroke="#8C6106" stroke-width="1.5" stroke-dasharray="3 3"/>`,
+            { x: 180, y: 74 }
+        );
+
+        const canopyLayer = renderDioramaLayerWrapper(
+            s2,
+            `<path d="M96 32 L114 16 L246 16 L264 32 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M104 32 H256 V36 H104 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1"/>`,
+            `<path d="M96 32 L114 16 L246 16 L264 32 Z" fill="none" stroke="#C85A32" stroke-width="1.3" stroke-dasharray="3 3"/>`,
+            { x: 180, y: 22 }
+        );
+
+        const glassCaseLayer = renderDioramaLayerWrapper(
+            s3,
+            `<rect x="122" y="45" width="48" height="18" rx="1.5" fill="#E0F2FE" fill-opacity="0.85" stroke="#241B15" stroke-width="1.2"/>
+            <line x1="122" y1="54" x2="170" y2="54" stroke="#5C3A21" stroke-width="1.1"/>
+            <line x1="146" y1="45" x2="146" y2="63" stroke="#5C3A21" stroke-width="1.1"/>`,
+            `<rect x="122" y="45" width="48" height="18" rx="1.5" fill="none" stroke="#2B5783" stroke-width="1.2" stroke-dasharray="3 3"/>`,
+            { x: 146, y: 50 }
+        );
+
+        const kuihLayer = renderDioramaLayerWrapper(
+            s4,
+            `<rect x="126" y="49" width="16" height="4.5" rx="1" fill="#F472B6" stroke="#241B15" stroke-width="0.8"/>
+            <rect x="150" y="49" width="16" height="4.5" rx="1" fill="#4ADE80" stroke="#241B15" stroke-width="0.8"/>
+            <rect x="126" y="57.5" width="16" height="4.5" rx="1" fill="#FBBF24" stroke="#241B15" stroke-width="0.8"/>
+            <rect x="184" y="47" width="16" height="16" rx="2" fill="#C58F2A" stroke="#241B15" stroke-width="1.2"/>
+            <path d="M192 44 Q190 39 193 35" stroke="#FFFDF9" stroke-width="1.3" fill="none" stroke-linecap="round" class="diorama-steam"/>`,
+            `<rect x="184" y="47" width="16" height="16" rx="2" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>`,
+            { x: 192, y: 44 }
+        );
+
+        const lanternLayer = renderDioramaLayerWrapper(
+            s5,
+            `<line x1="18" y1="14" x2="342" y2="14" stroke="#241B15" stroke-width="1.2"/>
+            <ellipse cx="48" cy="22" rx="6.5" ry="8" fill="#DC2626" stroke="#241B15" stroke-width="1.1"/>
+            <rect x="45" y="13" width="6" height="2" fill="#F6D365"/>
+            <ellipse cx="86" cy="22" rx="6.5" ry="8" fill="#F59E0B" stroke="#241B15" stroke-width="1.1"/>
+            <rect x="83" y="13" width="6" height="2" fill="#DC2626"/>
+            <ellipse cx="274" cy="22" rx="6.5" ry="8" fill="#F59E0B" stroke="#241B15" stroke-width="1.1"/>
+            <rect x="271" y="13" width="6" height="2" fill="#DC2626"/>
+            <ellipse cx="312" cy="22" rx="6.5" ry="8" fill="#DC2626" stroke="#241B15" stroke-width="1.1"/>
+            <rect x="309" y="13" width="6" height="2" fill="#F6D365"/>`,
+            `<ellipse cx="48" cy="22" rx="6.5" ry="8" fill="none" stroke="#DC2626" stroke-width="1.1" stroke-dasharray="2 2"/>
+            <ellipse cx="86" cy="22" rx="6.5" ry="8" fill="none" stroke="#F59E0B" stroke-width="1.1" stroke-dasharray="2 2"/>
+            <ellipse cx="274" cy="22" rx="6.5" ry="8" fill="none" stroke="#F59E0B" stroke-width="1.1" stroke-dasharray="2 2"/>
+            <ellipse cx="312" cy="22" rx="6.5" ry="8" fill="none" stroke="#DC2626" stroke-width="1.1" stroke-dasharray="2 2"/>`,
+            { x: 274, y: 22 }
+        );
+
+        const menuBoardLayer = renderDioramaLayerWrapper(
+            s6,
+            `<rect x="210" y="42" width="26" height="21" rx="2" fill="#243028" stroke="#5C3A21" stroke-width="1.5"/>
+            <line x1="214" y1="47" x2="232" y2="47" stroke="#F6D365" stroke-width="1.2"/>
+            <line x1="214" y1="52" x2="229" y2="52" stroke="#FFFDF9" stroke-width="1"/>
+            <line x1="214" y1="57" x2="231" y2="57" stroke="#A7F3D0" stroke-width="1"/>`,
+            `<rect x="210" y="42" width="26" height="21" rx="2" fill="none" stroke="#2E6F40" stroke-width="1.2" stroke-dasharray="3 3"/>`,
+            { x: 223, y: 48 }
+        );
+
+        return {
+            backdrop: `
+                <rect x="0" y="0" width="360" height="122" fill="#3B2838"/>
+                <rect x="6" y="16" width="76" height="92" fill="#6E472B" stroke="#241B15" stroke-width="1.3"/>
+                <rect x="18" y="34" width="22" height="36" fill="#FDE68A" stroke="#241B15" stroke-width="1.2"/>
+                <rect x="48" y="34" width="22" height="36" fill="#FDE68A" stroke="#241B15" stroke-width="1.2"/>
+                <rect x="278" y="16" width="76" height="92" fill="#6E472B" stroke="#241B15" stroke-width="1.3"/>
+                <rect x="290" y="34" width="22" height="36" fill="#FDE68A" stroke="#241B15" stroke-width="1.2"/>
+                <rect x="320" y="34" width="22" height="36" fill="#FDE68A" stroke="#241B15" stroke-width="1.2"/>
+                <rect x="0" y="108" width="360" height="14" fill="#52463E" stroke="#241B15" stroke-width="1.3"/>
+            `,
+            layers: frameLayer + canopyLayer + glassCaseLayer + kuihLayer + lanternLayer + menuBoardLayer,
+            stationCoords: {
+                'l2-t1': { x: 96, y: 105 },
+                'l2-t2': { x: 112, y: 105 },
+                'l2-t3': { x: 146, y: 105 },
+                'l2-t4': { x: 192, y: 105 },
+                'l2-t5': { x: 266, y: 105 },
+                'l2-t6': { x: 226, y: 105 }
+            },
+            restSlots: [{ x: 40, y: 104 }, { x: 318, y: 104 }, { x: 74, y: 104 }]
+        };
+    }
+
+    function buildLevel3DioramaSVG() {
+        const s1 = getTaskLayerState('t1');
+        const s2 = getTaskLayerState('t2');
+        const s3 = getTaskLayerState('t3');
+        const s4 = getTaskLayerState('t4');
+        const s5 = getTaskLayerState('t5');
+        const s6 = getTaskLayerState('t6');
+        const hasStage = state.tasks.some(t => t.id === 't-stage');
+        const sStage = hasStage ? getTaskLayerState('t-stage') : null;
+
+        const shuttersLayer = renderDioramaLayerWrapper(
+            s1,
+            `<rect x="30" y="34" width="44" height="44" rx="2" fill="#2E6F40" stroke="#241B15" stroke-width="1.4"/>
+            <line x1="52" y1="34" x2="52" y2="78" stroke="#241B15" stroke-width="1.3"/>
+            <path d="M34 42 H48 M34 48 H48 M34 54 H48 M34 60 H48 M34 66 H48 M56 42 H70 M56 48 H70 M56 54 H70 M56 60 H70 M56 66 H70" stroke="#A7F3D0" stroke-width="1.2"/>
+            <rect x="84" y="34" width="22" height="36" rx="1.5" fill="#9E2A2B" stroke="#241B15" stroke-width="1.2"/>
+            <path d="M88 40 L95 46 L102 40 M88 52 L95 58 L102 52 M88 64 L95 68 L102 64" stroke="#F6D365" stroke-width="1.3" fill="none"/>`,
+            `<rect x="30" y="34" width="44" height="44" rx="2" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <path d="M36 44 L44 52 L39 62" stroke="#8C6A4A" stroke-width="1" fill="none"/>`,
+            { x: 52, y: 54 }
+        );
+
+        const awningLayer = renderDioramaLayerWrapper(
+            s2,
+            `<path d="M204 31 L332 31 L338 43 L198 43 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M216 31 L213 43 M234 31 L232 43 M252 31 L251 43 M270 31 L270 43 M288 31 L289 43 M306 31 L308 43 M322 31 L325 43" stroke="#5C3A21" stroke-width="1.1"/>`,
+            `<path d="M204 31 L332 31 L338 43 L198 43 Z" fill="none" stroke="#8C6106" stroke-width="1.2" stroke-dasharray="3 3"/>`,
+            { x: 268, y: 36 }
+        );
+
+        const counterLayer = renderDioramaLayerWrapper(
+            s3,
+            `<rect x="210" y="70" width="114" height="38" rx="2" fill="#E6F4EA" stroke="#241B15" stroke-width="1.4"/>
+            <rect x="207" y="66" width="120" height="4.5" rx="1.5" fill="#5C3A21" stroke="#241B15" stroke-width="1.3"/>
+            <path d="M210 82 H324 M210 95 H324 M233 70 V108 M256 70 V108 M279 70 V108 M302 70 V108" stroke="#2E6F40" stroke-width="1"/>
+            <circle cx="221.5" cy="76" r="2.5" fill="#C85A32"/>
+            <circle cx="244.5" cy="76" r="2.5" fill="#C58F2A"/>
+            <circle cx="267.5" cy="76" r="2.5" fill="#C85A32"/>
+            <circle cx="290.5" cy="76" r="2.5" fill="#C58F2A"/>
+            <circle cx="313.5" cy="76" r="2.5" fill="#C85A32"/>`,
+            `<rect x="210" y="70" width="114" height="38" rx="2" fill="none" stroke="#2E6F40" stroke-width="1.3" stroke-dasharray="3 3"/>`,
+            { x: 267, y: 74 }
+        );
+
+        const brewStationLayer = renderDioramaLayerWrapper(
+            s4,
+            `<rect x="224" y="51" width="18" height="15" rx="2" fill="#C58F2A" stroke="#241B15" stroke-width="1.2"/>
+            <path d="M242 55 L249 51" stroke="#C58F2A" stroke-width="2" stroke-linecap="round"/>
+            <path d="M230 48 Q228 42 231 37" stroke="#FFFDF9" stroke-width="1.4" fill="none" stroke-linecap="round" class="diorama-steam"/>
+            <path d="M236 49 Q238 43 235 38" stroke="#FFFDF9" stroke-width="1.4" fill="none" stroke-linecap="round" class="diorama-steam-delay"/>
+            <rect x="256" y="60" width="6" height="6" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1"/>
+            <rect x="266" y="60" width="6" height="6" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1"/>
+            <rect x="284" y="58" width="22" height="8" rx="1.5" fill="#FCE7F3" stroke="#241B15" stroke-width="1.1"/>
+            <line x1="284" y1="62" x2="306" y2="62" stroke="#2E6F40" stroke-width="1.6"/>`,
+            `<rect x="224" y="51" width="18" height="15" rx="2" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <rect x="284" y="58" width="22" height="8" rx="1.5" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>`,
+            { x: 235, y: 50 }
+        );
+
+        const seatingLayer = renderDioramaLayerWrapper(
+            s5,
+            `<ellipse cx="136" cy="88" rx="15" ry="4" fill="#FFFDF9" stroke="#241B15" stroke-width="1.3"/>
+            <line x1="136" y1="92" x2="136" y2="108" stroke="#3D2412" stroke-width="2.2"/>
+            <line x1="128" y1="108" x2="144" y2="108" stroke="#3D2412" stroke-width="2"/>
+            <path d="M114 82 Q114 75 120 75 L120 93 L112 93 Z" fill="#C48B45" stroke="#241B15" stroke-width="1.2"/>
+            <line x1="113" y1="93" x2="112" y2="108" stroke="#3D2412" stroke-width="1.4"/>
+            <line x1="119" y1="93" x2="120" y2="108" stroke="#3D2412" stroke-width="1.4"/>
+            <path d="M158 82 Q158 75 152 75 L152 93 L160 93 Z" fill="#C48B45" stroke="#241B15" stroke-width="1.2"/>
+            <line x1="153" y1="93" x2="152" y2="108" stroke="#3D2412" stroke-width="1.4"/>
+            <line x1="159" y1="93" x2="160" y2="108" stroke="#3D2412" stroke-width="1.4"/>`,
+            `<ellipse cx="136" cy="88" rx="15" ry="4" fill="none" stroke="#5C3A21" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <rect x="112" y="77" width="8" height="28" fill="none" stroke="#5C3A21" stroke-width="1.1" stroke-dasharray="2 2"/>
+            <rect x="152" y="77" width="8" height="28" fill="none" stroke="#5C3A21" stroke-width="1.1" stroke-dasharray="2 2"/>`,
+            { x: 136, y: 82 }
+        );
+
+        const signboardLayer = renderDioramaLayerWrapper(
+            s6,
+            `<rect x="114" y="6" width="132" height="19" rx="3" fill="#3D2412" stroke="#C58F2A" stroke-width="1.8"/>
+            <text x="180" y="18.5" text-anchor="middle" fill="#F6D365" font-family="Fraunces, serif" font-weight="700" font-size="8.2" letter-spacing="0.6">CARPENTER ST. KOPITIAM</text>`,
+            `<rect x="114" y="6" width="132" height="19" rx="3" fill="none" stroke="#C58F2A" stroke-width="1.3" stroke-dasharray="3 3"/>`,
+            { x: 180, y: 15 }
+        );
+
+        const stageLayer = hasStage ? renderDioramaLayerWrapper(
+            sStage,
+            `<rect x="36" y="96" width="66" height="12" rx="2" fill="#8C5227" stroke="#241B15" stroke-width="1.3"/>
+            <rect x="44" y="8" width="54" height="14" rx="4" fill="#3B0764" stroke="#F472B6" stroke-width="1.4"/>
+            <text x="71" y="17.5" text-anchor="middle" fill="#F9A8D4" font-size="6.2" font-weight="700">🎤 STAGE</text>`,
+            `<rect x="36" y="96" width="66" height="12" rx="2" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>`,
+            { x: 68, y: 92 }
+        ) : '';
+
+        return {
+            backdrop: `
+                <rect x="0" y="0" width="360" height="122" fill="url(#diorama-sky)"/>
+                <rect x="14" y="14" width="332" height="94" fill="#F7ECD7" stroke="#5C3A21" stroke-width="1.4"/>
+                <rect x="174" y="25" width="12" height="83" fill="#E3CEAA" stroke="#5C3A21" stroke-width="1.3"/>
+                <path d="M14 28 H346" stroke="#5C3A21" stroke-width="2"/>
+                <rect x="0" y="0" width="16" height="112" fill="#D9BC91" stroke="#3D2412" stroke-width="1.4"/>
+                <rect x="344" y="0" width="16" height="112" fill="#D9BC91" stroke="#3D2412" stroke-width="1.4"/>
+                <path d="M22 95 L25 108 L35 108 L38 95 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.1"/>
+                <path d="M30 95 Q21 82 17 86 M30 95 Q30 78 30 75 M30 95 Q39 82 43 86" stroke="#2E6F40" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                <rect x="0" y="108" width="360" height="14" fill="#A84A2C" stroke="#3D2412" stroke-width="1.3"/>
+            `,
+            layers: shuttersLayer + awningLayer + counterLayer + brewStationLayer + seatingLayer + signboardLayer + stageLayer,
+            stationCoords: {
+                't1': { x: 52, y: 104 },
+                't2': { x: 312, y: 104 },
+                't3': { x: 244, y: 104 },
+                't4': { x: 278, y: 104 },
+                't5': { x: 136, y: 104 },
+                't6': { x: 180, y: 104 },
+                't-stage': { x: 74, y: 96 }
+            },
+            restSlots: [{ x: 88, y: 104 }, { x: 162, y: 104 }, { x: 332, y: 104 }]
+        };
+    }
+
+    function renderDiorama() {
+        const container = document.getElementById('diorama-viewport');
+        if (!container) return;
+
+        const tod = getDioramaTimeOfDay();
+        const doneCount = state.tasks.filter(t => t.progress >= 100).length;
+        const totalCount = Math.max(1, state.tasks.length);
+        const pct = Math.round((doneCount / totalCount) * 100);
+
+        let scene;
+        if (state.level === 1) {
+            scene = buildLevel1DioramaSVG();
+        } else if (state.level === 2) {
+            scene = buildLevel2DioramaSVG();
+        } else {
+            scene = buildLevel3DioramaSVG();
+        }
+
+        let artisansMarkup = '';
+        state.artisans.forEach((art, idx) => {
+            if (art.resting) {
+                const slot = scene.restSlots[idx % scene.restSlots.length];
+                artisansMarkup += getMiniArtisanDioramaSVG(art, slot.x, slot.y, 'resting');
+            } else if (art.assignedTaskId) {
+                const task = state.tasks.find(t => t.id === art.assignedTaskId);
+                if (task && task.progress < 100) {
+                    const pos = scene.stationCoords[task.id] || scene.restSlots[idx % scene.restSlots.length];
+                    artisansMarkup += getMiniArtisanDioramaSVG(art, pos.x, pos.y, 'working');
+                }
+            }
+        });
+
+        const phaseBadgeText = (state.level === 1 && state.phase === 'charter')
+            ? '📐 Blueprint • 0% Built'
+            : `🏗️ Scope Built: ${pct}%`;
+
+        container.innerHTML = `
+            <svg id="diorama-svg-el" viewBox="0 0 360 122" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision" class="w-full block">
+                <defs>
+                    <linearGradient id="diorama-sky" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="${tod.skyTop}"/>
+                        <stop offset="100%" stop-color="${tod.skyBottom}"/>
+                    </linearGradient>
+                </defs>
+                ${scene.backdrop}
+                ${scene.layers}
+                ${artisansMarkup}
+                <rect x="0" y="0" width="360" height="122" fill="${tod.ambientTint}" pointer-events="none"/>
+            </svg>
+
+            <div class="absolute top-1.5 left-2 right-2 flex items-center justify-between pointer-events-none">
+                <span class="px-2 py-0.5 rounded-md bg-[#241B15]/85 text-[#FFFDF8] text-[10px] font-bold font-mono-crisp border border-[#C58F2A]">
+                    ${phaseBadgeText}
+                </span>
+                <span class="px-2 py-0.5 rounded-md bg-[#FFFDF9]/95 text-[#3D2412] text-[10px] font-bold border border-[#8C6A4A]">
+                    ${tod.label}
+                </span>
+            </div>
+        `;
+
+        renderWideBriefCard();
+    }
+
+    function renderWideBriefCard() {
+        const card = document.getElementById('wide-brief-card');
+        if (!card) return;
+
+        if (state.level === 1) {
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 1 • Initiating Phase</span>
+                    <span class="text-[10px] font-bold font-mono-crisp text-[#5C3A21]">Day ${state.day}/${state.maxDays}</span>
+                </div>
+                <div class="text-xs font-bold text-[#241B15]">Main Bazaar Five-Foot Way Coffee Cart</div>
+                <p class="text-[11px] text-[#5A4D41] mt-1 leading-relaxed">
+                    Define <strong>Objective</strong>, <strong>Constraints</strong>, <strong>Success Criteria</strong>, and <strong>Out of Scope</strong> in the Project Charter before approving site work.
+                </p>
+            `;
+        } else if (state.level === 2) {
+            const unpacked = state.workPackages.filter(w => w.decomposed).length;
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 2 • Scope Planning</span>
+                    <span class="text-[10px] font-bold font-mono-crisp text-[#2E6F40]">WBS: ${unpacked}/${state.workPackages.length} Unpacked</span>
+                </div>
+                <div class="text-xs font-bold text-[#241B15]">Siniawan Night Market Heritage Stall</div>
+                <p class="text-[11px] text-[#5A4D41] mt-1 leading-relaxed">
+                    Apply the <strong>WBS 100% Rule</strong>: decompose every high-level Work Package into concrete, assignable 1-day Tasks before starting execution.
+                </p>
+            `;
+        } else {
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 3 • Schedule, Risk &amp; Control</span>
+                    <span class="text-[10px] font-bold font-mono-crisp text-[#5C3A21]">Day ${state.day}/${state.maxDays}</span>
+                </div>
+                <div class="text-xs font-bold text-[#241B15]">Carpenter Street Kopitiam Restoration</div>
+                <p class="text-[11px] text-[#5A4D41] mt-1 leading-relaxed">
+                    Follow <strong>Dependencies</strong> along the <strong>Critical Path</strong>, guard your <strong>Contingency Reserve (RM ${state.contingencyReserve})</strong>, and protect Scope from <strong>Scope Creep</strong>.
+                </p>
+            `;
+        }
+    }
+
+    // ==========================================
+    // 6. COZY WEB AUDIO API SOUND ENGINE
+    // ==========================================
+    const SoundFX = (() => {
+        let ctx = null;
+        let muted = false;
+
+        function init() {
+            if (!ctx) {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) ctx = new AudioCtx();
+            }
+            if (ctx && ctx.state === 'suspended') ctx.resume();
+        }
+
+        function playTone(freq, type, duration, vol = 0.12, delay = 0) {
+            if (muted) return;
+            init();
+            if (!ctx) return;
+
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+
+            gain.gain.setValueAtTime(0.001, ctx.currentTime + delay);
+            gain.gain.exponentialRampToValueAtTime(vol, ctx.currentTime + delay + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + duration);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + delay);
+            osc.stop(ctx.currentTime + delay + duration + 0.02);
+        }
+
+        return {
+            woodClick() {
+                playTone(220, 'triangle', 0.09, 0.14);
+                playTone(140, 'sine', 0.07, 0.1, 0.02);
+            },
+            authorizeSeal() {
+                playTone(150, 'triangle', 0.12, 0.22);
+                playTone(95, 'sine', 0.16, 0.25, 0.02);
+                playTone(587.33, 'sine', 0.28, 0.1, 0.08);
+            },
+            coffeeClink() {
+                playTone(1320, 'sine', 0.18, 0.08);
+                playTone(1760, 'sine', 0.22, 0.06, 0.05);
+            },
+            taskComplete() {
+                playTone(523.25, 'sine', 0.2, 0.1, 0);
+                playTone(659.25, 'sine', 0.2, 0.1, 0.09);
+                playTone(783.99, 'triangle', 0.35, 0.12, 0.18);
+            },
+            brassBalance() {
+                playTone(440, 'sine', 0.3, 0.07);
+                playTone(554.37, 'sine', 0.35, 0.06, 0.08);
+            },
+            alertPop() {
+                playTone(392, 'triangle', 0.16, 0.11);
+                playTone(493.88, 'triangle', 0.22, 0.11, 0.1);
+            },
+            toggleMute() {
+                muted = !muted;
+                return muted;
+            }
+        };
+    })();
+
+    function toggleMute() {
+        const isMuted = SoundFX.toggleMute();
+        document.getElementById('btn-mute').textContent = isMuted ? '🔇' : '🔊';
+    }
+
+    // ==========================================
+    // 7. FISHER-YATES SCRAMBLER (GUARANTEED NON-SEQUENTIAL)
+    // ==========================================
+    function scrambleStatements(items) {
+        const arr = [...items];
+        const originalOrder = items.map(i => i.id).join(',');
+        let attempts = 0;
+        do {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            attempts++;
+        } while (arr.map(i => i.id).join(',') === originalOrder && attempts < 10);
+        return arr;
+    }
+
+    // ==========================================
+    // 8. THREE SEQUENTIAL LIFECYCLE LEVELS
+    // ==========================================
+    let currentLevel = 1;
+    let completedLevels = { 1: false, 2: false, 3: false };
+    let state = {};
+
+    function createLevelState(lvl) {
+        if (lvl === 1) {
+            const rawStatements = [
+                {
+                    id: 'st-obj',
+                    targetBucket: 'objective',
+                    text: '“Build a portable teak coffee cart to serve Kopi-O, Teh C, and Roti Kahwin on Main Bazaar’s five-foot way.”',
+                    shortLabel: 'Portable Teak Coffee & Toast Cart'
+                },
+                {
+                    id: 'st-con',
+                    targetBucket: 'constraints',
+                    text: '“Keep total spending strictly within RM 350 and complete setup within 2 days.”',
+                    shortLabel: 'Budget Cap: RM 350 • Schedule: 2 Days'
+                },
+                {
+                    id: 'st-suc',
+                    targetBucket: 'success',
+                    text: '“All 3 core menu items pass a taste and quality inspection before Friday morning opening.”',
+                    shortLabel: '3 Core Items Quality-Checked'
+                },
+                {
+                    id: 'st-out',
+                    targetBucket: 'outOfScope',
+                    text: '“Do NOT build a full Sarawak Laksa soup kitchen or neon signage.”',
+                    shortLabel: 'Excluded: Laksa Kitchen & Neon Sign'
+                }
+            ];
+
+            return {
+                level: 1,
+                subtitle: 'Level 1 • Initiating: Main Bazaar Coffee Cart',
+                phase: 'charter', // 'charter' -> 'execution'
+                day: 1,
+                maxDays: 2,
+                budget: 350,
+                initialBudget: 350,
+                contingencyReserve: 0,
+                tarpBought: false,
+                hasWeatherRisk: false,
+                goodwillStars: 0,
+                isExecuting: false,
+                retroChoice: { wentWell: 0, toImprove: 0 },
+
+                selectedStatementId: null,
+                bouncedStatementId: null,
+                charterAuthorized: false,
+                statements: scrambleStatements(rawStatements),
+                charterBuckets: {
+                    objective: { label: 'Objective', icon: '🎯', hint: 'Core project deliverable', maxItems: 1, filledIds: [] },
+                    constraints: { label: 'Constraints', icon: '⏳', hint: 'Budget & Schedule limits', maxItems: 1, filledIds: [] },
+                    success: { label: 'Success Criteria', icon: '✅', hint: 'Definition of Done', maxItems: 1, filledIds: [] },
+                    outOfScope: { label: 'Out of Scope', icon: '🚧', hint: 'Explicitly excluded', maxItems: 1, filledIds: [] }
+                },
+
+                workPackages: [
+                    {
+                        id: 'l1-wp',
+                        title: 'Approved Coffee Cart Work Package',
+                        subtitle: '3 core tasks • RM 350 budget cap • 2-day schedule',
+                        icon: '🛒',
+                        decomposed: true,
+                        taskIds: ['l1-t1', 'l1-t2', 'l1-t3']
+                    }
+                ],
+                tasks: [
+                    {
+                        id: 'l1-t1',
+                        workPackageId: 'l1-wp',
+                        title: 'Assemble Folding Teak Cart',
+                        cost: 110,
+                        skill: 'Carpentry',
+                        outdoor: false,
+                        deps: [],
+                        progress: 0,
+                        paid: false,
+                        assignedArtisanId: null,
+                        flavor: 'assembles the folding teak frame and striped awning'
+                    },
+                    {
+                        id: 'l1-t2',
+                        workPackageId: 'l1-wp',
+                        title: 'Stock Coffee Beans & Kaya',
+                        cost: 70,
+                        skill: 'Culinary',
+                        outdoor: false,
+                        deps: [],
+                        progress: 0,
+                        paid: false,
+                        assignedArtisanId: null,
+                        flavor: 'stocks liberica coffee beans, pandan kaya, and toast loaves'
+                    },
+                    {
+                        id: 'l1-t3',
+                        workPackageId: 'l1-wp',
+                        title: 'Brew & Quality-Check 3 Drinks',
+                        cost: 50,
+                        skill: 'Culinary',
+                        outdoor: false,
+                        deps: ['l1-t1', 'l1-t2'],
+                        progress: 0,
+                        paid: false,
+                        assignedArtisanId: null,
+                        flavor: 'brews Kopi-O, pulls Teh C, and verifies Success Criteria'
+                    }
+                ],
+                artisans: [
+                    { id: 'lim', name: 'Uncle Lim', role: 'Carpenter', skill: 'Carpentry', stamina: 100, assignedTaskId: null, resting: false },
+                    { id: 'salmah', name: 'Kak Salmah', role: 'Culinary', skill: 'Culinary', stamina: 100, assignedTaskId: null, resting: false }
+                ]
+            };
+        }
+
+        if (lvl === 2) {
+            return {
+                level: 2,
+                subtitle: 'Level 2 • Scope Planning: Siniawan Night Market',
+                phase: 'execution',
+                day: 1,
+                maxDays: 3,
+                budget: 450,
+                initialBudget: 450,
+                contingencyReserve: 0,
+                tarpBought: false,
+                hasWeatherRisk: false,
+                goodwillStars: 0,
+                isExecuting: false,
+                retroChoice: { wentWell: 0, toImprove: 0 },
+
+                signedCharterSummary: {
+                    objective: 'Set up a heritage Kuih & Teh Tarik stall at Siniawan Night Market',
+                    constraints: 'RM 450 Budget • 3 Days Schedule',
+                    rule: 'WBS 100% Rule: Decompose all 3 Work Packages into 6 concrete 1-day Tasks before Start Workday unlocks'
+                },
+
+                workPackages: [
+                    {
+                        id: 'l2-wp-1',
+                        title: 'Work Package 1: Timber Frame & Canopy',
+                        subtitle: '2 concrete 1-day Tasks inside',
+                        icon: '🎋',
+                        decomposed: false,
+                        taskIds: ['l2-t1', 'l2-t2']
+                    },
+                    {
+                        id: 'l2-wp-2',
+                        title: 'Work Package 2: Serving Counter & Display',
+                        subtitle: '2 concrete 1-day Tasks inside',
+                        icon: '🥮',
+                        decomposed: false,
+                        taskIds: ['l2-t3', 'l2-t4']
+                    },
+                    {
+                        id: 'l2-wp-3',
+                        title: 'Work Package 3: Lighting & Signage',
+                        subtitle: '2 concrete 1-day Tasks inside',
+                        icon: '🏮',
+                        decomposed: false,
+                        taskIds: ['l2-t5', 'l2-t6']
+                    }
+                ],
+
+                tasks: [
+                    {
+                        id: 'l2-t1',
+                        workPackageId: 'l2-wp-1',
+                        title: 'Cut & Lash Timber Frame',
+                        cost: 70,
+                        skill: 'Carpentry',
+                        outdoor: false,
+                        deps: [],
+                        progress: 0,
+                        paid: false,
+                        assignedArtisanId: null,
+                        flavor: 'cuts and lashes cured bamboo and timber poles for the stall frame'
+                    },
+                    {
+                        id: 'l2-t2',
+                        workPackageId: 'l2-wp-1',
+                        title: 'Install Pitched Canopy Roof',
+                        cost: 65,
+                        skill: 'Carpentry',
+                        outdoor: false,
+                        deps: [],
+                        progress: 0,
+                        paid: false,
+                        assignedArtisanId: null,
+                        flavor: 'secures the weatherproof canopy roof onto the timber posts'
+                    },
+                    {
+                        id: 'l2-t3',
+                        workPackageId: 'l2-wp-2',
+                        title: 'Deliver Glass Display Counter',
+                        cost: 75,
+                        skill: 'Logistics',
+                        outdoor: false,
+                        deps: [],
+                        progress: 0,
+                        paid: false,
+                        assignedArtisanId: null,
+                        flavor: 'transports wooden-framed glass display cases from Bau town'
+                    },
+                    {
+                        id: 'l2-t4',
+                        workPackageId: 'l2-wp-2',
+                        title: 'Arrange Kek Lapis & Tea Samovar',
+                        cost: 65,
+                        skill: 'Culinary',
+                        outdoor: false,
+                        deps: [],
+                        progress: 0,
+                        paid: false,
+                        assignedArtisanId: null,
+                        flavor: 'arranges steamed pandan kuih and brass teh tarik samovar'
+                    },
+                    {
+                        id: 'l2-t5',
+                        workPackageId: 'l2-wp-3',
+                        title: 'String Night-Market Lanterns',
+                        cost: 55,
+                        skill: 'Logistics',
+                        outdoor: false,
+                        deps: [],
+                        progress: 0,
+                        paid: false,
+                        assignedArtisanId: null,
+                        flavor: 'strings warm red and gold lanterns across the market street'
+                    },
+                    {
+                        id: 'l2-t6',
+                        workPackageId: 'l2-wp-3',
+                        title: 'Letter Wooden Menu Signage',
+                        cost: 50,
+                        skill: 'Culinary',
+                        outdoor: false,
+                        deps: [],
+                        progress: 0,
+                        paid: false,
+                        assignedArtisanId: null,
+                        flavor: 'hand-letters the evening menu items on the wooden signage'
+                    }
+                ],
+
+                artisans: [
+                    { id: 'lim', name: 'Uncle Lim', role: 'Carpenter', skill: 'Carpentry', stamina: 100, assignedTaskId: null, resting: false },
+                    { id: 'salmah', name: 'Kak Salmah', role: 'Culinary', skill: 'Culinary', stamina: 100, assignedTaskId: null, resting: false },
+                    { id: 'danny', name: 'Danny', role: 'Logistics', skill: 'Logistics', stamina: 100, assignedTaskId: null, resting: false }
+                ]
+            };
+        }
+
+        // Level 3: Schedule, Dependencies, Critical Path & Control (Carpenter Street Kopitiam)
+        return {
+            level: 3,
+            subtitle: 'Level 3 • Schedule & Control: Carpenter St. Kopitiam',
+            phase: 'execution',
+            day: 1,
+            maxDays: 5,
+            budget: 640, // Operating Budget
+            initialBudget: 640,
+            contingencyReserve: 80, // Dedicated Contingency Reserve
+            tarpBought: false,
+            hasWeatherRisk: true,
+            weatherRiskResolved: false,
+            goodwillStars: 0,
+            isExecuting: false,
+            retroChoice: { wentWell: 0, toImprove: 0 },
+
+            workPackages: [
+                {
+                    id: 'wp-structural',
+                    title: 'Work Package A: Structural & Shutters',
+                    subtitle: '2 dependent Tasks inside',
+                    icon: '🪟',
+                    decomposed: false,
+                    taskIds: ['t1', 't2']
+                },
+                {
+                    id: 'wp-interior',
+                    title: 'Work Package B: Interior & Brewing',
+                    subtitle: '2 dependent Tasks inside',
+                    icon: '☕',
+                    decomposed: false,
+                    taskIds: ['t3', 't4']
+                },
+                {
+                    id: 'wp-furnishings',
+                    title: 'Work Package C: Seating & Final Signboard',
+                    subtitle: '2 completion Tasks inside',
+                    icon: '🪧',
+                    decomposed: true,
+                    taskIds: ['t5', 't6']
+                }
+            ],
+
+            tasks: [
+                {
+                    id: 't1',
+                    workPackageId: 'wp-structural',
+                    title: 'Sand & Refinish Shutters',
+                    cost: 80,
+                    skill: 'Carpentry',
+                    outdoor: true,
+                    deps: [],
+                    critical: true,
+                    progress: 0,
+                    paid: false,
+                    assignedArtisanId: null,
+                    flavor: 'sands and refinishes the louvered heritage shophouse shutters'
+                },
+                {
+                    id: 't2',
+                    workPackageId: 'wp-structural',
+                    title: 'Install Bamboo Sunshade',
+                    cost: 95,
+                    skill: 'Carpentry',
+                    outdoor: true,
+                    deps: ['t1'],
+                    critical: true,
+                    progress: 0,
+                    paid: false,
+                    assignedArtisanId: null,
+                    flavor: 'mounts the woven split-bamboo sunshade along the verandah'
+                },
+                {
+                    id: 't3',
+                    workPackageId: 'wp-interior',
+                    title: 'Tile Kopi Counter',
+                    cost: 120,
+                    skill: 'Culinary',
+                    outdoor: false,
+                    deps: [],
+                    critical: true,
+                    progress: 0,
+                    paid: false,
+                    assignedArtisanId: null,
+                    flavor: 'sets floral Peranakan mosaic tiles onto the kopi counter'
+                },
+                {
+                    id: 't4',
+                    workPackageId: 'wp-interior',
+                    title: 'Calibrate Espresso & Kopi Station',
+                    cost: 100,
+                    skill: 'Culinary',
+                    outdoor: false,
+                    deps: ['t3'],
+                    critical: false,
+                    progress: 0,
+                    paid: false,
+                    assignedArtisanId: null,
+                    flavor: 'calibrates the brass kopi boiler and espresso station'
+                },
+                {
+                    id: 't5',
+                    workPackageId: 'wp-furnishings',
+                    title: 'Deliver Serian Rattan Seating',
+                    cost: 110,
+                    skill: 'Logistics',
+                    outdoor: false,
+                    deps: [],
+                    critical: false,
+                    progress: 0,
+                    paid: false,
+                    assignedArtisanId: null,
+                    flavor: 'delivers handwoven Serian rattan chairs and marble table'
+                },
+                {
+                    id: 't6',
+                    workPackageId: 'wp-furnishings',
+                    title: 'Hang Signboard & Final Inspection',
+                    cost: 60,
+                    skill: 'Carpentry',
+                    outdoor: true,
+                    deps: ['t2', 't4'],
+                    critical: true,
+                    progress: 0,
+                    paid: false,
+                    assignedArtisanId: null,
+                    flavor: 'mounts the gilded Kopitiam signboard and completes final quality sign-off'
+                }
+            ],
+
+            artisans: [
+                { id: 'lim', name: 'Uncle Lim', role: 'Carpentry', skill: 'Carpentry', stamina: 100, assignedTaskId: null, resting: false },
+                { id: 'salmah', name: 'Kak Salmah', role: 'Culinary', skill: 'Culinary', stamina: 100, assignedTaskId: null, resting: false },
+                { id: 'danny', name: 'Danny', role: 'Logistics', skill: 'Logistics', stamina: 100, assignedTaskId: null, resting: false }
+            ]
+        };
+    }
+
+    function switchLevel(lvl) {
+        if (state.isExecuting) return;
+        SoundFX.woodClick();
+        currentLevel = lvl;
+        state = createLevelState(lvl);
+
+        if (lvl === 1) {
+            updateGuidance('Tap a scrambled statement from Auntie Mei, then tap its matching <strong>Project Charter</strong> slot.');
+        } else if (lvl === 2) {
+            updateGuidance('<strong>Step 1:</strong> Tap <strong>Decompose</strong> on each Work Package to expand its concrete 1-day Tasks inline.');
+        } else {
+            updateGuidance('Decompose remaining <strong>Work Packages</strong>, tap <strong>Assign</strong> on ready Tasks, and watch <strong>Critical Path</strong> Dependencies.');
+        }
+        renderAll();
+    }
+
+    // ==========================================
+    // 9. LEVEL 1: PROJECT CHARTER LOGIC (WITH BOUNCE-BACK)
+    // ==========================================
+    function selectStatement(stmtId) {
+        if (state.charterAuthorized) return;
+        SoundFX.woodClick();
+        state.selectedStatementId = (state.selectedStatementId === stmtId) ? null : stmtId;
+        state.bouncedStatementId = null;
+        renderCharter();
+    }
+
+    function handleCharterBucketClick(bucketKey) {
+        if (state.charterAuthorized) return;
+        const bucket = state.charterBuckets[bucketKey];
+
+        // Allow removing placed item if clicking a filled bucket with nothing selected
+        if (bucket.filledIds.length > 0 && !state.selectedStatementId) {
+            bucket.filledIds.pop();
+            SoundFX.woodClick();
+            renderHUD();
+            renderCharter();
+            renderDock();
+            return;
+        }
+
+        if (!state.selectedStatementId) {
+            SoundFX.alertPop();
+            showToast('Tap one of Auntie Mei’s scrambled statement cards first.', 'info');
+            updateGuidance('Select one of Auntie Mei’s statement cards above first, then tap its matching Project Charter slot.');
+            return;
+        }
+
+        const stmt = state.statements.find(s => s.id === state.selectedStatementId);
+        if (!stmt) return;
+
+        if (stmt.targetBucket !== bucketKey) {
+            SoundFX.alertPop();
+            state.bouncedStatementId = stmt.id;
+            const slotName = state.charterBuckets[bucketKey].label;
+            const hints = {
+                objective: 'Objective describes the core product/deliverable being created.',
+                constraints: 'Constraints define fixed Budget (RM) and Schedule (Days) limits.',
+                success: 'Success Criteria define measurable quality checks for completion.',
+                outOfScope: 'Out of Scope states what is explicitly excluded from the project.'
+            };
+            showToast(`↩️ Bounced back! That doesn't fit ${slotName}.`, 'warn');
+            updateGuidance(`↩️ <strong>Statement bounced back:</strong> ${hints[bucketKey]}`);
+            renderCharter();
+            setTimeout(() => {
+                state.bouncedStatementId = null;
+            }, 400);
+            return;
+        }
+
+        if (!bucket.filledIds.includes(stmt.id)) {
+            bucket.filledIds.push(stmt.id);
+        }
+        state.selectedStatementId = null;
+        state.bouncedStatementId = null;
+        SoundFX.woodClick();
+        checkCharterCompleteness(stmt.shortLabel);
+        renderHUD();
+        renderCharter();
+        renderDock();
+    }
+
+    function checkCharterCompleteness(lastLabel) {
+        const totalPlaced = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+        if (totalPlaced === state.statements.length) {
+            showToast('All 4 Charter slots filled! Ready to approve.', 'success');
+            updateGuidance('All 4 statements sorted! Tap <strong>Approve Project Charter</strong> below.');
+        } else {
+            updateGuidance(`Placed <strong>${lastLabel}</strong> (${totalPlaced}/4 sorted). Keep organizing the Project Charter.`);
+        }
+    }
+
+    function authorizeProjectCharter() {
+        const totalPlaced = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+        if (totalPlaced < state.statements.length) {
+            SoundFX.alertPop();
+            showToast('Sort all 4 statement cards into the Charter first.', 'warn');
+            updateGuidance('Sort all 4 statement cards into the Project Charter before approving.');
+            return;
+        }
+
+        state.charterAuthorized = true;
+        SoundFX.authorizeSeal();
+        showToast('📜 Project Charter Approved!', 'success');
+        updateGuidance('📜 <strong>Project Charter Approved!</strong> Transitioning to 2-day coffee cart execution...');
+        renderCharter();
+
+        setTimeout(() => {
+            state.phase = 'execution';
+            updateGuidance('Project Charter approved! Tap <strong>Assign</strong> on ready Tasks to pair the best team member.');
+            renderAll();
+        }, 1250);
+    }
+
+    // ==========================================
+    // 10. INLINE WBS TREE & ONE-TAP AUTO-ASSIGN LOGIC
+    // ==========================================
+    function allWorkPackagesDecomposed() {
+        return state.workPackages.every(wp => wp.decomposed);
+    }
+
+    function isTaskUnlocked(task) {
+        if (task.workPackageId) {
+            const wp = state.workPackages.find(w => w.id === task.workPackageId);
+            if (wp && !wp.decomposed) return false;
+        }
+        if (!task.deps || task.deps.length === 0) return true;
+        return task.deps.every(depId => {
+            const depTask = state.tasks.find(t => t.id === depId);
+            return depTask && depTask.progress >= 100;
+        });
+    }
+
+    function getUnmetDependencies(task) {
+        return task.deps
+            .map(id => state.tasks.find(t => t.id === id))
+            .filter(t => t && t.progress < 100)
+            .map(t => t.title);
+    }
+
+    function getSkillBadgeColor(skill) {
+        if (skill === 'Carpentry') return 'bg-[#5C3A21]/15 text-[#3D2412] border-[#5C3A21]/40';
+        if (skill === 'Culinary') return 'bg-[#C85A32]/15 text-[#943011] border-[#C85A32]/40';
+        return 'bg-[#2E6F40]/15 text-[#235732] border-[#2E6F40]/40';
+    }
+
+    function updateGuidance(msg) {
+        document.getElementById('guidance-text').innerHTML = msg;
+    }
+
+    function decomposeWorkPackage(wpId) {
+        if (state.isExecuting) return;
+        const wp = state.workPackages.find(w => w.id === wpId);
+        if (!wp || wp.decomposed) return;
+
+        wp.decomposed = true;
+        SoundFX.woodClick();
+
+        if (allWorkPackagesDecomposed()) {
+            showToast('✅ WBS 100% Rule satisfied! Step 2: Assign Team.', 'success');
+            updateGuidance('✅ <strong>Step 2: Assign Team &amp; Run Day!</strong> Tap <strong>Assign</strong> on any ready Task to auto-match the right specialist.');
+        } else {
+            const remaining = state.workPackages.filter(w => !w.decomposed).length;
+            updateGuidance(`Work Package decomposed inline! Tap <strong>Decompose</strong> on the remaining <strong>${remaining} Work Package(s)</strong>.`);
+        }
+        renderAll();
+    }
+
+    // One-Tap Smart Auto-Assign: Picks best available team member (matching skill first, then highest stamina)
+    function autoAssignTask(taskId, event) {
+        if (event) event.stopPropagation();
+        if (state.isExecuting) return;
+
+        const task = state.tasks.find(t => t.id === taskId);
+        if (!task || task.progress >= 100) return;
+
+        if (!isTaskUnlocked(task)) {
+            SoundFX.alertPop();
+            const unmet = getUnmetDependencies(task).join(' & ');
+            showToast(`🔒 Dependency locked! Finish ${unmet} first.`, 'warn');
+            updateGuidance(`🔒 Dependency Locked! Complete <strong>${unmet}</strong> first.`);
+            return;
+        }
+
+        // If already assigned, clicking the main pill unassigns cleanly
+        if (task.assignedArtisanId) {
+            const existing = state.artisans.find(a => a.id === task.assignedArtisanId);
+            if (existing) existing.assignedTaskId = null;
+            task.assignedArtisanId = null;
+            SoundFX.woodClick();
+            updateGuidance(`Unassigned team member from <strong>${task.title}</strong>.`);
+            renderAll();
+            return;
+        }
+
+        if (!task.paid && state.budget < task.cost) {
+            SoundFX.alertPop();
+            showToast(`⚠️ Insufficient Budget! Need RM ${task.cost}.`, 'warn');
+            updateGuidance(`⚠️ Insufficient Budget! Need <strong>RM ${task.cost}</strong> to start this Task.`);
+            return;
+        }
+
+        const available = state.artisans.filter(a => !a.assignedTaskId && !a.resting);
+        if (available.length === 0) {
+            SoundFX.alertPop();
+            showToast('All team members are currently assigned or resting.', 'info');
+            updateGuidance('All team members are assigned or resting. Tap <strong>Start Workday</strong> below to execute!');
+            return;
+        }
+
+        // Rank by: 1) Matching skill (+1000 score), 2) Highest stamina
+        available.sort((a, b) => {
+            const scoreA = (a.skill === task.skill ? 1000 : 0) + a.stamina;
+            const scoreB = (b.skill === task.skill ? 1000 : 0) + b.stamina;
+            return scoreB - scoreA;
+        });
+
+        const chosen = available[0];
+        chosen.assignedTaskId = task.id;
+        task.assignedArtisanId = chosen.id;
+
+        SoundFX.woodClick();
+        const isMatch = chosen.skill === task.skill;
+        const badgeText = isMatch ? `⚡ ${chosen.name} matched (+25% speed!)` : `👷 ${chosen.name} assigned`;
+        showToast(badgeText, 'success');
+        updateGuidance(`Assigned <strong>${chosen.name}</strong> to <strong>${task.title}</strong>${isMatch ? ' (+25% Skill Match Speed!)' : ''}.`);
+        renderAll();
+    }
+
+    // Optional Swap button to cycle to another available team member
+    function swapTaskArtisan(taskId, event) {
+        if (event) event.stopPropagation();
+        if (state.isExecuting) return;
+
+        const task = state.tasks.find(t => t.id === taskId);
+        if (!task || !task.assignedArtisanId) return;
+
+        const currentArt = state.artisans.find(a => a.id === task.assignedArtisanId);
+        const otherAvailable = state.artisans.filter(a => !a.assignedTaskId && !a.resting && a.id !== task.assignedArtisanId);
+
+        if (otherAvailable.length === 0) {
+            SoundFX.alertPop();
+            showToast('No other unassigned team members available to swap.', 'info');
+            return;
+        }
+
+        const nextArt = otherAvailable[0];
+        if (currentArt) currentArt.assignedTaskId = null;
+        nextArt.assignedTaskId = task.id;
+        task.assignedArtisanId = nextArt.id;
+
+        SoundFX.woodClick();
+        showToast(`🔄 Swapped to ${nextArt.name} (${nextArt.skill})`, 'info');
+        updateGuidance(`Swapped assignment on <strong>${task.title}</strong> to <strong>${nextArt.name}</strong>.`);
+        renderAll();
+    }
+
+    function toggleRestBreak(artisanId, event) {
+        if (event) event.stopPropagation();
+        if (state.isExecuting) return;
+        const artisan = state.artisans.find(a => a.id === artisanId);
+        if (!artisan) return;
+
+        SoundFX.coffeeClink();
+        if (!artisan.resting && artisan.assignedTaskId) {
+            const prevTask = state.tasks.find(t => t.id === artisan.assignedTaskId);
+            if (prevTask) prevTask.assignedArtisanId = null;
+            artisan.assignedTaskId = null;
+        }
+        artisan.resting = !artisan.resting;
+        if (artisan.resting) {
+            showToast(`☕ ${artisan.name} scheduled for Rest Break (+45% Stamina)`, 'info');
+            updateGuidance(`☕ <strong>${artisan.name}</strong> scheduled for a <strong>Rest Break</strong> (+45% Stamina, prevents Burnout).`);
+        } else {
+            updateGuidance(`<strong>${artisan.name}</strong> is back on active duty.`);
+        }
+        renderAll();
+    }
+
+    function handlePrimaryCTA() {
+        if (state.level === 1 && state.phase === 'charter') {
+            authorizeProjectCharter();
+            return;
+        }
+        startWorkday();
+    }
+
+    // ==========================================
+    // 11. WORKDAY EXECUTION & MID-PROJECT EVENTS
+    // ==========================================
+    function startWorkday() {
+        if (state.isExecuting) return;
+
+        if (!allWorkPackagesDecomposed()) {
+            SoundFX.alertPop();
+            showToast('📦 Decompose all Work Packages first (Step 1).', 'warn');
+            updateGuidance('📦 <strong>Step 1 Incomplete:</strong> Tap <strong>Decompose</strong> on all Work Packages before starting the workday.');
+            return;
+        }
+
+        const activeAssignments = state.tasks.filter(t => t.assignedArtisanId && t.progress < 100);
+        if (activeAssignments.length === 0) {
+            SoundFX.alertPop();
+            showToast('Tap Assign on at least one ready Task first.', 'warn');
+            updateGuidance('Tap <strong>Assign</strong> on at least one ready Task before starting the workday.');
+            return;
+        }
+
+        state.isExecuting = true;
+        SoundFX.coffeeClink();
+
+        const overlay = document.getElementById('execution-overlay');
+        const progressBar = document.getElementById('exec-progress-bar');
+        const logsContainer = document.getElementById('exec-logs');
+        document.getElementById('exec-title').textContent = `Executing Day ${state.day} Workday`;
+        logsContainer.innerHTML = '';
+        progressBar.style.width = '0%';
+        overlay.classList.remove('hidden');
+
+        const isRainDay = (state.hasWeatherRisk && state.day === 3);
+        const rainLostOutdoorDay = (isRainDay && !state.tarpBought && Math.random() < 0.5);
+        const logLines = [];
+
+        state.artisans.forEach(artisan => {
+            if (artisan.resting) {
+                artisan.stamina = Math.min(100, artisan.stamina + 45);
+                artisan.resting = false;
+                logLines.push(`☕ <strong>${artisan.name}</strong> took a Rest Break (+45% Stamina → ${artisan.stamina}%).`);
+                return;
+            }
+
+            if (!artisan.assignedTaskId) {
+                artisan.stamina = Math.min(100, artisan.stamina + 15);
+                logLines.push(`🌿 <strong>${artisan.name}</strong> assisted with site prep (+15% Stamina).`);
+                return;
+            }
+
+            const task = state.tasks.find(t => t.id === artisan.assignedTaskId);
+            if (!task) return;
+
+            if (!task.paid) {
+                state.budget -= task.cost;
+                task.paid = true;
+            }
+
+            let speed = 100;
+            if (artisan.skill === task.skill) {
+                speed += 25;
+            }
+            const isBurnedOut = artisan.stamina < 35;
+            if (isBurnedOut) {
+                speed *= 0.5;
+            }
+
+            let note = `🔨 <strong>${artisan.name}</strong> ${task.flavor}.`;
+            if (rainLostOutdoorDay && task.outdoor) {
+                speed = 0;
+                note = `🌧️ <strong>Monsoon Rain!</strong> Outdoor work on <strong>${task.title}</strong> lost 1 full day (no Risk Mitigation tarp).`;
+            } else {
+                if (isBurnedOut) {
+                    note += ` <span class="text-[#C85A32] font-bold">(Burnout: -50% speed)</span>`;
+                } else if (isRainDay && task.outdoor && state.tarpBought) {
+                    note += ` <span class="text-[#2E6F40] font-bold">(Waterproof tarp Risk Mitigation active!)</span>`;
+                }
+            }
+
+            task.progress = Math.min(100, Math.round(task.progress + speed));
+            if (task.progress >= 100) {
+                note += ` ✅ <strong>Complete!</strong>`;
+            } else if (speed > 0) {
+                note += ` (${task.progress}%)`;
+            }
+            logLines.push(note);
+
+            artisan.stamina = Math.max(0, artisan.stamina - 35);
+            artisan.assignedTaskId = null;
+            task.assignedArtisanId = null;
+        });
+
+        let step = 0;
+        const totalSteps = 20;
+        const interval = setInterval(() => {
+            step++;
+            const pct = Math.min(100, Math.round((step / totalSteps) * 100));
+            progressBar.style.width = pct + '%';
+
+            if (step === 4 && logLines[0]) appendExecLog(logLines[0]);
+            if (step === 10 && logLines[1]) appendExecLog(logLines[1]);
+            if (step === 16 && logLines[2]) appendExecLog(logLines[2]);
+
+            if (step >= totalSteps) {
+                clearInterval(interval);
+                SoundFX.taskComplete();
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    state.isExecuting = false;
+                    finishDay(rainLostOutdoorDay);
+                }, 650);
+            }
+        }, 90);
+        renderDiorama();
+    }
+
+    function appendExecLog(html) {
+        const div = document.createElement('div');
+        div.className = 'animate-crisp-in leading-snug';
+        div.innerHTML = html;
+        document.getElementById('exec-logs').appendChild(div);
+    }
+
+    function finishDay(rainLostOutdoorDay) {
+        const allTasksDone = state.tasks.every(t => t.progress >= 100);
+
+        if (allTasksDone) {
+            completedLevels[state.level] = true;
+            renderAll();
+            openRetrospective(true);
+            return;
+        }
+
+        if (state.day >= state.maxDays) {
+            renderAll();
+            openRetrospective(false);
+            return;
+        }
+
+        state.day += 1;
+        renderAll();
+
+        // Level 3 Mid-Project Event Modals
+        if (state.level === 3 && state.day === 2) {
+            triggerScopeCreepModal();
+        } else if (state.level === 3 && state.day === 3 && !state.weatherRiskResolved) {
+            triggerWeatherRiskModal();
+        } else if (rainLostOutdoorDay) {
+            showToast('🌧️ Monsoon rain delayed outdoor tasks!', 'warn');
+            updateGuidance(`⚠️ Monsoon rain delayed outdoor work yesterday! Tap <strong>Assign</strong> for <strong>Day ${state.day}</strong>.`);
+        } else {
+            updateGuidance(`Morning of <strong>Day ${state.day}</strong>! Check team stamina and tap <strong>Assign</strong> on ready Tasks.`);
+        }
+    }
+
+    // Level 3 — Day 2 Event: Stakeholder Scope Creep Change Request
+    function triggerScopeCreepModal() {
+        SoundFX.alertPop();
+        const modal = document.getElementById('event-modal');
+        document.getElementById('modal-emoji').textContent = '🎤';
+        document.getElementById('modal-tag').textContent = 'Day 2 Event • Scope Creep & Change Control';
+        document.getElementById('modal-title').textContent = 'Stakeholder Scope Creep Request';
+        document.getElementById('modal-body').innerHTML = `
+            A neighborhood committee member stops by Carpenter Street: <em>“Since your crew is already renovating the front, can you also build a <strong>street-side acoustic stage</strong> for opening night? We have <strong>RM 0 extra budget</strong> and still want to open on Day 5!”</em>
+        `;
+
+        document.getElementById('modal-actions').innerHTML = `
+            <button type="button" onclick="resolveScopeCreep('reject')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#8C6A4A] bg-[#FFFDF9] hover:bg-[#F1E7D3] transition cursor-pointer">
+                <div class="text-xs font-bold text-[#241B15]">1. Reject — Out of Scope</div>
+                <div class="text-[11px] text-[#5A4D41]">Reference the approved Project Charter to prevent Scope Creep.</div>
+            </button>
+            <button type="button" onclick="resolveScopeCreep('backlog')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-2 border-[#2E6F40] bg-[#2E6F40]/10 hover:bg-[#2E6F40]/15 transition cursor-pointer">
+                <div class="text-xs font-bold text-[#235732]">2. Defer to Phase 2 Backlog ⭐</div>
+                <div class="text-[11px] text-[#2F593D]">Record the stage in the Phase 2 Backlog so current Scope and Schedule stay protected.</div>
+            </button>
+            <button type="button" onclick="resolveScopeCreep('approve')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#C58F2A] bg-[#FFF9E6] hover:bg-[#F5E6BC] transition cursor-pointer">
+                <div class="text-xs font-bold text-[#7A5404]">3. Approve Change Request (+RM 100, +1 Day)</div>
+                <div class="text-[11px] text-[#5C4108]">Re-baseline the Iron Triangle with +RM 100 Budget, +1 Day Schedule, and 1 Stage Task.</div>
+            </button>
+        `;
+        modal.classList.remove('hidden');
+    }
+
+    function resolveScopeCreep(choice) {
+        SoundFX.woodClick();
+        document.getElementById('event-modal').classList.add('hidden');
+
+        if (choice === 'reject') {
+            showToast('🛡️ Rejected — Out of Scope!', 'success');
+            updateGuidance('🛡️ <strong>Scope Protected!</strong> Rejected the unapproved addition to protect the Day 5 Schedule.');
+        } else if (choice === 'backlog') {
+            state.goodwillStars += 1;
+            showToast('⭐ Deferred to Phase 2 Backlog!', 'success');
+            updateGuidance('⭐ <strong>Deferred to Phase 2 Backlog!</strong> Request logged without disrupting current Scope.');
+        } else if (choice === 'approve') {
+            state.budget += 100;
+            state.maxDays += 1;
+            state.tasks.push({
+                id: 't-stage',
+                workPackageId: 'wp-furnishings',
+                title: 'Build Acoustic Stage (Change Request)',
+                cost: 100,
+                skill: 'Carpentry',
+                outdoor: true,
+                deps: ['t1'],
+                critical: false,
+                progress: 0,
+                paid: false,
+                assignedArtisanId: null,
+                flavor: 'builds the approved acoustic stage using the re-baselined budget'
+            });
+            const wpFurn = state.workPackages.find(w => w.id === 'wp-furnishings');
+            if (wpFurn) wpFurn.taskIds.push('t-stage');
+            showToast('⚖️ Change Request Approved (+RM 100, +1 Day)', 'info');
+            updateGuidance('⚖️ <strong>Change Request Approved!</strong> Added +RM 100 Budget, +1 Day Schedule, and the Acoustic Stage Task.');
+        }
+        renderAll();
+    }
+
+    // Level 3 — Day 3 Event: Monsoon Rain Risk Mitigation Choice
+    function triggerWeatherRiskModal() {
+        SoundFX.alertPop();
+        const modal = document.getElementById('event-modal');
+        document.getElementById('modal-emoji').textContent = '🌧️';
+        document.getElementById('modal-tag').textContent = 'Day 3 Event • Risk Mitigation';
+        document.getElementById('modal-title').textContent = 'Monsoon Rain Forecast';
+        document.getElementById('modal-body').innerHTML = `
+            Heavy monsoon rain clouds are rolling toward Carpenter Street! Outdoor Carpentry tasks face a <strong>50% probability of losing 1 full day</strong> unless mitigated. You have <strong>RM ${state.contingencyReserve}</strong> in your <strong>Contingency Reserve</strong>.
+        `;
+
+        const canAffordTarp = state.contingencyReserve >= 40;
+        document.getElementById('modal-actions').innerHTML = `
+            <button type="button" onclick="resolveWeatherRisk('mitigate')" ${canAffordTarp ? '' : 'disabled'} class="w-full min-h-[44px] text-left p-3 rounded-xl border-2 ${canAffordTarp ? 'border-[#2E6F40] bg-[#2E6F40]/10 hover:bg-[#2E6F40]/15 cursor-pointer' : 'border-[#8C6A4A] bg-[#EFE6D4] opacity-60 cursor-not-allowed'} transition">
+                <div class="text-xs font-bold text-[#235732]">1. Risk Mitigation: Deploy Waterproof Tarps (-RM 40 Reserve)</div>
+                <div class="text-[11px] text-[#2F593D]">Use Contingency Reserve to protect all outdoor tasks (0 rain delay).</div>
+            </button>
+            <button type="button" onclick="resolveWeatherRisk('accept')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#C85A32] bg-[#FFFDF9] hover:bg-[#F1E7D3] transition cursor-pointer">
+                <div class="text-xs font-bold text-[#9E3514]">2. Absorb Risk (RM 0, 50% Chance of 1-Day Delay)</div>
+                <div class="text-[11px] text-[#5A4D41]">Keep your Contingency Reserve intact and hope the storm clears.</div>
+            </button>
+        `;
+        modal.classList.remove('hidden');
+    }
+
+    function resolveWeatherRisk(choice) {
+        SoundFX.brassBalance();
+        state.weatherRiskResolved = true;
+        document.getElementById('event-modal').classList.add('hidden');
+
+        if (choice === 'mitigate' && state.contingencyReserve >= 40) {
+            state.contingencyReserve -= 40;
+            state.tarpBought = true;
+            showToast('🛡️ Waterproof tarps deployed (-RM 40 Reserve)', 'success');
+            updateGuidance('🛡️ <strong>Risk Mitigation Active!</strong> Waterproof tarps deployed (-RM 40 Contingency Reserve). Outdoor tasks have 0 rain delay.');
+        } else {
+            showToast('🎲 Risk absorbed — watch outdoor tasks today!', 'warn');
+            updateGuidance('🎲 <strong>Risk Absorbed!</strong> Tap <strong>Assign</strong> for Day 3—outdoor work has a 50% chance of rain delay.');
+        }
+        renderAll();
+    }
+
+    // ==========================================
+    // 12. LEVEL COMPLETION & PROJECT RETROSPECTIVE
+    // ==========================================
+    function openRetrospective(isVictory) {
+        SoundFX.taskComplete();
+        if (isVictory) {
+            RetinaConfetti.launch();
+        }
+        const modal = document.getElementById('retro-modal');
+
+        const doneCount = state.tasks.filter(t => t.progress >= 100).length;
+        const totalCount = state.tasks.length;
+        const scopePct = Math.round((doneCount / totalCount) * 100);
+        const daysRemaining = Math.max(0, state.maxDays - state.day);
+        const totalSaved = state.budget + (state.contingencyReserve || 0);
+
+        document.getElementById('retro-budget').textContent = `RM ${totalSaved}`;
+        document.getElementById('retro-days').textContent = `${daysRemaining} Day${daysRemaining === 1 ? '' : 's'}`;
+        document.getElementById('retro-quality').textContent = `${scopePct}% ${isVictory ? '✅' : '⚠️'}`;
+
+        const phaseTag = document.getElementById('retro-phase-tag');
+        const headline = document.getElementById('retro-headline');
+        const sub = document.getElementById('retro-sub');
+        const badgeIcon = document.getElementById('badge-icon');
+        const badgeTitle = document.getElementById('badge-title');
+        const badgeDesc = document.getElementById('badge-desc');
+        const footerActions = document.getElementById('retro-footer-actions');
+
+        if (state.level === 1) {
+            phaseTag.textContent = isVictory ? '📜 Phase 1 Complete • Initiating' : '📜 Phase 1 Review • Initiating';
+            headline.textContent = isVictory ? 'Main Bazaar Coffee Cart Complete! ☕' : `Cart Setup Incomplete (${scopePct}%)`;
+            sub.textContent = isVictory
+                ? 'Your approved Project Charter kept Scope, Schedule, and Budget aligned.'
+                : 'Retry Level 1 and complete all 3 approved Tasks within the 2-day Schedule.';
+            badgeIcon.textContent = '📜';
+            badgeTitle.textContent = 'Project Charter Architect';
+            badgeDesc.textContent = 'Defining Objective, Constraints, Success Criteria, and Out-of-Scope boundaries up front prevents Scope Creep during execution.';
+
+            footerActions.innerHTML = isVictory
+                ? `
+                    <button type="button" onclick="advanceToNextLevel(2)" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
+                        Next Chapter: L2 Work Breakdown Structure →
+                    </button>
+                    <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer">
+                        🔄 Replay Level 1
+                    </button>
+                `
+                : `
+                    <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 cursor-pointer">
+                        🔄 Retry Level 1
+                    </button>
+                `;
+        } else if (state.level === 2) {
+            phaseTag.textContent = isVictory ? '📦 Phase 2 Complete • Scope Planning' : '📦 Phase 2 Review • Scope Planning';
+            headline.textContent = isVictory ? 'Siniawan Night Market Stall Complete! 🏮' : `Market Stall Incomplete (${scopePct}%)`;
+            sub.textContent = isVictory
+                ? 'Decomposing all 3 Work Packages into 6 concrete 1-day Tasks satisfied the WBS 100% Rule.'
+                : 'Match team skills (+25% speed) to finish all 6 decomposed Tasks within 3 days.';
+            badgeIcon.textContent = '📦';
+            badgeTitle.textContent = 'WBS 100% Rule Specialist';
+            badgeDesc.textContent = 'Decomposing high-level Work Packages into granular, assignable Tasks eliminates ambiguity and improves Schedule accuracy.';
+
+            footerActions.innerHTML = isVictory
+                ? `
+                    <button type="button" onclick="advanceToNextLevel(3)" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
+                        Next Chapter: L3 Schedule &amp; Change Control →
+                    </button>
+                    <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer">
+                        🔄 Replay Level 2
+                    </button>
+                `
+                : `
+                    <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 cursor-pointer">
+                        🔄 Retry Level 2
+                    </button>
+                `;
+        } else {
+            phaseTag.textContent = '🏆 Phase 3 Complete • Monitoring, Control & Closing';
+            headline.textContent = isVictory ? 'Carpenter St. Kopitiam Complete! 🎉' : `Schedule Ended (${scopePct}% Scope Done)`;
+            sub.textContent = isVictory
+                ? 'You balanced Critical Path Dependencies, team stamina, Risk Mitigation, and Change Control!'
+                : 'Review Critical Path Dependencies and team Burnout in your Project Retrospective below.';
+            badgeIcon.textContent = '🏅';
+            badgeTitle.textContent = isVictory
+                ? 'Certified Project Management Master'
+                : 'Critical Path & Control Practitioner';
+            badgeDesc.textContent = isVictory
+                ? 'Mastered the end-to-end Project Management lifecycle: Project Charter, WBS, Critical Path, Risk Mitigation, Change Control, and Project Retrospective.'
+                : 'Prioritizing Critical Path prerequisites first unlocks downstream Dependencies before the final deadline.';
+
+            footerActions.innerHTML = `
+                <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
+                    🔄 Replay Level 3
+                </button>
+                <button type="button" onclick="advanceToNextLevel(1)" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer">
+                    📜 Restart Curriculum from Level 1
+                </button>
+            `;
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    function advanceToNextLevel(nextLvl) {
+        document.getElementById('retro-modal').classList.add('hidden');
+        switchLevel(nextLvl);
+    }
+
+    function replayCurrentLevel() {
+        document.getElementById('retro-modal').classList.add('hidden');
+        switchLevel(currentLevel);
+    }
+
+    function selectRetro(type, index, btn) {
+        SoundFX.woodClick();
+        state.retroChoice[type] = index;
+        const selector = type === 'wentWell' ? '.retro-opt-well' : '.retro-opt-improve';
+        document.querySelectorAll(selector).forEach(el => {
+            el.classList.remove('border-2', 'border-[#2E6F40]', 'border-[#C85A32]', 'bg-[#FFF9E6]');
+            el.classList.add('border-[1.5px]', 'border-[#8C6A4A]', 'bg-white');
+        });
+        btn.classList.remove('border-[1.5px]', 'border-[#8C6A4A]', 'bg-white');
+        btn.classList.add('border-2', type === 'wentWell' ? 'border-[#2E6F40]' : 'border-[#C85A32]', 'bg-[#FFF9E6]');
+    }
+
+    // ==========================================
+    // 13. UI RENDERING (HUD, CHARTER, INLINE WBS TREE, DOCK)
+    // ==========================================
+    function renderLevelTabs() {
+        [1, 2, 3].forEach(lvl => {
+            const btn = document.getElementById(`tab-lvl-${lvl}`);
+            const isActive = (state.level === lvl);
+            const isDone = completedLevels[lvl];
+
+            if (isActive) {
+                btn.className = 'min-h-[36px] py-1.5 px-1.5 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1 bg-[#C58F2A] text-[#241B15] border border-[#241B15] cursor-pointer';
+            } else if (isDone) {
+                btn.className = 'min-h-[36px] py-1.5 px-1.5 rounded-lg text-[11px] font-semibold transition flex items-center justify-center gap-1 bg-[#2E6F40] text-[#FFFDF8] border border-[#1B4226] cursor-pointer';
+            } else {
+                btn.className = 'min-h-[36px] py-1.5 px-1.5 rounded-lg text-[11px] font-semibold transition flex items-center justify-center gap-1 text-[#DECBA8] hover:bg-[#5C3A21] cursor-pointer';
+            }
+        });
+    }
+
+    function renderHUD() {
+        document.getElementById('header-commission-subtitle').textContent = state.subtitle;
+
+        const doneCount = state.tasks.filter(t => t.progress >= 100).length;
+        const totalCount = state.tasks.length;
+        const scopePct = Math.round((doneCount / Math.max(1, totalCount)) * 100);
+        const daysLeft = Math.max(0, state.maxDays - state.day + 1);
+
+        if (state.level === 3) {
+            document.getElementById('hud-budget').textContent = `RM ${state.budget} (+${state.contingencyReserve})`;
+        } else {
+            document.getElementById('hud-budget').textContent = `RM ${state.budget}`;
+        }
+        document.getElementById('hud-day').textContent = `${daysLeft} Day${daysLeft === 1 ? '' : 's'} Left`;
+
+        if (state.level === 1 && state.phase === 'charter') {
+            const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+            document.getElementById('hud-scope').textContent = `${totalSorted}/4 Charter`;
+        } else {
+            document.getElementById('hud-scope').textContent = `${scopePct}% (${doneCount}/${totalCount})`;
+        }
+
+        let tiltDeg = 0;
+        if (state.level === 1 && state.phase === 'charter') {
+            const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+            tiltDeg = Math.round((4 - totalSorted) * 3.0);
+        } else {
+            const remainingTasks = totalCount - doneCount;
+            const workloadRatio = remainingTasks / Math.max(1, daysLeft);
+            tiltDeg = (workloadRatio - 1.2) * 8;
+            if (state.budget < 120) tiltDeg += 4;
+            tiltDeg = Math.round(Math.max(-14, Math.min(16, tiltDeg)));
+        }
+
+        document.getElementById('balance-beam').style.transform = `rotate(${tiltDeg}deg)`;
+
+        const statusEl = document.getElementById('scale-status-text');
+        if (state.level === 1 && state.phase === 'charter') {
+            const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+            statusEl.textContent = totalSorted === 4 ? '⚖️ Charter Ready to Approve' : `Defining Charter (${totalSorted}/4)`;
+            statusEl.className = totalSorted === 4 ? 'font-semibold text-[#A7F3D0]' : 'font-semibold text-[#FDE68A]';
+        } else if (tiltDeg > 7) {
+            statusEl.textContent = '⚠️ Heavy Scope/Schedule Pressure';
+            statusEl.className = 'font-semibold text-[#FECACA]';
+        } else if (tiltDeg < -4) {
+            statusEl.textContent = '✨ Ahead of Schedule';
+            statusEl.className = 'font-semibold text-[#A7F3D0]';
+        } else {
+            statusEl.textContent = '⚖️ Balanced & Steady';
+            statusEl.className = 'font-semibold text-[#A7F3D0]';
+        }
+
+        const ctxBanner = document.getElementById('context-banner');
+        if (state.level === 2) {
+            ctxBanner.classList.remove('hidden');
+            ctxBanner.innerHTML = `
+                <div class="flex items-start gap-2">
+                    <span class="text-base mt-0.5">📜</span>
+                    <div class="text-[11px] leading-snug">
+                        <div class="font-bold text-[#5C3A21]">Approved Project Charter • Siniawan Night Market</div>
+                        <div class="text-[#241B15]"><strong>Objective:</strong> ${state.signedCharterSummary.objective} • <strong>Constraints:</strong> ${state.signedCharterSummary.constraints}</div>
+                    </div>
+                </div>
+            `;
+        } else if (state.level === 3) {
+            ctxBanner.classList.remove('hidden');
+            ctxBanner.innerHTML = `
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-base">🛡️</span>
+                        <div class="text-[11px] leading-snug">
+                            <div class="font-bold text-[#5C3A21]">Contingency Reserve: RM ${state.contingencyReserve}</div>
+                            <div class="text-[#5A4D41]">${state.tarpBought ? 'Waterproof tarps deployed — outdoor tasks protected from rain.' : 'Dedicated reserve for Day 3 Monsoon Rain Risk Mitigation.'}</div>
+                        </div>
+                    </div>
+                    <span class="shrink-0 px-2 py-0.5 rounded-md ${state.tarpBought ? 'bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40' : 'bg-[#C58F2A]/15 text-[#7A5404] border border-[#C58F2A]/40'} text-[10px] font-bold">
+                        ${state.tarpBought ? '✓ Mitigated' : 'Day 3 Watch'}
+                    </span>
+                </div>
+            `;
+        } else {
+            ctxBanner.classList.add('hidden');
+        }
+    }
+
+    function renderCharter() {
+        const container = document.getElementById('charter-workspace');
+        const placedIds = Object.values(state.charterBuckets).flatMap(b => b.filledIds);
+        const remainingStatements = state.statements.filter(s => !placedIds.includes(s.id));
+
+        const statementsHtml = remainingStatements.length > 0
+            ? `
+                <div class="paper-card rounded-xl p-3 bg-[#FFFDF9]">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">👵🏽</span>
+                            <div>
+                                <div class="text-xs font-bold text-[#5C3A21]">Auntie Mei’s Statement Cards (Scrambled)</div>
+                                <div class="text-[11px] text-[#5A4D41]">Tap a card, then tap its matching Project Charter slot below</div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold font-mono-crisp px-2 py-0.5 rounded bg-[#F1E7D3] text-[#5C3A21]">${remainingStatements.length} left</span>
+                    </div>
+                    <div class="grid grid-cols-1 gap-1.5">
+                        ${remainingStatements.map(s => {
+                            const isSelected = state.selectedStatementId === s.id;
+                            const isBounced = state.bouncedStatementId === s.id;
+                            return `
+                                <div onclick="selectStatement('${s.id}')" class="min-h-[44px] p-2.5 rounded-xl border-[1.5px] transition cursor-pointer flex items-center justify-between gap-2 ${isBounced ? 'animate-bounce-back border-[#B91C1C] bg-[#FEE2E2]' : isSelected ? 'bg-[#FFF5D6] border-[#C85A32] ring-2 ring-[#C85A32]/25' : 'bg-[#FFFDF5] border-[#C58F2A] hover:bg-[#FFF9E6]'}">
+                                    <div class="text-xs font-medium text-[#241B15] leading-snug">${s.text}</div>
+                                    <span class="shrink-0 px-2 py-1 rounded-lg ${isSelected ? 'bg-[#C85A32] text-white' : 'bg-[#F1E7D3] text-[#3D2412] border border-[#8C6A4A]/60'} text-[10px] font-bold">
+                                        ${isSelected ? 'Selected' : 'Select'}
+                                    </span>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `
+            : '';
+
+        const bucketsHtml = Object.entries(state.charterBuckets).map(([key, bucket]) => {
+            const filledStmts = bucket.filledIds.map(id => state.statements.find(s => s.id === id)).filter(Boolean);
+            const isComplete = filledStmts.length >= bucket.maxItems;
+            const awaitingTarget = Boolean(state.selectedStatementId) && !isComplete;
+            return `
+                <div onclick="handleCharterBucketClick('${key}')" class="min-h-[48px] p-2.5 rounded-xl border-[1.5px] transition cursor-pointer ${isComplete ? 'bg-[#EFF6F1] border-[#2E6F40]' : awaitingTarget ? 'bg-[#FFFDF5] border-dashed border-[#C85A32] hover:bg-[#FFF5D6]' : 'bg-[#FAF5EB] border-dashed border-[#8C6A4A] hover:bg-[#F1E7D3]'}">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-[#5C3A21]">${bucket.icon} ${bucket.label}</span>
+                        <span class="text-[10px] font-bold ${isComplete ? 'text-[#2E6F40]' : awaitingTarget ? 'text-[#C85A32]' : 'text-[#7A5434]'}">
+                            ${isComplete ? '✓ Filled' : awaitingTarget ? 'Tap to Place Here' : bucket.hint}
+                        </span>
+                    </div>
+                    ${filledStmts.length > 0 ? `
+                        <div class="mt-1.5 space-y-1">
+                            ${filledStmts.map(fs => `
+                                <div class="text-[11px] font-bold text-[#241B15] bg-white/80 px-2 py-1 rounded border border-[#8C6A4A]/40">
+                                    • ${fs.shortLabel}
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = `
+            ${statementsHtml}
+
+            <div class="paper-card rounded-2xl p-4 bg-[#FFFDF8] border-2 border-[#7A5434] relative overflow-hidden">
+                <div class="flex items-center justify-between pb-2 mb-2.5 border-b-[1.5px] border-[#8C6A4A]/50">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-[#C85A32]">Initiating Phase Document</span>
+                        <h3 class="text-base font-bold text-[#5C3A21]">📜 Project Charter • Main Bazaar Cart</h3>
+                    </div>
+                    <span class="text-[11px] font-bold font-mono-crisp px-2 py-0.5 rounded-md bg-[#5C3A21]/10 text-[#5C3A21] border border-[#5C3A21]/30">
+                        ${placedIds.length} / 4
+                    </span>
+                </div>
+
+                <div class="space-y-2">
+                    ${bucketsHtml}
+                </div>
+
+                ${state.charterAuthorized ? `
+                    <div class="mt-3 pt-2.5 border-t-[1.5px] border-[#8C6A4A]/40 flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-[#2E6F40]">Approved by Sponsor &amp; PM</span>
+                        <div class="animate-seal">
+                            <svg width="128" height="32" viewBox="0 0 128 32" shape-rendering="geometricPrecision" class="block">
+                                <rect x="1.5" y="1.5" width="125" height="29" rx="5" fill="#FEE2E2" stroke="#B91C1C" stroke-width="2"/>
+                                <rect x="4" y="4" width="120" height="24" rx="3" fill="none" stroke="#B91C1C" stroke-width="0.8"/>
+                                <text x="64" y="20" text-anchor="middle" fill="#B91C1C" font-family="Fraunces, serif" font-weight="700" font-size="11.5" letter-spacing="1.2">APPROVED</text>
+                            </svg>
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    // Inline WBS Tree Renderer (Deliverable Work Packages -> Indented Concrete Tasks)
+    function renderInlineWBSTree() {
+        const container = document.getElementById('wbs-tree-workspace');
+        const totalWPs = state.workPackages.length;
+        const decomposedCount = state.workPackages.filter(w => w.decomposed).length;
+        const allDecomposed = decomposedCount === totalWPs;
+        const assignedCount = state.tasks.filter(t => t.assignedArtisanId && t.progress < 100).length;
+
+        // Visual Step Progress Banner (Eliminates back-and-forth confusion)
+        const stepBannerHtml = totalWPs > 1 ? `
+            <div class="rounded-xl p-2.5 bg-[#FFFDF9] border-[1.5px] border-[#8C6A4A] flex items-center justify-between gap-2 text-[11px]">
+                <div class="flex items-center gap-1.5 ${!allDecomposed ? 'font-bold text-[#C85A32]' : 'font-semibold text-[#2E6F40]'}">
+                    <span>${allDecomposed ? '✅' : '1️⃣'}</span>
+                    <span>Step 1: Decompose WBS (${decomposedCount}/${totalWPs})</span>
+                </div>
+                <span class="text-[#8C6A4A]">→</span>
+                <div class="flex items-center gap-1.5 ${allDecomposed ? 'font-bold text-[#235732]' : 'font-medium text-[#7A5434]'}">
+                    <span>2️⃣</span>
+                    <span>Step 2: Assign Team (${assignedCount} active)</span>
+                </div>
+            </div>
+        ` : '';
+
+        const treeHtml = state.workPackages.map((wp, wpIdx) => {
+            const wpTasks = wp.taskIds.map(id => state.tasks.find(t => t.id === id)).filter(Boolean);
+            const wpDoneCount = wpTasks.filter(t => t.progress >= 100).length;
+
+            if (!wp.decomposed) {
+                return `
+                    <div class="paper-card rounded-2xl p-3.5 border-2 border-dashed border-[#5C3A21] bg-[#FFF9EC] animate-crisp-in">
+                        <div class="flex items-center justify-between gap-2.5">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <span class="w-10 h-10 rounded-xl bg-[#F1E7D3] flex items-center justify-center text-xl border-[1.5px] border-[#8C6A4A] shrink-0">${wp.icon}</span>
+                                <div class="min-w-0">
+                                    <div class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">WBS 1.${wpIdx + 1} • Deliverable Work Package</div>
+                                    <div class="text-xs sm:text-sm font-bold text-[#241B15] truncate">${wp.title}</div>
+                                    <div class="text-[11px] font-medium text-[#5A4D41]">${wp.subtitle} — cannot assign until decomposed</div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="decomposeWorkPackage('${wp.id}')" class="shrink-0 min-h-[40px] px-3 py-2 rounded-xl bg-[#5C3A21] hover:bg-[#3D2412] text-[#FFFDF8] text-xs font-bold border border-[#241B15] shadow-sm transition cursor-pointer">
+                                Decompose ▾
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Expanded WBS Branch: Parent Work Package Header + Indented Concrete Child Tasks directly beneath
+            const childTasksHtml = wpTasks.map((task, tIdx) => {
+                const unlocked = isTaskUnlocked(task);
+                const isDone = task.progress >= 100;
+                const assignedArtisan = state.artisans.find(a => a.id === task.assignedArtisanId);
+                const unmetNames = getUnmetDependencies(task);
+                const wbsCode = `1.${wpIdx + 1}.${tIdx + 1}`;
+
+                let cardStyle = 'rounded-xl p-2.5 border-[1.5px] transition relative';
+                if (isDone) {
+                    cardStyle += ' bg-[#EFF6F1] border-[#2E6F40]';
+                } else if (!unlocked) {
+                    cardStyle += ' bg-[#EFE6D4] border-[#9C8368]';
+                } else if (assignedArtisan) {
+                    cardStyle += ' bg-[#FFFDF9] border-[#C85A32] ring-2 ring-[#C85A32]/20';
+                } else {
+                    cardStyle += ' bg-[#FFFDF9] border-[#8C6A4A] hover:border-[#C85A32]';
+                }
+
+                return `
+                    <div class="relative pl-4">
+                        <!-- Visual WBS Tree Elbow Connector -->
+                        <div class="absolute left-0 top-0 bottom-1/2 w-3 border-l-2 border-b-2 border-[#8C6A4A]/65 rounded-bl-md pointer-events-none"></div>
+                        ${tIdx < wpTasks.length - 1 ? `<div class="absolute left-0 top-1/2 bottom-0 border-l-2 border-[#8C6A4A]/65 pointer-events-none"></div>` : ''}
+
+                        <div id="card-${task.id}" onclick="autoAssignTask('${task.id}', event)" class="${cardStyle} cursor-pointer">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex flex-wrap items-center gap-1 mb-1">
+                                        <span class="text-[9px] font-bold font-mono-crisp px-1.5 py-0.5 rounded bg-[#5C3A21]/10 text-[#5C3A21]">
+                                            WBS ${wbsCode}
+                                        </span>
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border ${getSkillBadgeColor(task.skill)}">
+                                            ${task.skill}
+                                        </span>
+                                        <span class="text-[10px] font-bold font-mono-crisp px-1.5 py-0.5 rounded-md bg-[#241B15]/8 text-[#241B15]">
+                                            ${task.paid ? '✓ Paid' : `RM ${task.cost}`}
+                                        </span>
+                                        ${task.critical ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#C85A32]/15 text-[#943011] border border-[#C85A32]/30 font-bold">🔥 Critical Path</span>` : ''}
+                                        ${task.outdoor ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#2B5783]/12 text-[#1E4063] border border-[#2B5783]/25 font-semibold">🌤️ Outdoor</span>` : ''}
+                                    </div>
+
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-sm">${isDone ? '✅' : !unlocked ? '🔒' : '📌'}</span>
+                                        <h4 class="text-xs font-bold text-[#241B15] truncate ${isDone ? 'line-through text-[#2E6F40]' : ''}">
+                                            ${task.title}
+                                        </h4>
+                                    </div>
+
+                                    ${!unlocked ? `
+                                        <p class="text-[10px] text-[#943011] font-semibold mt-1">
+                                            🔗 Dependency — Requires: ${unmetNames.join(' &amp; ')}
+                                        </p>
+                                    ` : task.progress > 0 && !isDone ? `
+                                        <div class="mt-1.5">
+                                            <div class="flex justify-between text-[10px] font-bold font-mono-crisp text-[#5C3A21] mb-0.5">
+                                                <span>Task Progress</span>
+                                                <span>${task.progress}%</span>
+                                            </div>
+                                            <div class="w-full h-1.5 bg-[#F1E7D3] rounded-full overflow-hidden border border-[#8C6A4A]/50">
+                                                <div class="h-full bg-[#2E6F40]" style="width: ${task.progress}%"></div>
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+
+                                <!-- One-Tap Auto-Assign Action Column -->
+                                <div class="shrink-0 flex flex-col items-end justify-center gap-1">
+                                    ${isDone ? `
+                                        <span class="px-2 py-1 rounded-lg bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40 text-[10px] font-bold">Complete</span>
+                                    ` : !unlocked ? `
+                                        <span class="px-2 py-1 rounded-lg bg-[#5C3A21]/10 text-[#3D2412] text-[10px] font-semibold">Locked</span>
+                                    ` : assignedArtisan ? `
+                                        <div class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#C85A32] text-white border border-[#7A2A10]" title="Tap to unassign">
+                                            ${getArtisanPortraitSVG(assignedArtisan.id, 20)}
+                                            <div class="text-left leading-none">
+                                                <div class="text-[10px] font-bold">${assignedArtisan.name.split(' ')[0]}</div>
+                                                <div class="text-[9px] font-medium">${assignedArtisan.skill === task.skill ? '+25% Boost' : 'Assigned'}</div>
+                                            </div>
+                                        </div>
+                                        <button type="button" onclick="swapTaskArtisan('${task.id}', event)" class="px-2 py-0.5 rounded bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A]/60 text-[9px] font-bold text-[#3D2412] cursor-pointer">
+                                            🔄 Swap
+                                        </button>
+                                    ` : `
+                                        <button type="button" onclick="autoAssignTask('${task.id}', event)" class="min-h-[34px] px-2.5 py-1.5 rounded-lg bg-[#2E6F40] hover:bg-[#235732] text-white text-[10px] font-bold border border-[#1B4226] shadow-sm cursor-pointer">
+                                            ⚡ Assign
+                                        </button>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="paper-card rounded-2xl p-3 bg-[#FAF5EB] border-[1.5px] border-[#7A5434] animate-crisp-in">
+                    <!-- Parent Work Package Header -->
+                    <div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-[#8C6A4A]/40">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-base">${wp.icon}</span>
+                            <div class="min-w-0">
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-[#2E6F40]">WBS 1.${wpIdx + 1} • Decomposed Work Package</div>
+                                <div class="text-xs font-bold text-[#241B15] truncate">${wp.title}</div>
+                            </div>
+                        </div>
+                        <span class="shrink-0 text-[10px] font-bold font-mono-crisp px-2 py-0.5 rounded bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/30">
+                            ${wpDoneCount}/${wpTasks.length} Done
+                        </span>
+                    </div>
+
+                    <!-- Indented Concrete Child Tasks -->
+                    <div class="space-y-2">
+                        ${childTasksHtml}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = stepBannerHtml + treeHtml;
+    }
+
+    function renderDock() {
+        const artisanWrapper = document.getElementById('artisan-dock-wrapper');
+        const primaryBtn = document.getElementById('btn-primary-action');
+
+        if (state.level === 1 && state.phase === 'charter') {
+            artisanWrapper.classList.add('hidden');
+            const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+            const allSorted = totalSorted === state.statements.length;
+            primaryBtn.className = allSorted
+                ? 'w-full min-h-[46px] py-3 rounded-xl bg-[#B91C1C] hover:bg-[#991B1B] text-white font-bold text-sm border-2 border-[#7F1D1D] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer'
+                : 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-not-allowed';
+            primaryBtn.innerHTML = allSorted
+                ? '<span>📜 Approve Project Charter</span>'
+                : `<span>📜 Sort All 4 Statements (${totalSorted}/4)</span>`;
+            return;
+        }
+
+        artisanWrapper.classList.remove('hidden');
+
+        const wbsReady = allWorkPackagesDecomposed();
+        if (!wbsReady) {
+            primaryBtn.className = 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-pointer';
+            primaryBtn.innerHTML = '<span>🔒 Step 1: Decompose All Work Packages First</span>';
+        } else {
+            primaryBtn.className = 'w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
+            primaryBtn.innerHTML = `<span>☀️ Start Workday (Day ${state.day} of ${state.maxDays})</span>`;
+        }
+
+        const dock = document.getElementById('artisans-dock');
+        dock.className = `grid grid-cols-${state.artisans.length} gap-1.5 sm:gap-2 mb-2`;
+
+        const readyCount = state.artisans.filter(a => !a.assignedTaskId && !a.resting).length;
+        document.getElementById('selected-artisan-pill').textContent = `${readyCount} of ${state.artisans.length} Ready`;
+
+        dock.innerHTML = state.artisans.map(a => {
+            const isBurnedOut = a.stamina < 35;
+
+            let statusTag = `<span class="text-[9px] font-bold text-[#2E6F40]">Ready</span>`;
+            if (a.resting) {
+                statusTag = `<span class="text-[9px] font-bold text-[#8C6106]">☕ Resting</span>`;
+            } else if (a.assignedTaskId) {
+                statusTag = `<span class="text-[9px] font-bold text-[#C85A32]">📌 Assigned</span>`;
+            } else if (isBurnedOut) {
+                statusTag = `<span class="text-[9px] font-bold text-[#B91C1C]">⚠️ Burnout</span>`;
+            }
+
+            return `
+                <div class="artisan-card-item rounded-xl p-2 bg-[#FFFDF9] border-[1.5px] ${a.assignedTaskId ? 'border-[#C85A32]' : 'border-[#8C6A4A]'} flex flex-col justify-between min-w-0">
+                    <div>
+                        <div class="flex items-center justify-between gap-1">
+                            ${getArtisanPortraitSVG(a.id, 24)}
+                            <span class="text-[10px] font-bold font-mono-crisp ${isBurnedOut ? 'text-[#B91C1C]' : 'text-[#2E6F40]'}">
+                                ${a.stamina}%
+                            </span>
+                        </div>
+                        <div class="artisan-card-name text-[11px] font-bold text-[#241B15] mt-1 truncate">${a.name}</div>
+                        <div class="text-[10px] font-medium text-[#5A4D41] truncate">${a.skill}</div>
+                    </div>
+
+                    <div class="mt-1 pt-1 border-t border-[#8C6A4A]/30 flex items-center justify-between gap-1">
+                        ${statusTag}
+                        <button type="button" onclick="toggleRestBreak('${a.id}', event)" title="Rest Break (+45% Stamina)" class="artisan-rest-btn min-h-[26px] px-1.5 py-0.5 rounded bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A]/60 text-[9px] font-bold text-[#3D2412] shrink-0 cursor-pointer">
+                            ${a.resting ? 'Cancel' : '☕ Rest'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderAll() {
+        renderLevelTabs();
+        renderHUD();
+        renderDiorama();
+
+        const charterWs = document.getElementById('charter-workspace');
+        const wbsTreeWs = document.getElementById('wbs-tree-workspace');
+
+        if (state.level === 1 && state.phase === 'charter') {
+            charterWs.classList.remove('hidden');
+            wbsTreeWs.classList.add('hidden');
+            renderCharter();
+        } else {
+            charterWs.classList.add('hidden');
+            wbsTreeWs.classList.remove('hidden');
+            renderInlineWBSTree();
+        }
+
+        renderDock();
+    }
+
+    function handleViewportChange() {
+        RetinaConfetti.resizeCanvas();
+    }
+
+    // ==========================================
+    // 14. INITIALIZATION & GUARANTEED TUTORIAL LAUNCH
+    // ==========================================
+    function bootApp() {
+        injectBrandingElements();
+        RetinaConfetti.resizeCanvas();
+        state = createLevelState(1);
+        renderAll();
+        tutorialState.showTutorial = true;
+        tutorialState.step = 0;
+        renderTutorialModal();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bootApp);
+    } else {
+        bootApp();
+    }
+
+    window.addEventListener('resize', handleViewportChange);
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', handleViewportChange);
+    }
+</script>
+</body>
+</html>
