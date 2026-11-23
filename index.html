@@ -315,7 +315,7 @@
                                 by RekaSantai
                             </span>
                         </div>
-                        <p id="header-commission-subtitle" class="text-[11px] font-medium text-[#EBD9BC] mt-1 truncate">Level 1 • Main Bazaar Coffee Cart</p>
+                        <p id="header-commission-subtitle" class="text-[11px] font-medium text-[#EBD9BC] mt-1 truncate">Level 1 • Main Bazaar Coffee Cart (RM 500 • 3 Days)</p>
                     </div>
                 </div>
 
@@ -329,16 +329,19 @@
                 </div>
             </div>
 
-            <!-- Sequential Lifecycle Level Switcher Tabs -->
+            <!-- Sequential Lifecycle Level Switcher Tabs with 3-Star Mastery Badges -->
             <nav aria-label="Project Lifecycle Levels" class="grid grid-cols-3 gap-1.5 mb-2 bg-[#3D2412] p-1 rounded-xl border border-[#8C5E35]">
-                <button id="tab-lvl-1" type="button" onclick="switchLevel(1)" class="min-h-[36px] py-1.5 px-1 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
-                    <span>📜</span> <span>L1: Charter</span>
+                <button id="tab-lvl-1" type="button" onclick="switchLevel(1)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                    <span class="flex items-center gap-1"><span>📜</span> <span>L1: Charter</span></span>
+                    <span id="tab-stars-1" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
-                <button id="tab-lvl-2" type="button" onclick="switchLevel(2)" class="min-h-[36px] py-1.5 px-1 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
-                    <span>📦</span> <span>L2: WBS</span>
+                <button id="tab-lvl-2" type="button" onclick="switchLevel(2)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                    <span class="flex items-center gap-1"><span>📦</span> <span>L2: WBS</span></span>
+                    <span id="tab-stars-2" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
-                <button id="tab-lvl-3" type="button" onclick="switchLevel(3)" class="min-h-[36px] py-1.5 px-1 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
-                    <span>🗓️</span> <span>L3: Schedule</span>
+                <button id="tab-lvl-3" type="button" onclick="switchLevel(3)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                    <span class="flex items-center gap-1"><span>🗓️</span> <span>L3: Control</span></span>
+                    <span id="tab-stars-3" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
             </nav>
 
@@ -376,15 +379,15 @@
                 <div class="grid grid-cols-3 gap-1.5 mt-1">
                     <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
                         <div class="text-[10px] font-medium text-[#DECBA8]">💰 Budget</div>
-                        <div id="hud-budget" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#F6D365] truncate">RM 350</div>
+                        <div id="hud-budget" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#F6D365] truncate">RM 500</div>
                     </div>
                     <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
                         <div class="text-[10px] font-medium text-[#DECBA8]">📅 Schedule</div>
-                        <div id="hud-day" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#FFFDF8] truncate">2 Days Left</div>
+                        <div id="hud-day" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#FFFDF8] truncate">3 Days Left</div>
                     </div>
                     <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
                         <div class="text-[10px] font-medium text-[#DECBA8]">📐 Scope</div>
-                        <div id="hud-scope" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#A7F3D0] truncate">0/4 Charter</div>
+                        <div id="hud-scope" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#A7F3D0] truncate">0/8 Charter</div>
                     </div>
                 </div>
             </div>
@@ -397,7 +400,7 @@
             </section>
 
             <!-- Wide / Unfolded Duo Project Brief & PM Concept Reference Card -->
-            <div id="wide-brief-card" class="hidden min-[600px]:block mt-2.5 paper-card rounded-xl p-3 bg-[#FFFDF9]"></div>
+            <div id="wide-brief-card" class="block mt-1.5 min-[600px]:mt-2.5 paper-card rounded-xl p-2.5 min-[600px]:p-3 bg-[#FFFDF9]"></div>
         </div>
     </div>
 
@@ -448,7 +451,7 @@
     <!-- EXECUTION OVERLAY (Workday Progress Simulation) -->
     <div id="execution-overlay" class="hidden absolute inset-0 z-40 bg-[#241B15]/80 flex items-center justify-center p-4">
         <div class="paper-card w-full max-w-[400px] rounded-2xl p-5 text-center animate-crisp-in border-2 border-[#5C3A21]">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#F1E7D3] text-3xl mb-2 border-[1.5px] border-[#8C6A4A]">
+            <div id="exec-icon" class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#F1E7D3] text-3xl mb-2 border-[1.5px] border-[#8C6A4A]">
                 ☕
             </div>
             <h3 id="exec-title" class="text-lg font-bold text-[#5C3A21]">Executing Day 1 Workday</h3>
@@ -523,13 +526,13 @@
         </div>
 
         <!-- Iron Triangle Final Scorecard -->
-        <div class="grid grid-cols-3 gap-2 bg-[#FAF5EB] p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A] mb-3 text-center">
+        <div class="grid grid-cols-3 gap-2 bg-[#FAF5EB] p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A] mb-2.5 text-center">
             <div>
                 <div class="text-[10px] font-semibold text-[#5A4D41]">Budget Saved</div>
                 <div id="retro-budget" class="text-sm font-bold font-mono-crisp text-[#2E6F40]">RM 120</div>
             </div>
             <div>
-                <div class="text-[10px] font-semibold text-[#5A4D41]">Days Remaining</div>
+                <div id="retro-time-label" class="text-[10px] font-semibold text-[#5A4D41]">Days Remaining</div>
                 <div id="retro-days" class="text-sm font-bold font-mono-crisp text-[#5C3A21]">1 Day</div>
             </div>
             <div>
@@ -538,32 +541,17 @@
             </div>
         </div>
 
-        <!-- Project Retrospective Selection -->
-        <div id="retro-reflection-section" class="space-y-2.5 mb-3">
-            <div>
-                <label class="block text-[11px] font-bold text-[#2E6F40] mb-1">✅ Project Retrospective — What Went Well</label>
-                <div class="grid grid-cols-1 gap-1.5">
-                    <button type="button" onclick="selectRetro('wentWell', 0, this)" class="retro-opt-well min-h-[42px] text-left text-xs p-2.5 rounded-xl border-2 border-[#2E6F40] bg-[#FFF9E6] transition cursor-pointer">
-                        📐 Approving the Project Charter and WBS early kept Scope clear and prevented wasted effort.
-                    </button>
-                    <button type="button" onclick="selectRetro('wentWell', 1, this)" class="retro-opt-well min-h-[42px] text-left text-xs p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#2E6F40]/10 transition cursor-pointer">
-                        ☕ Scheduling Rest breaks prevented team Burnout and kept productivity steady.
-                    </button>
-                </div>
+        <!-- 3-Star Iron Triangle Mastery Breakdown -->
+        <div id="retro-stars-box" class="bg-[#FFFDF9] p-2.5 rounded-xl border-[1.5px] border-[#C58F2A] mb-3">
+            <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-[#7A5404]">Iron Triangle Mastery Rating</span>
+                <span id="retro-stars-display" class="text-sm tracking-wide">⭐⭐⭐</span>
             </div>
-
-            <div>
-                <label class="block text-[11px] font-bold text-[#C85A32] mb-1">📝 Project Retrospective — What to Improve</label>
-                <div class="grid grid-cols-1 gap-1.5">
-                    <button type="button" onclick="selectRetro('toImprove', 0, this)" class="retro-opt-improve min-h-[42px] text-left text-xs p-2.5 rounded-xl border-2 border-[#C85A32] bg-[#FFF9E6] transition cursor-pointer">
-                        🔗 Prioritizing Critical Path tasks first prevents downstream Dependency delays.
-                    </button>
-                    <button type="button" onclick="selectRetro('toImprove', 1, this)" class="retro-opt-improve min-h-[42px] text-left text-xs p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#C85A32]/10 transition cursor-pointer">
-                        🛡️ Using Contingency Reserve for Risk Mitigation and Change Control protects Schedule and Budget.
-                    </button>
-                </div>
-            </div>
+            <div id="retro-stars-criteria" class="space-y-1 text-[11px] text-[#241B15]"></div>
         </div>
+
+        <!-- Project Retrospective Selection (Populated dynamically per chapter) -->
+        <div id="retro-reflection-section" class="space-y-2.5 mb-3"></div>
 
         <!-- Unlocked PM Principle Badge -->
         <div id="retro-badge-box" class="bg-[#FFF9E6] p-3 rounded-xl border-[1.5px] border-[#C58F2A] mb-4">
@@ -648,8 +636,8 @@
 
     const TUTORIAL_STEPS = [
         {
-            badge: 'Step 1 of 3 • Welcome',
-            title: 'Welcome to Oh my PM!',
+            badge: 'Step 1 of 3 • Career Arc',
+            title: 'From Street Cart to Landmark Kopitiam',
             subtitle: 'A RekaSantai Game',
             illustration: `
                 <svg viewBox="0 0 280 86" shape-rendering="geometricPrecision" class="w-full h-[84px] rounded-xl border border-[#8C6A4A]/50 bg-[#F5E8CE] block">
@@ -666,12 +654,12 @@
             `,
             body: `
                 <p class="text-xs text-[#241B15] leading-relaxed">
-                    Restore heritage Sarawakian shops across Main Bazaar, Siniawan Night Market, and Carpenter Street by mastering real <strong>Project Management</strong> step-by-step.
+                    Grow your Sarawakian heritage restoration reputation across <strong>three progressively bigger commissions</strong>—each unlocking higher stakes and real <strong>Project Management</strong> tools:
                 </p>
                 <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
-                    <div>📜 <strong>Level 1:</strong> Define &amp; approve a <strong>Project Charter</strong></div>
-                    <div>📦 <strong>Level 2:</strong> Decompose Scope into a <strong>Work Breakdown Structure (WBS)</strong></div>
-                    <div>🗓️ <strong>Level 3:</strong> Manage <strong>Schedule</strong>, <strong>Dependencies</strong> &amp; <strong>Change Requests</strong></div>
+                    <div>📜 <strong>Ch 1 • Main Bazaar Cart (RM 500 • 3 Days):</strong> Draft a <strong>Project Charter</strong></div>
+                    <div>📦 <strong>Ch 2 • Siniawan Stall (RM 2,500 • 10 Days):</strong> Build via <strong>WBS 100% Rule</strong></div>
+                    <div>🗓️ <strong>Ch 3 • Carpenter St. Kopitiam (RM 15,000 • 6 Weeks):</strong> Lead weekly <strong>Critical Path &amp; Control</strong></div>
                 </div>
             `
         },
@@ -694,19 +682,19 @@
             `,
             body: `
                 <p class="text-xs text-[#241B15] leading-relaxed">
-                    Every project balances <strong>Scope</strong>, <strong>Schedule</strong>, and <strong>Budget</strong>. Progress sequentially through the PM lifecycle:
+                    Every project balances <strong>Scope</strong>, <strong>Schedule</strong>, and <strong>Budget</strong>. Earn client referrals by mastering each stage:
                 </p>
                 <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
-                    <div>1️⃣ <strong>Project Charter (L1):</strong> Lock Objective, Constraints, Success Criteria &amp; Out of Scope.</div>
-                    <div>2️⃣ <strong>Work Breakdown Structure / WBS (L2):</strong> Decompose Work Packages into concrete 1-day Tasks.</div>
-                    <div>3️⃣ <strong>Schedule, Dependencies &amp; Change Control (L3):</strong> Protect the Critical Path and Contingency Reserve.</div>
+                    <div>1️⃣ <strong>Level 1 • Project Charter:</strong> Lock down Objective, Constraints, Success Criteria &amp; Out of Scope.</div>
+                    <div>2️⃣ <strong>Level 2 • Work Breakdown Structure (WBS):</strong> Decompose Work Packages &amp; multi-day Tasks (100% Rule).</div>
+                    <div>3️⃣ <strong>Level 3 • Weekly Schedule &amp; Control:</strong> Manage Dependencies, Critical Path, Monsoon Risk &amp; Change Requests.</div>
                 </div>
             `
         },
         {
             badge: 'Step 3 of 3 • Execution & Team',
-            title: 'One-Tap Assign, Stamina & Day Cycle',
-            subtitle: 'Decompose, Assign & Start Workday',
+            title: '1-Tap Assign, Stamina & Work Cycles',
+            subtitle: 'Decompose, Assign & Execute',
             illustration: `
                 <svg viewBox="0 0 280 86" shape-rendering="geometricPrecision" class="w-full h-[84px] rounded-xl border border-[#8C6A4A]/50 bg-[#FAF5EB] block">
                     <rect x="16" y="14" width="76" height="58" rx="8" fill="#FFFDF9" stroke="#5C3A21" stroke-width="1.4"/>
@@ -721,17 +709,17 @@
 
                     <rect x="188" y="14" width="76" height="58" rx="8" fill="#FCEEE8" stroke="#C85A32" stroke-width="1.4"/>
                     <text x="226" y="34" text-anchor="middle" font-size="14">☀️</text>
-                    <text x="226" y="49" text-anchor="middle" fill="#9E3514" font-size="7.5" font-weight="700">Start Workday</text>
+                    <text x="226" y="49" text-anchor="middle" fill="#9E3514" font-size="7.5" font-weight="700">Workday / Week</text>
                     <text x="226" y="61" text-anchor="middle" fill="#241B15" font-size="7" font-weight="700">Build Diorama</text>
                 </svg>
             `,
             body: `
                 <p class="text-xs text-[#241B15] leading-relaxed">
-                    Tap <strong>Assign</strong> on any ready Task to automatically pair the best-skilled team member (<strong>Uncle Lim</strong>, <strong>Kak Salmah</strong>, or <strong>Danny</strong>) for a <strong>+25% speed boost</strong>.
+                    Tap <strong>Assign</strong> on any ready Task to pair the best specialist (<strong>Uncle Lim</strong>, <strong>Kak Salmah</strong>, or <strong>Danny</strong>) for a <strong>+25% speed boost</strong>.
                 </p>
                 <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
-                    <div>☕ Use <strong>Rest Breaks</strong> before stamina drops below 35% to prevent <strong>Burnout</strong> (-50% speed).</div>
-                    <div>🔗 Respect task <strong>Dependencies</strong> and advance days with <strong>Start Workday</strong> to complete the live diorama!</div>
+                    <div>☕ Schedule <strong>Rest Breaks</strong> before stamina drops below 35% to prevent <strong>Burnout</strong> (-50% speed).</div>
+                    <div>🗓️ Advance day-by-day in Level 2 (<strong>Start Workday</strong>) and week-by-week in Level 3 (<strong>Start Workweek</strong>)!</div>
                 </div>
             `
         }
@@ -918,10 +906,26 @@
     }
 
     function getDioramaTimeOfDay() {
-        const allDone = state.tasks && state.tasks.every(t => t.progress >= 100);
+        if (state.level === 1) {
+            if (state.charterAuthorized) {
+                return {
+                    label: '🎉 Charter Approved',
+                    skyTop: '#2D223C',
+                    skyBottom: '#C85A32',
+                    ambientTint: 'rgba(255, 196, 92, 0.14)'
+                };
+            }
+            return {
+                label: '📜 Initiating Phase',
+                skyTop: '#CFE8F3',
+                skyBottom: '#FAF0D7',
+                ambientTint: 'rgba(255, 250, 235, 0.04)'
+            };
+        }
+        const allDone = state.tasks && state.tasks.length > 0 && state.tasks.every(t => t.progress >= 100);
         if (allDone) {
             return {
-                label: '🏮 Dusk Glow',
+                label: '🎉 Restoration Complete',
                 skyTop: '#2D223C',
                 skyBottom: '#C85A32',
                 ambientTint: 'rgba(255, 196, 92, 0.14)'
@@ -929,14 +933,22 @@
         }
         if (state.isExecuting) {
             return {
-                label: '🌤️ Golden Afternoon',
+                label: `⚙️ ${getWorkTurnLabel()} ${state.day} of ${state.maxDays}`,
                 skyTop: '#F3B45A',
                 skyBottom: '#FCE5B4',
                 ambientTint: 'rgba(246, 180, 68, 0.12)'
             };
         }
+        if (state.level === 2 && state.phase === 'wbs_build') {
+            return {
+                label: '📦 Scope Planning (WBS)',
+                skyTop: '#CFE8F3',
+                skyBottom: '#FAF0D7',
+                ambientTint: 'rgba(255, 250, 235, 0.04)'
+            };
+        }
         return {
-            label: '☀️ Morning Sun',
+            label: `📅 ${getTimeUnit(false)} ${state.day} of ${state.maxDays}`,
             skyTop: '#CFE8F3',
             skyBottom: '#FAF0D7',
             ambientTint: 'rgba(255, 250, 235, 0.04)'
@@ -1037,10 +1049,19 @@
         `;
     }
 
+    function getCharterBucketLayerState(bucketKeys) {
+        if (!state.charterBuckets) return 'blueprint';
+        const filled = bucketKeys.reduce((sum, k) => sum + state.charterBuckets[k].filledIds.length, 0);
+        const max = bucketKeys.reduce((sum, k) => sum + state.charterBuckets[k].maxItems, 0);
+        if (filled >= max) return 'done';
+        if (filled > 0) return 'active';
+        return 'blueprint';
+    }
+
     function buildLevel1DioramaSVG() {
-        const s1 = getTaskLayerState('l1-t1');
-        const s2 = getTaskLayerState('l1-t2');
-        const s3 = getTaskLayerState('l1-t3');
+        const s1 = getCharterBucketLayerState(['objective']);
+        const s2 = getCharterBucketLayerState(['constraints', 'outOfScope']);
+        const s3 = getCharterBucketLayerState(['success']);
 
         const cartLayer = renderDioramaLayerWrapper(
             s1,
@@ -1115,11 +1136,7 @@
                 <rect x="0" y="108" width="360" height="14" fill="#B85332" stroke="#3D2412" stroke-width="1.3"/>
             `,
             layers: cartLayer + stockLayer + brewLayer,
-            stationCoords: {
-                'l1-t1': { x: 102, y: 105 },
-                'l1-t2': { x: 248, y: 105 },
-                'l1-t3': { x: 175, y: 105 }
-            },
+            stationCoords: {},
             restSlots: [{ x: 52, y: 104 }, { x: 280, y: 104 }, { x: 324, y: 104 }]
         };
     }
@@ -1312,8 +1329,8 @@
         const stageLayer = hasStage ? renderDioramaLayerWrapper(
             sStage,
             `<rect x="36" y="96" width="66" height="12" rx="2" fill="#8C5227" stroke="#241B15" stroke-width="1.3"/>
-            <rect x="44" y="8" width="54" height="14" rx="4" fill="#3B0764" stroke="#F472B6" stroke-width="1.4"/>
-            <text x="71" y="17.5" text-anchor="middle" fill="#F9A8D4" font-size="6.2" font-weight="700">🎤 STAGE</text>`,
+            <rect x="44" y="8" width="54" height="14" rx="3" fill="#3D2412" stroke="#C58F2A" stroke-width="1.4"/>
+            <text x="71" y="17.5" text-anchor="middle" fill="#F6D365" font-size="6.2" font-weight="700">🎤 STAGE</text>`,
             `<rect x="36" y="96" width="66" height="12" rx="2" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>`,
             { x: 68, y: 92 }
         ) : '';
@@ -1376,9 +1393,17 @@
             }
         });
 
-        const phaseBadgeText = (state.level === 1 && state.phase === 'charter')
-            ? '📐 Blueprint • 0% Built'
-            : `🏗️ Scope Built: ${pct}%`;
+        let phaseBadgeText = `🏗️ Scope Built: ${pct}%`;
+        if (state.level === 1) {
+            const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+            const totalStmts = state.statements.length;
+            phaseBadgeText = state.charterAuthorized
+                ? '📜 Charter: 100% Approved'
+                : `📜 Charter: ${totalSorted}/${totalStmts} Defined`;
+        } else if (state.level === 2 && state.phase === 'wbs_build') {
+            const totalPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+            phaseBadgeText = `📦 WBS: ${totalPlaced}/${state.wbsCards.length} Mapped`;
+        }
 
         container.innerHTML = `
             <svg id="diorama-svg-el" viewBox="0 0 360 122" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision" class="w-full block">
@@ -1412,37 +1437,38 @@
         if (!card) return;
 
         if (state.level === 1) {
+            const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
             card.innerHTML = `
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 1 • Initiating Phase</span>
-                    <span class="text-[10px] font-bold font-mono-crisp text-[#5C3A21]">Day ${state.day}/${state.maxDays}</span>
+                <div class="flex items-center justify-between mb-0.5">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 1 • Starter Commission (RM 500 • 3 Days)</span>
+                    <span class="text-[10px] font-bold font-mono-crisp text-[#5C3A21]">Charter: ${totalSorted}/${state.statements.length}</span>
                 </div>
                 <div class="text-xs font-bold text-[#241B15]">Main Bazaar Five-Foot Way Coffee Cart</div>
-                <p class="text-[11px] text-[#5A4D41] mt-1 leading-relaxed">
-                    Define <strong>Objective</strong>, <strong>Constraints</strong>, <strong>Success Criteria</strong>, and <strong>Out of Scope</strong> in the Project Charter before approving site work.
+                <p class="text-[11px] text-[#5A4D41] mt-0.5 leading-snug">
+                    Freshly certified in Kuching, you take on Auntie Mei’s compact coffee cart. Lock down a clear <strong>Project Charter</strong> to prove your discipline and win larger referrals.
                 </p>
             `;
         } else if (state.level === 2) {
-            const unpacked = state.workPackages.filter(w => w.decomposed).length;
+            const totalPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
             card.innerHTML = `
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 2 • Scope Planning</span>
-                    <span class="text-[10px] font-bold font-mono-crisp text-[#2E6F40]">WBS: ${unpacked}/${state.workPackages.length} Unpacked</span>
+                <div class="flex items-center justify-between mb-0.5">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 2 • Community Expansion (RM 2,500 • 10 Days)</span>
+                    <span class="text-[10px] font-bold font-mono-crisp text-[#2E6F40]">WBS: ${totalPlaced}/${state.wbsCards.length} Mapped</span>
                 </div>
                 <div class="text-xs font-bold text-[#241B15]">Siniawan Night Market Heritage Stall</div>
-                <p class="text-[11px] text-[#5A4D41] mt-1 leading-relaxed">
-                    Apply the <strong>WBS 100% Rule</strong>: decompose every high-level Work Package into concrete, assignable 1-day Tasks before starting execution.
+                <p class="text-[11px] text-[#5A4D41] mt-0.5 leading-snug">
+                    Impressed by your Main Bazaar Charter, Auntie Mei refers you to the Siniawan Heritage Committee! Scale up 5× using the <strong>WBS 100% Rule</strong> across multi-day tasks.
                 </p>
             `;
         } else {
             card.innerHTML = `
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 3 • Schedule, Risk &amp; Control</span>
-                    <span class="text-[10px] font-bold font-mono-crisp text-[#5C3A21]">Day ${state.day}/${state.maxDays}</span>
+                <div class="flex items-center justify-between mb-0.5">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 3 • Flagship Restoration (RM 15,000 • 6 Weeks)</span>
+                    <span class="text-[10px] font-bold font-mono-crisp text-[#5C3A21]">Week ${state.day}/${state.maxDays}</span>
                 </div>
-                <div class="text-xs font-bold text-[#241B15]">Carpenter Street Kopitiam Restoration</div>
-                <p class="text-[11px] text-[#5A4D41] mt-1 leading-relaxed">
-                    Follow <strong>Dependencies</strong> along the <strong>Critical Path</strong>, guard your <strong>Contingency Reserve (RM ${state.contingencyReserve})</strong>, and protect Scope from <strong>Scope Creep</strong>.
+                <div class="text-xs font-bold text-[#241B15]">Carpenter Street Pre-War Kopitiam</div>
+                <p class="text-[11px] text-[#5A4D41] mt-0.5 leading-snug">
+                    Your Siniawan pavilion went viral! Now the Heritage Guild awards a 6-week commercial restoration. Lead weekly <strong>Critical Path</strong> work, guard your <strong>RM ${state.contingencyReserve.toLocaleString()} Reserve</strong>, and curb <strong>Scope Creep</strong>.
                 </p>
             `;
         }
@@ -1544,45 +1570,82 @@
     // ==========================================
     let currentLevel = 1;
     let completedLevels = { 1: false, 2: false, 3: false };
+    let levelStars = { 1: 0, 2: 0, 3: 0 };
+    const CRASH_COST = 500;
+    const CRASH_SPEED_BONUS = 50;
+    const CRASH_EXTRA_STAMINA = 15;
     let state = {};
+
+    function getTimeUnit(plural = false) {
+        if (state.level === 3) return plural ? 'Weeks' : 'Week';
+        return plural ? 'Days' : 'Day';
+    }
+
+    function getWorkTurnLabel() {
+        return state.level === 3 ? 'Workweek' : 'Workday';
+    }
 
     function createLevelState(lvl) {
         if (lvl === 1) {
             const rawStatements = [
                 {
-                    id: 'st-obj',
+                    id: 'st-obj-1',
                     targetBucket: 'objective',
-                    text: '“Build a portable teak coffee cart to serve Kopi-O, Teh C, and Roti Kahwin on Main Bazaar’s five-foot way.”',
-                    shortLabel: 'Portable Teak Coffee & Toast Cart'
+                    text: '“Build a portable teak coffee cart for Main Bazaar’s five-foot way.”',
+                    shortLabel: 'Portable Teak Coffee Cart'
                 },
                 {
-                    id: 'st-con',
+                    id: 'st-obj-2',
+                    targetBucket: 'objective',
+                    text: '“Serve Kopi-O, Teh C, and Roti Kahwin to morning patrons.”',
+                    shortLabel: 'Serve Kopi-O, Teh C & Roti Kahwin'
+                },
+                {
+                    id: 'st-con-1',
                     targetBucket: 'constraints',
-                    text: '“Keep total spending strictly within RM 350 and complete setup within 2 days.”',
-                    shortLabel: 'Budget Cap: RM 350 • Schedule: 2 Days'
+                    text: '“Keep total spending strictly within the RM 500 starter budget cap.”',
+                    shortLabel: 'Budget Cap: RM 500'
                 },
                 {
-                    id: 'st-suc',
+                    id: 'st-con-2',
+                    targetBucket: 'constraints',
+                    text: '“Complete the entire coffee cart setup within 3 days.”',
+                    shortLabel: 'Schedule Limit: 3 Days'
+                },
+                {
+                    id: 'st-suc-1',
                     targetBucket: 'success',
-                    text: '“All 3 core menu items pass a taste and quality inspection before Friday morning opening.”',
-                    shortLabel: '3 Core Items Quality-Checked'
+                    text: '“All 3 core menu items pass a taste and quality check before opening.”',
+                    shortLabel: '3 Core Menu Items Quality-Checked'
                 },
                 {
-                    id: 'st-out',
+                    id: 'st-suc-2',
+                    targetBucket: 'success',
+                    text: '“The cart passes five-foot way safety and stability inspection before Friday.”',
+                    shortLabel: 'Five-Foot Way Safety Inspection Passed'
+                },
+                {
+                    id: 'st-out-1',
                     targetBucket: 'outOfScope',
-                    text: '“Do NOT build a full Sarawak Laksa soup kitchen or neon signage.”',
-                    shortLabel: 'Excluded: Laksa Kitchen & Neon Sign'
+                    text: '“Do NOT build a full Sarawak Laksa soup kitchen.”',
+                    shortLabel: 'Excluded: Sarawak Laksa Kitchen'
+                },
+                {
+                    id: 'st-out-2',
+                    targetBucket: 'outOfScope',
+                    text: '“Do NOT install electric neon signage on the cart.”',
+                    shortLabel: 'Excluded: Electric Neon Signage'
                 }
             ];
 
             return {
                 level: 1,
-                subtitle: 'Level 1 • Initiating: Main Bazaar Coffee Cart',
-                phase: 'charter', // 'charter' -> 'execution'
+                subtitle: 'Level 1 • Main Bazaar Coffee Cart (RM 500 • 3 Days)',
+                phase: 'charter', // Pure Project Charter exercise
                 day: 1,
-                maxDays: 2,
-                budget: 350,
-                initialBudget: 350,
+                maxDays: 3,
+                budget: 500,
+                initialBudget: 500,
                 contingencyReserve: 0,
                 tarpBought: false,
                 hasWeatherRisk: false,
@@ -1592,82 +1655,90 @@
 
                 selectedStatementId: null,
                 bouncedStatementId: null,
+                bounceCount: 0,
                 charterAuthorized: false,
                 statements: scrambleStatements(rawStatements),
                 charterBuckets: {
-                    objective: { label: 'Objective', icon: '🎯', hint: 'Core project deliverable', maxItems: 1, filledIds: [] },
-                    constraints: { label: 'Constraints', icon: '⏳', hint: 'Budget & Schedule limits', maxItems: 1, filledIds: [] },
-                    success: { label: 'Success Criteria', icon: '✅', hint: 'Definition of Done', maxItems: 1, filledIds: [] },
-                    outOfScope: { label: 'Out of Scope', icon: '🚧', hint: 'Explicitly excluded', maxItems: 1, filledIds: [] }
+                    objective: { label: 'Objective', icon: '🎯', hint: 'Core project deliverables', maxItems: 2, filledIds: [] },
+                    constraints: { label: 'Constraints', icon: '⏳', hint: 'Budget & Schedule limits', maxItems: 2, filledIds: [] },
+                    success: { label: 'Success Criteria', icon: '✅', hint: 'Definition of Done', maxItems: 2, filledIds: [] },
+                    outOfScope: { label: 'Out of Scope', icon: '🚧', hint: 'Explicitly excluded items', maxItems: 2, filledIds: [] }
                 },
 
-                workPackages: [
-                    {
-                        id: 'l1-wp',
-                        title: 'Approved Coffee Cart Work Package',
-                        subtitle: '3 core tasks • RM 350 budget cap • 2-day schedule',
-                        icon: '🛒',
-                        decomposed: true,
-                        taskIds: ['l1-t1', 'l1-t2', 'l1-t3']
-                    }
-                ],
-                tasks: [
-                    {
-                        id: 'l1-t1',
-                        workPackageId: 'l1-wp',
-                        title: 'Assemble Folding Teak Cart',
-                        cost: 110,
-                        skill: 'Carpentry',
-                        outdoor: false,
-                        deps: [],
-                        progress: 0,
-                        paid: false,
-                        assignedArtisanId: null,
-                        flavor: 'assembles the folding teak frame and striped awning'
-                    },
-                    {
-                        id: 'l1-t2',
-                        workPackageId: 'l1-wp',
-                        title: 'Stock Coffee Beans & Kaya',
-                        cost: 70,
-                        skill: 'Culinary',
-                        outdoor: false,
-                        deps: [],
-                        progress: 0,
-                        paid: false,
-                        assignedArtisanId: null,
-                        flavor: 'stocks liberica coffee beans, pandan kaya, and toast loaves'
-                    },
-                    {
-                        id: 'l1-t3',
-                        workPackageId: 'l1-wp',
-                        title: 'Brew & Quality-Check 3 Drinks',
-                        cost: 50,
-                        skill: 'Culinary',
-                        outdoor: false,
-                        deps: ['l1-t1', 'l1-t2'],
-                        progress: 0,
-                        paid: false,
-                        assignedArtisanId: null,
-                        flavor: 'brews Kopi-O, pulls Teh C, and verifies Success Criteria'
-                    }
-                ],
-                artisans: [
-                    { id: 'lim', name: 'Uncle Lim', role: 'Carpenter', skill: 'Carpentry', stamina: 100, assignedTaskId: null, resting: false },
-                    { id: 'salmah', name: 'Kak Salmah', role: 'Culinary', skill: 'Culinary', stamina: 100, assignedTaskId: null, resting: false }
-                ]
+                workPackages: [],
+                tasks: [],
+                artisans: []
             };
         }
 
         if (lvl === 2) {
+            const rawWbsCards = [
+                {
+                    id: 'wbs-c1',
+                    targetBucket: 'l2-wp-1',
+                    taskId: 'l2-t1',
+                    title: 'Cut & Lash Timber Frame',
+                    meta: 'Carpentry • RM 400 • 2 Days',
+                    desc: 'Cut and lash cured bamboo and belian timber poles for the multi-bay stall.'
+                },
+                {
+                    id: 'wbs-c2',
+                    targetBucket: 'l2-wp-1',
+                    taskId: 'l2-t2',
+                    title: 'Install Pitched Canopy Roof',
+                    meta: 'Carpentry • RM 380 • 2 Days',
+                    desc: 'Secure the weatherproof pitched canopy roof across the timber pavilion.'
+                },
+                {
+                    id: 'wbs-c3',
+                    targetBucket: 'l2-wp-2',
+                    taskId: 'l2-t3',
+                    title: 'Deliver Glass Display Counter',
+                    meta: 'Logistics • RM 420 • 2 Days',
+                    desc: 'Transport handcrafted wooden-framed glass display counters from Bau town.'
+                },
+                {
+                    id: 'wbs-c4',
+                    targetBucket: 'l2-wp-2',
+                    taskId: 'l2-t4',
+                    title: 'Arrange Kek Lapis & Teh Tarik Dispenser',
+                    meta: 'Culinary • RM 350 • 1 Day',
+                    desc: 'Arrange Kek Lapis, steamed pandan kuih trays, and twin brass Teh Tarik dispensers.'
+                },
+                {
+                    id: 'wbs-c5',
+                    targetBucket: 'l2-wp-3',
+                    taskId: 'l2-t5',
+                    title: 'String Night-Market Lanterns',
+                    meta: 'Logistics • RM 320 • 1 Day',
+                    desc: 'String warm red and gold heritage lanterns across the market street.'
+                },
+                {
+                    id: 'wbs-c6',
+                    targetBucket: 'l2-wp-3',
+                    taskId: 'l2-t6',
+                    title: 'Letter Wooden Menu Signage',
+                    meta: 'Culinary • RM 280 • 1 Day',
+                    desc: 'Hand-letter the evening festival menu items onto teak signboards.'
+                },
+                {
+                    id: 'wbs-trap-wok',
+                    targetBucket: 'outOfScope',
+                    taskId: null,
+                    title: 'Install Gas-Fired Wok & Exhaust Hood',
+                    meta: 'Excluded in Charter • Out of Scope',
+                    desc: 'Install a heavy gas-fired wok range and commercial exhaust hood in the pavilion.'
+                }
+            ];
+
             return {
                 level: 2,
-                subtitle: 'Level 2 • Scope Planning: Siniawan Night Market',
-                phase: 'execution',
+                subtitle: 'Level 2 • Siniawan Night Market (RM 2,500 • 10 Days)',
+                phase: 'wbs_build', // 'wbs_build' -> 'execution'
                 day: 1,
-                maxDays: 3,
-                budget: 450,
-                initialBudget: 450,
+                maxDays: 10,
+                budget: 2500,
+                initialBudget: 2500,
                 contingencyReserve: 0,
                 tarpBought: false,
                 hasWeatherRisk: false,
@@ -1676,34 +1747,47 @@
                 retroChoice: { wentWell: 0, toImprove: 0 },
 
                 signedCharterSummary: {
-                    objective: 'Set up a heritage Kuih & Teh Tarik stall at Siniawan Night Market',
-                    constraints: 'RM 450 Budget • 3 Days Schedule',
-                    rule: 'WBS 100% Rule: Decompose all 3 Work Packages into 6 concrete 1-day Tasks before Start Workday unlocks'
+                    objective: 'Build a multi-bay Kek Lapis & Teh Tarik pavilion for Siniawan Night Market',
+                    constraints: 'RM 2,500 Budget • 10 Days Schedule',
+                    outOfScope: 'No Gas-Fired Wok Kitchen or Permanent Brick Plumbing'
+                },
+
+                selectedWbsCardId: null,
+                bouncedWbsCardId: null,
+                wbsBounceCount: 0,
+                burnoutIncidents: 0,
+                wbsAuthorized: false,
+                wbsCards: scrambleStatements(rawWbsCards),
+                wbsBuckets: {
+                    'l2-wp-1': { code: 'WBS 1.1', label: 'Timber Frame & Canopy', icon: '🎋', hint: 'Structural & roof deliverables', maxItems: 2, filledIds: [] },
+                    'l2-wp-2': { code: 'WBS 1.2', label: 'Serving Counter & Display', icon: '🥮', hint: 'Display & food setup tasks', maxItems: 2, filledIds: [] },
+                    'l2-wp-3': { code: 'WBS 1.3', label: 'Lighting & Signage', icon: '🏮', hint: 'Ambiance & menu tasks', maxItems: 2, filledIds: [] },
+                    'outOfScope': { code: 'EXCLUDED', label: 'Out of Scope (WBS 100% Rule)', icon: '🚧', hint: 'Items excluded by Charter', maxItems: 1, filledIds: [] }
                 },
 
                 workPackages: [
                     {
                         id: 'l2-wp-1',
-                        title: 'Work Package 1: Timber Frame & Canopy',
-                        subtitle: '2 concrete 1-day Tasks inside',
+                        title: 'Timber Frame & Canopy',
+                        subtitle: '2 structural Tasks (2 days each)',
                         icon: '🎋',
-                        decomposed: false,
+                        decomposed: true,
                         taskIds: ['l2-t1', 'l2-t2']
                     },
                     {
                         id: 'l2-wp-2',
-                        title: 'Work Package 2: Serving Counter & Display',
-                        subtitle: '2 concrete 1-day Tasks inside',
+                        title: 'Serving Counter & Display',
+                        subtitle: '2 counter & culinary Tasks inside',
                         icon: '🥮',
-                        decomposed: false,
+                        decomposed: true,
                         taskIds: ['l2-t3', 'l2-t4']
                     },
                     {
                         id: 'l2-wp-3',
-                        title: 'Work Package 3: Lighting & Signage',
-                        subtitle: '2 concrete 1-day Tasks inside',
+                        title: 'Lighting & Signage',
+                        subtitle: '2 finishing Tasks (1 day each)',
                         icon: '🏮',
-                        decomposed: false,
+                        decomposed: true,
                         taskIds: ['l2-t5', 'l2-t6']
                     }
                 ],
@@ -1713,23 +1797,25 @@
                         id: 'l2-t1',
                         workPackageId: 'l2-wp-1',
                         title: 'Cut & Lash Timber Frame',
-                        cost: 70,
+                        cost: 400,
+                        effort: 2,
                         skill: 'Carpentry',
                         outdoor: false,
                         deps: [],
                         progress: 0,
                         paid: false,
                         assignedArtisanId: null,
-                        flavor: 'cuts and lashes cured bamboo and timber poles for the stall frame'
+                        flavor: 'cuts and lashes cured bamboo and belian timber poles for the stall frame'
                     },
                     {
                         id: 'l2-t2',
                         workPackageId: 'l2-wp-1',
                         title: 'Install Pitched Canopy Roof',
-                        cost: 65,
+                        cost: 380,
+                        effort: 2,
                         skill: 'Carpentry',
                         outdoor: false,
-                        deps: [],
+                        deps: ['l2-t1'],
                         progress: 0,
                         paid: false,
                         assignedArtisanId: null,
@@ -1739,7 +1825,8 @@
                         id: 'l2-t3',
                         workPackageId: 'l2-wp-2',
                         title: 'Deliver Glass Display Counter',
-                        cost: 75,
+                        cost: 420,
+                        effort: 2,
                         skill: 'Logistics',
                         outdoor: false,
                         deps: [],
@@ -1751,21 +1838,23 @@
                     {
                         id: 'l2-t4',
                         workPackageId: 'l2-wp-2',
-                        title: 'Arrange Kek Lapis & Tea Samovar',
-                        cost: 65,
+                        title: 'Arrange Kek Lapis & Teh Tarik Dispenser',
+                        cost: 350,
+                        effort: 1,
                         skill: 'Culinary',
                         outdoor: false,
-                        deps: [],
+                        deps: ['l2-t3'],
                         progress: 0,
                         paid: false,
                         assignedArtisanId: null,
-                        flavor: 'arranges steamed pandan kuih and brass teh tarik samovar'
+                        flavor: 'arranges Kek Lapis, steamed pandan kuih trays, and twin brass Teh Tarik dispensers'
                     },
                     {
                         id: 'l2-t5',
                         workPackageId: 'l2-wp-3',
                         title: 'String Night-Market Lanterns',
-                        cost: 55,
+                        cost: 320,
+                        effort: 1,
                         skill: 'Logistics',
                         outdoor: false,
                         deps: [],
@@ -1778,14 +1867,15 @@
                         id: 'l2-t6',
                         workPackageId: 'l2-wp-3',
                         title: 'Letter Wooden Menu Signage',
-                        cost: 50,
+                        cost: 280,
+                        effort: 1,
                         skill: 'Culinary',
                         outdoor: false,
                         deps: [],
                         progress: 0,
                         paid: false,
                         assignedArtisanId: null,
-                        flavor: 'hand-letters the evening menu items on the wooden signage'
+                        flavor: 'hand-letters the evening festival menu items on the teak signage'
                     }
                 ],
 
@@ -1797,43 +1887,45 @@
             };
         }
 
-        // Level 3: Schedule, Dependencies, Critical Path & Control (Carpenter Street Kopitiam)
+        // Level 3: Schedule, Dependencies, Critical Path & Control (Carpenter Street Kopitiam — Weekly Cadence)
         return {
             level: 3,
-            subtitle: 'Level 3 • Schedule & Control: Carpenter St. Kopitiam',
+            subtitle: 'Level 3 • Carpenter St. Kopitiam (RM 15,000 • 6 Wks)',
             phase: 'execution',
-            day: 1,
-            maxDays: 5,
-            budget: 640, // Operating Budget
-            initialBudget: 640,
-            contingencyReserve: 80, // Dedicated Contingency Reserve
+            day: 1, // Represents current Week (1..maxDays)
+            maxDays: 6, // 6 Weeks total schedule
+            budget: 15000, // Commercial Operating Budget
+            initialBudget: 15000,
+            contingencyReserve: 2000, // Dedicated Contingency Reserve
             tarpBought: false,
             hasWeatherRisk: true,
             weatherRiskResolved: false,
             goodwillStars: 0,
+            burnoutIncidents: 0,
+            crashCount: 0,
             isExecuting: false,
             retroChoice: { wentWell: 0, toImprove: 0 },
 
             workPackages: [
                 {
                     id: 'wp-structural',
-                    title: 'Work Package A: Structural & Shutters',
-                    subtitle: '2 dependent Tasks inside',
+                    title: 'Shophouse Facade & Shutters',
+                    subtitle: '2 dependent exterior trade Tasks inside',
                     icon: '🪟',
                     decomposed: false,
                     taskIds: ['t1', 't2']
                 },
                 {
                     id: 'wp-interior',
-                    title: 'Work Package B: Interior & Brewing',
-                    subtitle: '2 dependent Tasks inside',
+                    title: 'Peranakan Counter & Brewing',
+                    subtitle: '2 dependent interior fit-out Tasks inside',
                     icon: '☕',
                     decomposed: false,
                     taskIds: ['t3', 't4']
                 },
                 {
                     id: 'wp-furnishings',
-                    title: 'Work Package C: Seating & Final Signboard',
+                    title: 'Dining Hall & Heritage Signboard',
                     subtitle: '2 completion Tasks inside',
                     icon: '🪧',
                     decomposed: true,
@@ -1844,9 +1936,11 @@
             tasks: [
                 {
                     id: 't1',
+                    crashed: false,
                     workPackageId: 'wp-structural',
-                    title: 'Sand & Refinish Shutters',
-                    cost: 80,
+                    title: 'Sand & Refinish Heritage Shutters',
+                    cost: 2200,
+                    effort: 2,
                     skill: 'Carpentry',
                     outdoor: true,
                     deps: [],
@@ -1854,13 +1948,15 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
-                    flavor: 'sands and refinishes the louvered heritage shophouse shutters'
+                    flavor: 'restores and refinishes the two-storey louvered belian shutters'
                 },
                 {
                     id: 't2',
+                    crashed: false,
                     workPackageId: 'wp-structural',
-                    title: 'Install Bamboo Sunshade',
-                    cost: 95,
+                    title: 'Install Bamboo Verandah Sunshade',
+                    cost: 2400,
+                    effort: 1,
                     skill: 'Carpentry',
                     outdoor: true,
                     deps: ['t1'],
@@ -1868,13 +1964,15 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
-                    flavor: 'mounts the woven split-bamboo sunshade along the verandah'
+                    flavor: 'mounts the woven split-bamboo sunshade across the shophouse frontage'
                 },
                 {
                     id: 't3',
+                    crashed: false,
                     workPackageId: 'wp-interior',
-                    title: 'Tile Kopi Counter',
-                    cost: 120,
+                    title: 'Tile Peranakan Kopi Counter',
+                    cost: 3200,
+                    effort: 2,
                     skill: 'Culinary',
                     outdoor: false,
                     deps: [],
@@ -1882,13 +1980,15 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
-                    flavor: 'sets floral Peranakan mosaic tiles onto the kopi counter'
+                    flavor: 'lays hand-glazed Peranakan mosaic tiles across the marble kopi bar'
                 },
                 {
                     id: 't4',
+                    crashed: false,
                     workPackageId: 'wp-interior',
-                    title: 'Calibrate Espresso & Kopi Station',
-                    cost: 100,
+                    title: 'Calibrate Brass Kopi & Espresso Station',
+                    cost: 2500,
+                    effort: 1,
                     skill: 'Culinary',
                     outdoor: false,
                     deps: ['t3'],
@@ -1896,13 +1996,15 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
-                    flavor: 'calibrates the brass kopi boiler and espresso station'
+                    flavor: 'installs and calibrates the commercial brass kopi boiler and espresso bar'
                 },
                 {
                     id: 't5',
+                    crashed: false,
                     workPackageId: 'wp-furnishings',
                     title: 'Deliver Serian Rattan Seating',
-                    cost: 110,
+                    cost: 2400,
+                    effort: 1,
                     skill: 'Logistics',
                     outdoor: false,
                     deps: [],
@@ -1910,13 +2012,15 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
-                    flavor: 'delivers handwoven Serian rattan chairs and marble table'
+                    flavor: 'delivers handwoven Serian rattan dining sets and marble-top tables'
                 },
                 {
                     id: 't6',
+                    crashed: false,
                     workPackageId: 'wp-furnishings',
-                    title: 'Hang Signboard & Final Inspection',
-                    cost: 60,
+                    title: 'Hang Gilded Signboard & Final Inspection',
+                    cost: 1400,
+                    effort: 1,
                     skill: 'Carpentry',
                     outdoor: true,
                     deps: ['t2', 't4'],
@@ -1924,7 +2028,7 @@
                     progress: 0,
                     paid: false,
                     assignedArtisanId: null,
-                    flavor: 'mounts the gilded Kopitiam signboard and completes final quality sign-off'
+                    flavor: 'hoists the gilded Kopitiam signboard and completes Heritage Guild sign-off'
                 }
             ],
 
@@ -1943,9 +2047,9 @@
         state = createLevelState(lvl);
 
         if (lvl === 1) {
-            updateGuidance('Tap a scrambled statement from Auntie Mei, then tap its matching <strong>Project Charter</strong> slot.');
+            updateGuidance('Tap a statement from Auntie Mei, then tap its matching <strong>Project Charter</strong> slot.');
         } else if (lvl === 2) {
-            updateGuidance('<strong>Step 1:</strong> Tap <strong>Decompose</strong> on each Work Package to expand its concrete 1-day Tasks inline.');
+            updateGuidance('<strong>Step 1 (WBS 100% Rule):</strong> Tap a deliverable card, then tap its matching <strong>WBS Work Package</strong> (or Out of Scope).');
         } else {
             updateGuidance('Decompose remaining <strong>Work Packages</strong>, tap <strong>Assign</strong> on ready Tasks, and watch <strong>Critical Path</strong> Dependencies.');
         }
@@ -1979,7 +2083,7 @@
 
         if (!state.selectedStatementId) {
             SoundFX.alertPop();
-            showToast('Tap one of Auntie Mei’s scrambled statement cards first.', 'info');
+            showToast('Tap one of Auntie Mei’s statement cards first.', 'info');
             updateGuidance('Select one of Auntie Mei’s statement cards above first, then tap its matching Project Charter slot.');
             return;
         }
@@ -1990,10 +2094,11 @@
         if (stmt.targetBucket !== bucketKey) {
             SoundFX.alertPop();
             state.bouncedStatementId = stmt.id;
+            state.bounceCount = (state.bounceCount || 0) + 1;
             const slotName = state.charterBuckets[bucketKey].label;
             const hints = {
                 objective: 'Objective describes the core product/deliverable being created.',
-                constraints: 'Constraints define fixed Budget (RM) and Schedule (Days) limits.',
+                constraints: 'Constraints define fixed Budget (RM) and Schedule limits.',
                 success: 'Success Criteria define measurable quality checks for completion.',
                 outOfScope: 'Out of Scope states what is explicitly excluded from the project.'
             };
@@ -2003,6 +2108,12 @@
             setTimeout(() => {
                 state.bouncedStatementId = null;
             }, 400);
+            return;
+        }
+
+        if (bucket.filledIds.length >= bucket.maxItems) {
+            SoundFX.alertPop();
+            showToast(`${bucket.label} already has ${bucket.maxItems}/${bucket.maxItems} items.`, 'info');
             return;
         }
 
@@ -2019,35 +2130,146 @@
     }
 
     function checkCharterCompleteness(lastLabel) {
+        const totalStatements = state.statements.length;
         const totalPlaced = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
-        if (totalPlaced === state.statements.length) {
-            showToast('All 4 Charter slots filled! Ready to approve.', 'success');
-            updateGuidance('All 4 statements sorted! Tap <strong>Approve Project Charter</strong> below.');
+        if (totalPlaced === totalStatements) {
+            showToast(`All ${totalStatements} Charter items sorted! Ready to approve.`, 'success');
+            updateGuidance(`All ${totalStatements} statements sorted! Tap <strong>Approve Project Charter</strong> below.`);
         } else {
-            updateGuidance(`Placed <strong>${lastLabel}</strong> (${totalPlaced}/4 sorted). Keep organizing the Project Charter.`);
+            updateGuidance(`Placed <strong>${lastLabel}</strong> (${totalPlaced}/${totalStatements} sorted). Keep organizing the Project Charter.`);
         }
     }
 
     function authorizeProjectCharter() {
+        const totalStatements = state.statements.length;
         const totalPlaced = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
-        if (totalPlaced < state.statements.length) {
+        if (totalPlaced < totalStatements) {
             SoundFX.alertPop();
-            showToast('Sort all 4 statement cards into the Charter first.', 'warn');
-            updateGuidance('Sort all 4 statement cards into the Project Charter before approving.');
+            showToast(`Sort all ${totalStatements} statement cards into the Charter first.`, 'warn');
+            updateGuidance(`Sort all ${totalStatements} statement cards into the Project Charter before approving.`);
             return;
         }
 
         state.charterAuthorized = true;
+        completedLevels[1] = true;
         SoundFX.authorizeSeal();
-        showToast('📜 Project Charter Approved!', 'success');
-        updateGuidance('📜 <strong>Project Charter Approved!</strong> Transitioning to 2-day coffee cart execution...');
-        renderCharter();
+        showToast('📜 Project Charter Approved! Phase 1 Complete!', 'success');
+        updateGuidance('📜 <strong>Project Charter Approved!</strong> Initiating Phase complete — opening Project Retrospective...');
+        renderAll();
+
+        setTimeout(() => {
+            openRetrospective(true);
+        }, 950);
+    }
+
+    // ==========================================
+    // 9B. LEVEL 2: WBS DECOMPOSITION LOGIC (WBS 100% RULE)
+    // ==========================================
+    function selectWbsCard(cardId) {
+        if (state.wbsAuthorized) return;
+        SoundFX.woodClick();
+        state.selectedWbsCardId = (state.selectedWbsCardId === cardId) ? null : cardId;
+        state.bouncedWbsCardId = null;
+        renderWbsBuilder();
+    }
+
+    function handleWbsBucketClick(bucketKey) {
+        if (state.wbsAuthorized) return;
+        const bucket = state.wbsBuckets[bucketKey];
+        if (!bucket) return;
+
+        // Allow removing placed item if clicking a filled bucket with nothing selected
+        if (bucket.filledIds.length > 0 && !state.selectedWbsCardId) {
+            bucket.filledIds.pop();
+            SoundFX.woodClick();
+            renderHUD();
+            renderDiorama();
+            renderWbsBuilder();
+            renderDock();
+            return;
+        }
+
+        if (!state.selectedWbsCardId) {
+            SoundFX.alertPop();
+            showToast('Tap a deliverable card above first.', 'info');
+            updateGuidance('Select a deliverable card above first, then tap its matching <strong>WBS Work Package</strong> slot.');
+            return;
+        }
+
+        const card = state.wbsCards.find(c => c.id === state.selectedWbsCardId);
+        if (!card) return;
+
+        if (card.targetBucket !== bucketKey) {
+            SoundFX.alertPop();
+            state.bouncedWbsCardId = card.id;
+            state.wbsBounceCount = (state.wbsBounceCount || 0) + 1;
+            const hints = {
+                'l2-wp-1': 'WBS 1.1 covers structural timber framing and the pitched canopy roof.',
+                'l2-wp-2': 'WBS 1.2 covers the glass display counter, Kek Lapis, and Teh Tarik dispenser.',
+                'l2-wp-3': 'WBS 1.3 covers night-market lanterns and wooden menu signage.',
+                'outOfScope': 'Out of Scope is only for items explicitly excluded by the Siniawan Project Charter (such as the Gas-Fired Wok & Exhaust Hood).'
+            };
+            const extraOutNote = card.targetBucket === 'outOfScope'
+                ? ' Gas-Fired Wok &amp; Exhaust Hood is excluded by the Siniawan Charter — place it in <strong>Out of Scope</strong>!'
+                : '';
+            showToast(`↩️ Bounced back! Doesn't belong in ${bucket.label}.`, 'warn');
+            updateGuidance(`↩️ <strong>WBS 100% Rule Check:</strong> ${hints[bucketKey]}${extraOutNote}`);
+            renderWbsBuilder();
+            setTimeout(() => {
+                state.bouncedWbsCardId = null;
+            }, 400);
+            return;
+        }
+
+        if (bucket.filledIds.length >= bucket.maxItems) {
+            SoundFX.alertPop();
+            showToast(`${bucket.label} already has ${bucket.maxItems}/${bucket.maxItems} items.`, 'info');
+            return;
+        }
+
+        if (!bucket.filledIds.includes(card.id)) {
+            bucket.filledIds.push(card.id);
+        }
+        state.selectedWbsCardId = null;
+        state.bouncedWbsCardId = null;
+        SoundFX.woodClick();
+
+        const totalCards = state.wbsCards.length;
+        const totalPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+        if (totalPlaced === totalCards) {
+            showToast(`All ${totalCards} WBS items mapped! Ready to approve WBS.`, 'success');
+            updateGuidance(`All ${totalCards} scope items decomposed into the WBS! Tap <strong>Approve WBS &amp; Start Build</strong> below.`);
+        } else {
+            updateGuidance(`Decomposed <strong>${card.title}</strong> (${totalPlaced}/${totalCards} mapped). Keep building the WBS Tree.`);
+        }
+
+        renderHUD();
+        renderDiorama();
+        renderWbsBuilder();
+        renderDock();
+    }
+
+    function approveWbsBaseline() {
+        const totalCards = state.wbsCards.length;
+        const totalPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+        if (totalPlaced < totalCards) {
+            SoundFX.alertPop();
+            showToast(`Map all ${totalCards} deliverable cards into the WBS first.`, 'warn');
+            updateGuidance(`Decompose all ${totalCards} deliverable cards into the WBS Tree before starting execution.`);
+            return;
+        }
+
+        state.wbsAuthorized = true;
+        SoundFX.authorizeSeal();
+        showToast('📦 WBS Baseline Approved! Team Unlocked!', 'success');
+        updateGuidance('📦 <strong>WBS Approved!</strong> Now assign your team to the decomposed WBS Tasks.');
+        renderWbsBuilder();
 
         setTimeout(() => {
             state.phase = 'execution';
-            updateGuidance('Project Charter approved! Tap <strong>Assign</strong> on ready Tasks to pair the best team member.');
+            updateGuidance('<strong>Step 2:</strong> Tap <strong>⚡ Assign</strong> on ready WBS Tasks (complete prerequisite tasks first!), then tap <strong>☀️ Start Workday</strong>.');
             renderAll();
-        }, 1250);
+        }, 1050);
     }
 
     // ==========================================
@@ -2125,6 +2347,7 @@
             const existing = state.artisans.find(a => a.id === task.assignedArtisanId);
             if (existing) existing.assignedTaskId = null;
             task.assignedArtisanId = null;
+            task.crashed = false;
             SoundFX.woodClick();
             updateGuidance(`Unassigned team member from <strong>${task.title}</strong>.`);
             renderAll();
@@ -2133,8 +2356,8 @@
 
         if (!task.paid && state.budget < task.cost) {
             SoundFX.alertPop();
-            showToast(`⚠️ Insufficient Budget! Need RM ${task.cost}.`, 'warn');
-            updateGuidance(`⚠️ Insufficient Budget! Need <strong>RM ${task.cost}</strong> to start this Task.`);
+            showToast(`⚠️ Insufficient Budget! Need RM ${task.cost.toLocaleString()}.`, 'warn');
+            updateGuidance(`⚠️ Insufficient Budget! Need <strong>RM ${task.cost.toLocaleString()}</strong> to start this Task.`);
             return;
         }
 
@@ -2193,6 +2416,39 @@
         renderAll();
     }
 
+    // Level 3 Schedule Crashing Lever: Spend +RM 45 & +15% extra stamina for +50% task speed
+    function toggleTaskCrash(taskId, event) {
+        if (event) event.stopPropagation();
+        if (state.isExecuting || state.level !== 3) return;
+
+        const task = state.tasks.find(t => t.id === taskId);
+        if (!task || !task.assignedArtisanId || task.progress >= 100) return;
+
+        if (!task.crashed) {
+            const reservedForOtherTasks = state.tasks.reduce((sum, t) => {
+                if (t.id === task.id || !t.assignedArtisanId || t.progress >= 100) return sum;
+                return sum + (t.paid ? 0 : t.cost) + (t.crashed ? CRASH_COST : 0);
+            }, 0);
+            const neededForThisTask = (task.paid ? 0 : task.cost) + CRASH_COST;
+            if (state.budget - reservedForOtherTasks < neededForThisTask) {
+                SoundFX.alertPop();
+                showToast(`⚠️ Need RM ${CRASH_COST.toLocaleString()} spare operating budget to Crash!`, 'warn');
+                updateGuidance(`⚠️ <strong>Insufficient Budget to Crash:</strong> Need <strong>RM ${CRASH_COST.toLocaleString()}</strong> spare operating budget for overtime compression.`);
+                return;
+            }
+            task.crashed = true;
+            SoundFX.coffeeClink();
+            showToast(`⚡ Schedule Crash ON (+50% Speed, -RM ${CRASH_COST.toLocaleString()})`, 'info');
+            updateGuidance(`⚡ <strong>Schedule Crashing Active</strong> on <strong>${task.title}</strong> (+50% Speed for +RM ${CRASH_COST.toLocaleString()} &amp; -${CRASH_EXTRA_STAMINA}% extra stamina).`);
+        } else {
+            task.crashed = false;
+            SoundFX.woodClick();
+            showToast('Schedule Crash removed.', 'info');
+            updateGuidance(`Removed Schedule Crash from <strong>${task.title}</strong>.`);
+        }
+        renderAll();
+    }
+
     function toggleRestBreak(artisanId, event) {
         if (event) event.stopPropagation();
         if (state.isExecuting) return;
@@ -2220,6 +2476,10 @@
             authorizeProjectCharter();
             return;
         }
+        if (state.level === 2 && state.phase === 'wbs_build') {
+            approveWbsBaseline();
+            return;
+        }
         startWorkday();
     }
 
@@ -2229,10 +2489,13 @@
     function startWorkday() {
         if (state.isExecuting) return;
 
+        const turnWord = getWorkTurnLabel().toLowerCase();
+        const unitLower = getTimeUnit(false).toLowerCase();
+
         if (!allWorkPackagesDecomposed()) {
             SoundFX.alertPop();
             showToast('📦 Decompose all Work Packages first (Step 1).', 'warn');
-            updateGuidance('📦 <strong>Step 1 Incomplete:</strong> Tap <strong>Decompose</strong> on all Work Packages before starting the workday.');
+            updateGuidance(`📦 <strong>Step 1 Incomplete:</strong> Tap <strong>Decompose</strong> on all Work Packages before starting the ${turnWord}.`);
             return;
         }
 
@@ -2240,7 +2503,7 @@
         if (activeAssignments.length === 0) {
             SoundFX.alertPop();
             showToast('Tap Assign on at least one ready Task first.', 'warn');
-            updateGuidance('Tap <strong>Assign</strong> on at least one ready Task before starting the workday.');
+            updateGuidance(`Tap <strong>Assign</strong> on at least one ready Task before starting the ${turnWord}.`);
             return;
         }
 
@@ -2250,7 +2513,17 @@
         const overlay = document.getElementById('execution-overlay');
         const progressBar = document.getElementById('exec-progress-bar');
         const logsContainer = document.getElementById('exec-logs');
-        document.getElementById('exec-title').textContent = `Executing Day ${state.day} Workday`;
+        const execIcon = document.getElementById('exec-icon');
+        if (execIcon) {
+            execIcon.textContent = state.level === 2 ? '🏮' : state.level === 3 ? '🏛️' : '☕';
+        }
+        document.getElementById('exec-title').textContent = `Executing ${getTimeUnit(false)} ${state.day} ${getWorkTurnLabel()}`;
+        const execSub = document.getElementById('exec-subtitle');
+        if (execSub) {
+            execSub.textContent = state.level === 3
+                ? 'Your crew is restoring the Carpenter Street shophouse...'
+                : 'Your crew is building at Siniawan Night Market...';
+        }
         logsContainer.innerHTML = '';
         progressBar.style.width = '0%';
         overlay.classList.remove('hidden');
@@ -2281,24 +2554,39 @@
                 task.paid = true;
             }
 
-            let speed = 100;
+            const effort = task.effort || 1;
+            let rawSpeed = 100;
             if (artisan.skill === task.skill) {
-                speed += 25;
+                rawSpeed += 25;
             }
+
+            let speed = Math.round(rawSpeed / effort);
+
             const isBurnedOut = artisan.stamina < 35;
             if (isBurnedOut) {
-                speed *= 0.5;
+                speed = Math.round(speed * 0.5);
+                state.burnoutIncidents = (state.burnoutIncidents || 0) + 1;
+            }
+
+            const isCrashed = Boolean(task.crashed && state.level === 3 && state.budget >= CRASH_COST);
+            if (isCrashed) {
+                state.budget -= CRASH_COST;
+                state.crashCount = (state.crashCount || 0) + 1;
+                speed += CRASH_SPEED_BONUS;
             }
 
             let note = `🔨 <strong>${artisan.name}</strong> ${task.flavor}.`;
             if (rainLostOutdoorDay && task.outdoor) {
                 speed = 0;
-                note = `🌧️ <strong>Monsoon Rain!</strong> Outdoor work on <strong>${task.title}</strong> lost 1 full day (no Risk Mitigation tarp).`;
+                note = `🌧️ <strong>Monsoon Rain!</strong> Outdoor work on <strong>${task.title}</strong> lost 1 full ${unitLower} (no Risk Mitigation tarp).`;
             } else {
                 if (isBurnedOut) {
                     note += ` <span class="text-[#C85A32] font-bold">(Burnout: -50% speed)</span>`;
+                }
+                if (isCrashed) {
+                    note += ` <span class="text-[#9E3514] font-bold">(⚡ Crashed: +50% speed, -RM ${CRASH_COST.toLocaleString()})</span>`;
                 } else if (isRainDay && task.outdoor && state.tarpBought) {
-                    note += ` <span class="text-[#2E6F40] font-bold">(Waterproof tarp Risk Mitigation active!)</span>`;
+                    note += ` <span class="text-[#2E6F40] font-bold">(Heavy-duty tarp Risk Mitigation active!)</span>`;
                 }
             }
 
@@ -2310,9 +2598,11 @@
             }
             logLines.push(note);
 
-            artisan.stamina = Math.max(0, artisan.stamina - 35);
+            const staminaDrain = 35 + (isCrashed ? CRASH_EXTRA_STAMINA : 0);
+            artisan.stamina = Math.max(0, artisan.stamina - staminaDrain);
             artisan.assignedTaskId = null;
             task.assignedArtisanId = null;
+            task.crashed = false;
         });
 
         let step = 0;
@@ -2366,41 +2656,43 @@
         renderAll();
 
         // Level 3 Mid-Project Event Modals
+        const unitLabel = getTimeUnit(false);
+        const prevUnitWord = state.level === 3 ? 'last week' : 'yesterday';
         if (state.level === 3 && state.day === 2) {
             triggerScopeCreepModal();
         } else if (state.level === 3 && state.day === 3 && !state.weatherRiskResolved) {
             triggerWeatherRiskModal();
         } else if (rainLostOutdoorDay) {
             showToast('🌧️ Monsoon rain delayed outdoor tasks!', 'warn');
-            updateGuidance(`⚠️ Monsoon rain delayed outdoor work yesterday! Tap <strong>Assign</strong> for <strong>Day ${state.day}</strong>.`);
+            updateGuidance(`⚠️ Monsoon rain delayed outdoor work ${prevUnitWord}! Tap <strong>Assign</strong> for <strong>${unitLabel} ${state.day}</strong>.`);
         } else {
-            updateGuidance(`Morning of <strong>Day ${state.day}</strong>! Check team stamina and tap <strong>Assign</strong> on ready Tasks.`);
+            updateGuidance(`Start of <strong>${unitLabel} ${state.day}</strong>! Check team stamina and tap <strong>Assign</strong> on ready Tasks.`);
         }
     }
 
-    // Level 3 — Day 2 Event: Stakeholder Scope Creep Change Request
+    // Level 3 — Week 2 Event: Stakeholder Scope Creep Change Request
     function triggerScopeCreepModal() {
         SoundFX.alertPop();
         const modal = document.getElementById('event-modal');
         document.getElementById('modal-emoji').textContent = '🎤';
-        document.getElementById('modal-tag').textContent = 'Day 2 Event • Scope Creep & Change Control';
+        document.getElementById('modal-tag').textContent = 'Week 2 Event • Scope Creep & Change Control';
         document.getElementById('modal-title').textContent = 'Stakeholder Scope Creep Request';
         document.getElementById('modal-body').innerHTML = `
-            A neighborhood committee member stops by Carpenter Street: <em>“Since your crew is already renovating the front, can you also build a <strong>street-side acoustic stage</strong> for opening night? We have <strong>RM 0 extra budget</strong> and still want to open on Day 5!”</em>
+            A neighborhood committee representative visits Carpenter Street: <em>“Since your crew is already restoring the shophouse facade, can you also build a <strong>street-side acoustic performance stage</strong> for the grand opening? We have <strong>RM 0 extra budget</strong> and still want to open in Week 6!”</em>
         `;
 
         document.getElementById('modal-actions').innerHTML = `
             <button type="button" onclick="resolveScopeCreep('reject')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#8C6A4A] bg-[#FFFDF9] hover:bg-[#F1E7D3] transition cursor-pointer">
                 <div class="text-xs font-bold text-[#241B15]">1. Reject — Out of Scope</div>
-                <div class="text-[11px] text-[#5A4D41]">Reference the approved Project Charter to prevent Scope Creep.</div>
+                <div class="text-[11px] text-[#5A4D41]">Reference the approved Heritage Guild Charter to prevent Scope Creep.</div>
             </button>
             <button type="button" onclick="resolveScopeCreep('backlog')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-2 border-[#2E6F40] bg-[#2E6F40]/10 hover:bg-[#2E6F40]/15 transition cursor-pointer">
                 <div class="text-xs font-bold text-[#235732]">2. Defer to Phase 2 Backlog ⭐</div>
-                <div class="text-[11px] text-[#2F593D]">Record the stage in the Phase 2 Backlog so current Scope and Schedule stay protected.</div>
+                <div class="text-[11px] text-[#2F593D]">Record the stage in the Phase 2 Backlog so current Scope and Week 6 Schedule stay protected.</div>
             </button>
             <button type="button" onclick="resolveScopeCreep('approve')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#C58F2A] bg-[#FFF9E6] hover:bg-[#F5E6BC] transition cursor-pointer">
-                <div class="text-xs font-bold text-[#7A5404]">3. Approve Change Request (+RM 100, +1 Day)</div>
-                <div class="text-[11px] text-[#5C4108]">Re-baseline the Iron Triangle with +RM 100 Budget, +1 Day Schedule, and 1 Stage Task.</div>
+                <div class="text-xs font-bold text-[#7A5404]">3. Approve Change Request (+RM 2,000, +1 Week)</div>
+                <div class="text-[11px] text-[#5C4108]">Re-baseline the Iron Triangle with +RM 2,000 Budget, +1 Week Schedule, and 1 Stage Task.</div>
             </button>
         `;
         modal.classList.remove('hidden');
@@ -2412,19 +2704,21 @@
 
         if (choice === 'reject') {
             showToast('🛡️ Rejected — Out of Scope!', 'success');
-            updateGuidance('🛡️ <strong>Scope Protected!</strong> Rejected the unapproved addition to protect the Day 5 Schedule.');
+            updateGuidance('🛡️ <strong>Scope Protected!</strong> Rejected the unapproved addition to protect the Week 6 Grand Opening.');
         } else if (choice === 'backlog') {
             state.goodwillStars += 1;
             showToast('⭐ Deferred to Phase 2 Backlog!', 'success');
-            updateGuidance('⭐ <strong>Deferred to Phase 2 Backlog!</strong> Request logged without disrupting current Scope.');
+            updateGuidance('⭐ <strong>Deferred to Phase 2 Backlog!</strong> Request logged without disrupting current Scope or Schedule.');
         } else if (choice === 'approve') {
-            state.budget += 100;
+            state.budget += 2000;
             state.maxDays += 1;
             state.tasks.push({
                 id: 't-stage',
+                crashed: false,
                 workPackageId: 'wp-furnishings',
                 title: 'Build Acoustic Stage (Change Request)',
-                cost: 100,
+                cost: 2000,
+                effort: 1,
                 skill: 'Carpentry',
                 outdoor: true,
                 deps: ['t1'],
@@ -2432,36 +2726,36 @@
                 progress: 0,
                 paid: false,
                 assignedArtisanId: null,
-                flavor: 'builds the approved acoustic stage using the re-baselined budget'
+                flavor: 'constructs the approved acoustic stage using the re-baselined budget'
             });
             const wpFurn = state.workPackages.find(w => w.id === 'wp-furnishings');
             if (wpFurn) wpFurn.taskIds.push('t-stage');
-            showToast('⚖️ Change Request Approved (+RM 100, +1 Day)', 'info');
-            updateGuidance('⚖️ <strong>Change Request Approved!</strong> Added +RM 100 Budget, +1 Day Schedule, and the Acoustic Stage Task.');
+            showToast('⚖️ Change Request Approved (+RM 2,000, +1 Week)', 'info');
+            updateGuidance('⚖️ <strong>Change Request Approved!</strong> Added +RM 2,000 Budget, +1 Week Schedule, and the Acoustic Stage Task.');
         }
         renderAll();
     }
 
-    // Level 3 — Day 3 Event: Monsoon Rain Risk Mitigation Choice
+    // Level 3 — Week 3 Event: Monsoon Rain Risk Mitigation Choice
     function triggerWeatherRiskModal() {
         SoundFX.alertPop();
         const modal = document.getElementById('event-modal');
         document.getElementById('modal-emoji').textContent = '🌧️';
-        document.getElementById('modal-tag').textContent = 'Day 3 Event • Risk Mitigation';
+        document.getElementById('modal-tag').textContent = 'Week 3 Event • Risk Mitigation';
         document.getElementById('modal-title').textContent = 'Monsoon Rain Forecast';
         document.getElementById('modal-body').innerHTML = `
-            Heavy monsoon rain clouds are rolling toward Carpenter Street! Outdoor Carpentry tasks face a <strong>50% probability of losing 1 full day</strong> unless mitigated. You have <strong>RM ${state.contingencyReserve}</strong> in your <strong>Contingency Reserve</strong>.
+            Heavy monsoon rain squalls are rolling across Kuching toward Carpenter Street! Outdoor Carpentry tasks face a <strong>50% probability of losing 1 full week</strong> unless mitigated. You have <strong>RM ${state.contingencyReserve.toLocaleString()}</strong> in your <strong>Contingency Reserve</strong>.
         `;
 
-        const canAffordTarp = state.contingencyReserve >= 40;
+        const canAffordTarp = state.contingencyReserve >= 1200;
         document.getElementById('modal-actions').innerHTML = `
             <button type="button" onclick="resolveWeatherRisk('mitigate')" ${canAffordTarp ? '' : 'disabled'} class="w-full min-h-[44px] text-left p-3 rounded-xl border-2 ${canAffordTarp ? 'border-[#2E6F40] bg-[#2E6F40]/10 hover:bg-[#2E6F40]/15 cursor-pointer' : 'border-[#8C6A4A] bg-[#EFE6D4] opacity-60 cursor-not-allowed'} transition">
-                <div class="text-xs font-bold text-[#235732]">1. Risk Mitigation: Deploy Waterproof Tarps (-RM 40 Reserve)</div>
-                <div class="text-[11px] text-[#2F593D]">Use Contingency Reserve to protect all outdoor tasks (0 rain delay).</div>
+                <div class="text-xs font-bold text-[#235732]">1. Risk Mitigation: Deploy Heavy-Duty Tarps (-RM 1,200 Reserve)</div>
+                <div class="text-[11px] text-[#2F593D]">Use Contingency Reserve to shelter all outdoor shophouse work (0 rain delay).</div>
             </button>
             <button type="button" onclick="resolveWeatherRisk('accept')" class="w-full min-h-[44px] text-left p-3 rounded-xl border-[1.5px] border-[#C85A32] bg-[#FFFDF9] hover:bg-[#F1E7D3] transition cursor-pointer">
-                <div class="text-xs font-bold text-[#9E3514]">2. Absorb Risk (RM 0, 50% Chance of 1-Day Delay)</div>
-                <div class="text-[11px] text-[#5A4D41]">Keep your Contingency Reserve intact and hope the storm clears.</div>
+                <div class="text-xs font-bold text-[#9E3514]">2. Absorb Risk (RM 0, 50% Chance of 1-Week Delay)</div>
+                <div class="text-[11px] text-[#5A4D41]">Keep your Contingency Reserve intact and hope the monsoon squall clears.</div>
             </button>
         `;
         modal.classList.remove('hidden');
@@ -2472,14 +2766,14 @@
         state.weatherRiskResolved = true;
         document.getElementById('event-modal').classList.add('hidden');
 
-        if (choice === 'mitigate' && state.contingencyReserve >= 40) {
-            state.contingencyReserve -= 40;
+        if (choice === 'mitigate' && state.contingencyReserve >= 1200) {
+            state.contingencyReserve -= 1200;
             state.tarpBought = true;
-            showToast('🛡️ Waterproof tarps deployed (-RM 40 Reserve)', 'success');
-            updateGuidance('🛡️ <strong>Risk Mitigation Active!</strong> Waterproof tarps deployed (-RM 40 Contingency Reserve). Outdoor tasks have 0 rain delay.');
+            showToast('🛡️ Heavy-duty tarps deployed (-RM 1,200 Reserve)', 'success');
+            updateGuidance('🛡️ <strong>Risk Mitigation Active!</strong> Heavy-duty tarps deployed (-RM 1,200 Contingency Reserve). Outdoor tasks have 0 rain delay.');
         } else {
-            showToast('🎲 Risk absorbed — watch outdoor tasks today!', 'warn');
-            updateGuidance('🎲 <strong>Risk Absorbed!</strong> Tap <strong>Assign</strong> for Day 3—outdoor work has a 50% chance of rain delay.');
+            showToast('🎲 Risk absorbed — watch outdoor tasks this week!', 'warn');
+            updateGuidance('🎲 <strong>Risk Absorbed!</strong> Tap <strong>Assign</strong> for Week 3—outdoor work has a 50% chance of rain delay.');
         }
         renderAll();
     }
@@ -2487,6 +2781,46 @@
     // ==========================================
     // 12. LEVEL COMPLETION & PROJECT RETROSPECTIVE
     // ==========================================
+    function evaluateLevelMastery(isVictory, daysRemaining, totalSaved) {
+        if (state.level === 1) {
+            const c1 = Boolean(isVictory);
+            const c2 = c1 && (state.bounceCount || 0) <= 1;
+            const c3 = c1 && (state.bounceCount || 0) === 0;
+            return {
+                stars: (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0),
+                criteria: [
+                    { met: c1, label: 'Authorize all 8 statements in the Project Charter' },
+                    { met: c2, label: `Sort Charter statements cleanly (${state.bounceCount || 0} bounce-back${(state.bounceCount || 0) === 1 ? '' : 's'}, ≤ 1 allowed)` },
+                    { met: c3, label: 'Zero sorting bounce-backs (100% first-try accuracy)' }
+                ]
+            };
+        }
+        if (state.level === 2) {
+            const c1 = Boolean(isVictory);
+            const c2 = c1 && (state.burnoutIncidents || 0) === 0 && (state.wbsBounceCount || 0) <= 1;
+            const c3 = c1 && state.budget >= 300 && (state.wbsBounceCount || 0) === 0 && (state.burnoutIncidents || 0) === 0;
+            return {
+                stars: (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0),
+                criteria: [
+                    { met: c1, label: 'Complete 100% Scope (6/6 WBS Tasks) within 10 days' },
+                    { met: c2, label: `Zero team Burnout (${state.burnoutIncidents || 0} incidents) & ≤ 1 WBS bounce` },
+                    { met: c3, label: `Save ≥ RM 300 budget (RM ${state.budget.toLocaleString()} saved) with 0 WBS bounces` }
+                ]
+            };
+        }
+        const c1 = Boolean(isVictory);
+        const c2 = c1 && (state.burnoutIncidents || 0) === 0;
+        const c3 = c2 && (daysRemaining >= 1 || totalSaved >= 1500);
+        return {
+            stars: (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0),
+            criteria: [
+                { met: c1, label: 'Complete 100% Scope within 6-week schedule & budget' },
+                { met: c2, label: `Zero team Burnout across weekly execution (${state.burnoutIncidents || 0} incidents)` },
+                { met: c3, label: `Finish ≥ 1 Week early (${daysRemaining}w left) or save ≥ RM 1,500 (RM ${totalSaved.toLocaleString()})` }
+            ]
+        };
+    }
+
     function openRetrospective(isVictory) {
         SoundFX.taskComplete();
         if (isVictory) {
@@ -2495,14 +2829,92 @@
         const modal = document.getElementById('retro-modal');
 
         const doneCount = state.tasks.filter(t => t.progress >= 100).length;
-        const totalCount = state.tasks.length;
-        const scopePct = Math.round((doneCount / totalCount) * 100);
-        const daysRemaining = Math.max(0, state.maxDays - state.day);
+        const totalCount = Math.max(1, state.tasks.length);
+        const scopePct = state.level === 1 ? 100 : Math.round((doneCount / totalCount) * 100);
+        const daysRemaining = state.level === 1 ? state.maxDays : Math.max(0, state.maxDays - state.day);
         const totalSaved = state.budget + (state.contingencyReserve || 0);
 
-        document.getElementById('retro-budget').textContent = `RM ${totalSaved}`;
-        document.getElementById('retro-days').textContent = `${daysRemaining} Day${daysRemaining === 1 ? '' : 's'}`;
-        document.getElementById('retro-quality').textContent = `${scopePct}% ${isVictory ? '✅' : '⚠️'}`;
+        const mastery = evaluateLevelMastery(isVictory, daysRemaining, totalSaved);
+        if (isVictory) {
+            levelStars[state.level] = Math.max(levelStars[state.level] || 0, mastery.stars);
+            renderLevelTabs();
+        }
+
+        document.getElementById('retro-budget').textContent = `RM ${totalSaved.toLocaleString()}`;
+        const timeLabelEl = document.getElementById('retro-time-label');
+        if (timeLabelEl) {
+            timeLabelEl.textContent = `${getTimeUnit(true)} Remaining`;
+        }
+        document.getElementById('retro-days').textContent = `${daysRemaining} ${getTimeUnit(daysRemaining !== 1)}`;
+        document.getElementById('retro-quality').textContent = state.level === 1 ? '8/8 Charter ✅' : `${scopePct}% ${isVictory ? '✅' : '⚠️'}`;
+
+        document.getElementById('retro-stars-display').textContent = '⭐'.repeat(mastery.stars) + '☆'.repeat(3 - mastery.stars);
+        document.getElementById('retro-stars-criteria').innerHTML = mastery.criteria.map(c => `
+            <div class="flex items-start gap-1.5 ${c.met ? 'text-[#235732] font-semibold' : 'text-[#5A4D41]'}">
+                <span class="shrink-0">${c.met ? '✅' : '⬜'}</span>
+                <span class="leading-snug">${c.label}</span>
+            </div>
+        `).join('');
+
+        const retroPromptsByLevel = {
+            1: {
+                well: [
+                    '📜 Locking down Auntie Mei’s Objective, Constraints, and Out-of-Scope items in the Project Charter prevented scope confusion.',
+                    '✅ Defining measurable Success Criteria (taste & safety checks) clarified the Definition of Done before building.'
+                ],
+                improve: [
+                    '🎯 Distinguishing Constraints (RM 500 & 3 Days) from Success Criteria on the first pass speeds up Charter sign-off.',
+                    '🚧 Calling out excluded items (Laksa kitchen & neon signage) early keeps small projects lean and on budget.'
+                ]
+            },
+            2: {
+                well: [
+                    '📦 Applying the WBS 100% Rule decomposed the Siniawan stall cleanly and kept excluded wok equipment out of scope.',
+                    '⚡ Pairing Uncle Lim, Kak Salmah, and Danny to matching skills (+25% speed) with Rest breaks prevented Burnout.'
+                ],
+                improve: [
+                    '🔗 Starting prerequisite tasks early (Timber Frame & Display Counter) avoids idle days on dependent tasks.',
+                    '☕ Scheduling Rest breaks before stamina drops below 35% protects multi-day execution velocity.'
+                ]
+            },
+            3: {
+                well: [
+                    '🔥 Prioritizing Critical Path tasks first kept the Carpenter St. Kopitiam restoration on track across all 6 weeks.',
+                    '🛡️ Guarding the Contingency Reserve and using Change Control / Phase 2 Backlog prevented unbudgeted Scope Creep.'
+                ],
+                improve: [
+                    '🌧️ Deploying Contingency Reserve tarps before heavy monsoon weeks protects outdoor carpentry from delays.',
+                    '⚡ Using Schedule Crashing selectively on Critical Path bottlenecks recovers time without exhausting the crew.'
+                ]
+            }
+        };
+        const lvlRetro = retroPromptsByLevel[state.level] || retroPromptsByLevel[3];
+        state.retroChoice = { wentWell: 0, toImprove: 0 };
+        const retroSection = document.getElementById('retro-reflection-section');
+        if (retroSection) {
+            retroSection.innerHTML = `
+                <div>
+                    <label class="block text-[11px] font-bold text-[#2E6F40] mb-1">✅ Project Retrospective — What Went Well</label>
+                    <div class="grid grid-cols-1 gap-1.5">
+                        ${lvlRetro.well.map((txt, idx) => `
+                            <button type="button" onclick="selectRetro('wentWell', ${idx}, this)" class="retro-opt-well min-h-[42px] text-left text-xs p-2.5 rounded-xl ${idx === 0 ? 'border-2 border-[#2E6F40] bg-[#FFF9E6]' : 'border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#2E6F40]/10'} transition cursor-pointer">
+                                ${txt}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-[#C85A32] mb-1">📝 Project Retrospective — What to Improve</label>
+                    <div class="grid grid-cols-1 gap-1.5">
+                        ${lvlRetro.improve.map((txt, idx) => `
+                            <button type="button" onclick="selectRetro('toImprove', ${idx}, this)" class="retro-opt-improve min-h-[42px] text-left text-xs p-2.5 rounded-xl ${idx === 0 ? 'border-2 border-[#C85A32] bg-[#FFF9E6]' : 'border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#C85A32]/10'} transition cursor-pointer">
+                                ${txt}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
 
         const phaseTag = document.getElementById('retro-phase-tag');
         const headline = document.getElementById('retro-headline');
@@ -2513,43 +2925,35 @@
         const footerActions = document.getElementById('retro-footer-actions');
 
         if (state.level === 1) {
-            phaseTag.textContent = isVictory ? '📜 Phase 1 Complete • Initiating' : '📜 Phase 1 Review • Initiating';
-            headline.textContent = isVictory ? 'Main Bazaar Coffee Cart Complete! ☕' : `Cart Setup Incomplete (${scopePct}%)`;
-            sub.textContent = isVictory
-                ? 'Your approved Project Charter kept Scope, Schedule, and Budget aligned.'
-                : 'Retry Level 1 and complete all 3 approved Tasks within the 2-day Schedule.';
+            phaseTag.textContent = '📜 Chapter 1 Complete • Starter Commission';
+            headline.textContent = 'Main Bazaar Charter Authorized! ☕';
+            sub.textContent = 'Auntie Mei is impressed by your scope discipline—she’s recommending you to the Siniawan Heritage Committee for a RM 2,500 festival build!';
             badgeIcon.textContent = '📜';
             badgeTitle.textContent = 'Project Charter Architect';
-            badgeDesc.textContent = 'Defining Objective, Constraints, Success Criteria, and Out-of-Scope boundaries up front prevents Scope Creep during execution.';
+            badgeDesc.textContent = 'Defining Objective, Constraints, Success Criteria, and Out-of-Scope boundaries up front authorizes the project and earns stakeholder trust.';
 
-            footerActions.innerHTML = isVictory
-                ? `
-                    <button type="button" onclick="advanceToNextLevel(2)" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
-                        Next Chapter: L2 Work Breakdown Structure →
-                    </button>
-                    <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer">
-                        🔄 Replay Level 1
-                    </button>
-                `
-                : `
-                    <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 cursor-pointer">
-                        🔄 Retry Level 1
-                    </button>
-                `;
+            footerActions.innerHTML = `
+                <button type="button" onclick="advanceToNextLevel(2)" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
+                    Next Chapter: Siniawan Stall (RM 2,500 • WBS) →
+                </button>
+                <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer">
+                    🔄 Replay Level 1
+                </button>
+            `;
         } else if (state.level === 2) {
-            phaseTag.textContent = isVictory ? '📦 Phase 2 Complete • Scope Planning' : '📦 Phase 2 Review • Scope Planning';
+            phaseTag.textContent = isVictory ? '📦 Chapter 2 Complete • Community Expansion' : '📦 Chapter 2 Review • Scope Planning';
             headline.textContent = isVictory ? 'Siniawan Night Market Stall Complete! 🏮' : `Market Stall Incomplete (${scopePct}%)`;
             sub.textContent = isVictory
-                ? 'Decomposing all 3 Work Packages into 6 concrete 1-day Tasks satisfied the WBS 100% Rule.'
-                : 'Match team skills (+25% speed) to finish all 6 decomposed Tasks within 3 days.';
+                ? 'Your WBS-driven pavilion drew crowds across Bau! The Carpenter Street Heritage Guild just offered a RM 15,000, 6-week shophouse restoration.'
+                : 'Match team skills (+25% speed) and manage stamina to finish all 6 decomposed Tasks within 10 days.';
             badgeIcon.textContent = '📦';
             badgeTitle.textContent = 'WBS 100% Rule Specialist';
-            badgeDesc.textContent = 'Decomposing high-level Work Packages into granular, assignable Tasks eliminates ambiguity and improves Schedule accuracy.';
+            badgeDesc.textContent = 'Decomposing high-level Work Packages into granular, multi-day Tasks eliminates ambiguity and scales your crew to bigger projects.';
 
             footerActions.innerHTML = isVictory
                 ? `
                     <button type="button" onclick="advanceToNextLevel(3)" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
-                        Next Chapter: L3 Schedule &amp; Change Control →
+                        Next Chapter: Carpenter St. Kopitiam (RM 15,000 • Weekly) →
                     </button>
                     <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer">
                         🔄 Replay Level 2
@@ -2561,25 +2965,25 @@
                     </button>
                 `;
         } else {
-            phaseTag.textContent = '🏆 Phase 3 Complete • Monitoring, Control & Closing';
-            headline.textContent = isVictory ? 'Carpenter St. Kopitiam Complete! 🎉' : `Schedule Ended (${scopePct}% Scope Done)`;
+            phaseTag.textContent = '🏆 Chapter 3 Complete • Flagship Restoration';
+            headline.textContent = isVictory ? 'Carpenter St. Kopitiam Restored! 🎉' : `6-Week Schedule Ended (${scopePct}% Scope Done)`;
             sub.textContent = isVictory
-                ? 'You balanced Critical Path Dependencies, team stamina, Risk Mitigation, and Change Control!'
-                : 'Review Critical Path Dependencies and team Burnout in your Project Retrospective below.';
+                ? 'From a RM 500 coffee cart to a RM 15,000 heritage kopitiam—you mastered weekly Critical Path, Risk Mitigation, and Change Control!'
+                : 'Review Critical Path Dependencies, weekly stamina, and Schedule Crashing in your Project Retrospective below.';
             badgeIcon.textContent = '🏅';
             badgeTitle.textContent = isVictory
                 ? 'Certified Project Management Master'
                 : 'Critical Path & Control Practitioner';
             badgeDesc.textContent = isVictory
-                ? 'Mastered the end-to-end Project Management lifecycle: Project Charter, WBS, Critical Path, Risk Mitigation, Change Control, and Project Retrospective.'
-                : 'Prioritizing Critical Path prerequisites first unlocks downstream Dependencies before the final deadline.';
+                ? 'Mastered the end-to-end Project Management lifecycle: Project Charter, WBS, weekly Critical Path, Risk Mitigation, Change Control, and Project Retrospective.'
+                : 'Prioritizing Critical Path prerequisites first unlocks downstream Dependencies before the final week.';
 
             footerActions.innerHTML = `
                 <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
                     🔄 Replay Level 3
                 </button>
                 <button type="button" onclick="advanceToNextLevel(1)" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer">
-                    📜 Restart Curriculum from Level 1
+                    📜 Restart Career from Level 1
                 </button>
             `;
         }
@@ -2615,15 +3019,21 @@
     function renderLevelTabs() {
         [1, 2, 3].forEach(lvl => {
             const btn = document.getElementById(`tab-lvl-${lvl}`);
+            const starsEl = document.getElementById(`tab-stars-${lvl}`);
             const isActive = (state.level === lvl);
             const isDone = completedLevels[lvl];
+            const earned = levelStars[lvl] || 0;
+
+            if (starsEl) {
+                starsEl.textContent = '⭐'.repeat(earned) + '☆'.repeat(3 - earned);
+            }
 
             if (isActive) {
-                btn.className = 'min-h-[36px] py-1.5 px-1.5 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1 bg-[#C58F2A] text-[#241B15] border border-[#241B15] cursor-pointer';
+                btn.className = 'min-h-[38px] py-1 px-1.5 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight bg-[#C58F2A] text-[#241B15] border border-[#241B15] cursor-pointer';
             } else if (isDone) {
-                btn.className = 'min-h-[36px] py-1.5 px-1.5 rounded-lg text-[11px] font-semibold transition flex items-center justify-center gap-1 bg-[#2E6F40] text-[#FFFDF8] border border-[#1B4226] cursor-pointer';
+                btn.className = 'min-h-[38px] py-1 px-1.5 rounded-lg text-[11px] font-semibold transition flex flex-col items-center justify-center leading-tight bg-[#2E6F40] text-[#FFFDF8] border border-[#1B4226] cursor-pointer';
             } else {
-                btn.className = 'min-h-[36px] py-1.5 px-1.5 rounded-lg text-[11px] font-semibold transition flex items-center justify-center gap-1 text-[#DECBA8] hover:bg-[#5C3A21] cursor-pointer';
+                btn.className = 'min-h-[38px] py-1 px-1.5 rounded-lg text-[11px] font-semibold transition flex flex-col items-center justify-center leading-tight text-[#DECBA8] hover:bg-[#5C3A21] cursor-pointer';
             }
         });
     }
@@ -2636,39 +3046,49 @@
         const scopePct = Math.round((doneCount / Math.max(1, totalCount)) * 100);
         const daysLeft = Math.max(0, state.maxDays - state.day + 1);
 
-        if (state.level === 3) {
-            document.getElementById('hud-budget').textContent = `RM ${state.budget} (+${state.contingencyReserve})`;
-        } else {
-            document.getElementById('hud-budget').textContent = `RM ${state.budget}`;
-        }
-        document.getElementById('hud-day').textContent = `${daysLeft} Day${daysLeft === 1 ? '' : 's'} Left`;
+        document.getElementById('hud-budget').textContent = `RM ${state.budget.toLocaleString()}`;
+        document.getElementById('hud-day').textContent = `${daysLeft} ${getTimeUnit(daysLeft !== 1)} Left`;
 
-        if (state.level === 1 && state.phase === 'charter') {
+        const totalStatements = state.statements ? state.statements.length : 8;
+        if (state.level === 1) {
             const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
-            document.getElementById('hud-scope').textContent = `${totalSorted}/4 Charter`;
+            document.getElementById('hud-scope').textContent = `${totalSorted}/${totalStatements} Charter`;
+        } else if (state.level === 2 && state.phase === 'wbs_build') {
+            const totalWbsPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+            document.getElementById('hud-scope').textContent = `${totalWbsPlaced}/${state.wbsCards.length} WBS`;
         } else {
             document.getElementById('hud-scope').textContent = `${scopePct}% (${doneCount}/${totalCount})`;
         }
 
         let tiltDeg = 0;
-        if (state.level === 1 && state.phase === 'charter') {
+        if (state.level === 1) {
             const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
-            tiltDeg = Math.round((4 - totalSorted) * 3.0);
+            tiltDeg = Math.round(((totalStatements - totalSorted) / totalStatements) * 12);
+        } else if (state.level === 2 && state.phase === 'wbs_build') {
+            const totalWbsPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+            tiltDeg = Math.round(((state.wbsCards.length - totalWbsPlaced) / state.wbsCards.length) * 10);
         } else {
             const remainingTasks = totalCount - doneCount;
             const workloadRatio = remainingTasks / Math.max(1, daysLeft);
             tiltDeg = (workloadRatio - 1.2) * 8;
-            if (state.budget < 120) tiltDeg += 4;
+            const lowBudgetThreshold = state.level === 3 ? 2500 : 400;
+            if (state.budget < lowBudgetThreshold) tiltDeg += 4;
             tiltDeg = Math.round(Math.max(-14, Math.min(16, tiltDeg)));
         }
 
         document.getElementById('balance-beam').style.transform = `rotate(${tiltDeg}deg)`;
 
         const statusEl = document.getElementById('scale-status-text');
-        if (state.level === 1 && state.phase === 'charter') {
+        if (state.level === 1) {
             const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
-            statusEl.textContent = totalSorted === 4 ? '⚖️ Charter Ready to Approve' : `Defining Charter (${totalSorted}/4)`;
-            statusEl.className = totalSorted === 4 ? 'font-semibold text-[#A7F3D0]' : 'font-semibold text-[#FDE68A]';
+            statusEl.textContent = state.charterAuthorized
+                ? '⚖️ Charter Approved'
+                : totalSorted === totalStatements ? '⚖️ Charter Ready to Approve' : `Defining Charter (${totalSorted}/${totalStatements})`;
+            statusEl.className = totalSorted === totalStatements ? 'font-semibold text-[#A7F3D0]' : 'font-semibold text-[#FDE68A]';
+        } else if (state.level === 2 && state.phase === 'wbs_build') {
+            const totalWbsPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+            statusEl.textContent = totalWbsPlaced === state.wbsCards.length ? '⚖️ WBS Ready to Approve' : `Decomposing WBS (${totalWbsPlaced}/${state.wbsCards.length})`;
+            statusEl.className = totalWbsPlaced === state.wbsCards.length ? 'font-semibold text-[#A7F3D0]' : 'font-semibold text-[#FDE68A]';
         } else if (tiltDeg > 7) {
             statusEl.textContent = '⚠️ Heavy Scope/Schedule Pressure';
             statusEl.className = 'font-semibold text-[#FECACA]';
@@ -2687,8 +3107,9 @@
                 <div class="flex items-start gap-2">
                     <span class="text-base mt-0.5">📜</span>
                     <div class="text-[11px] leading-snug">
-                        <div class="font-bold text-[#5C3A21]">Approved Project Charter • Siniawan Night Market</div>
-                        <div class="text-[#241B15]"><strong>Objective:</strong> ${state.signedCharterSummary.objective} • <strong>Constraints:</strong> ${state.signedCharterSummary.constraints}</div>
+                        <div class="font-bold text-[#5C3A21]">Approved Charter • Siniawan Heritage Committee</div>
+                        <div class="text-[#241B15]"><strong>Objective:</strong> ${state.signedCharterSummary.objective}</div>
+                        <div class="text-[#5A4D41] mt-0.5"><strong>Constraints:</strong> ${state.signedCharterSummary.constraints} • <strong>Out of Scope:</strong> ${state.signedCharterSummary.outOfScope}</div>
                     </div>
                 </div>
             `;
@@ -2699,12 +3120,12 @@
                     <div class="flex items-center gap-2">
                         <span class="text-base">🛡️</span>
                         <div class="text-[11px] leading-snug">
-                            <div class="font-bold text-[#5C3A21]">Contingency Reserve: RM ${state.contingencyReserve}</div>
-                            <div class="text-[#5A4D41]">${state.tarpBought ? 'Waterproof tarps deployed — outdoor tasks protected from rain.' : 'Dedicated reserve for Day 3 Monsoon Rain Risk Mitigation.'}</div>
+                            <div class="font-bold text-[#5C3A21]">Contingency Reserve: RM ${state.contingencyReserve.toLocaleString()}</div>
+                            <div class="text-[#5A4D41]">${state.tarpBought ? 'Heavy-duty tarps deployed — outdoor work sheltered from rain.' : 'Dedicated reserve for unforeseen site risks & weather mitigation.'}</div>
                         </div>
                     </div>
                     <span class="shrink-0 px-2 py-0.5 rounded-md ${state.tarpBought ? 'bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40' : 'bg-[#C58F2A]/15 text-[#7A5404] border border-[#C58F2A]/40'} text-[10px] font-bold">
-                        ${state.tarpBought ? '✓ Mitigated' : 'Day 3 Watch'}
+                        ${state.tarpBought ? '✓ Mitigated' : 'Active Reserve'}
                     </span>
                 </div>
             `;
@@ -2725,7 +3146,7 @@
                         <div class="flex items-center gap-2">
                             <span class="text-xl">👵🏽</span>
                             <div>
-                                <div class="text-xs font-bold text-[#5C3A21]">Auntie Mei’s Statement Cards (Scrambled)</div>
+                                <div class="text-xs font-bold text-[#5C3A21]">Auntie Mei’s Statement Cards</div>
                                 <div class="text-[11px] text-[#5A4D41]">Tap a card, then tap its matching Project Charter slot below</div>
                             </div>
                         </div>
@@ -2758,7 +3179,7 @@
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-[#5C3A21]">${bucket.icon} ${bucket.label}</span>
                         <span class="text-[10px] font-bold ${isComplete ? 'text-[#2E6F40]' : awaitingTarget ? 'text-[#C85A32]' : 'text-[#7A5434]'}">
-                            ${isComplete ? '✓ Filled' : awaitingTarget ? 'Tap to Place Here' : bucket.hint}
+                            ${isComplete ? `✓ Filled (${filledStmts.length}/${bucket.maxItems})` : awaitingTarget ? `Tap to Place (${filledStmts.length}/${bucket.maxItems})` : `${bucket.hint} (${filledStmts.length}/${bucket.maxItems})`}
                         </span>
                     </div>
                     ${filledStmts.length > 0 ? `
@@ -2784,7 +3205,7 @@
                         <h3 class="text-base font-bold text-[#5C3A21]">📜 Project Charter • Main Bazaar Cart</h3>
                     </div>
                     <span class="text-[11px] font-bold font-mono-crisp px-2 py-0.5 rounded-md bg-[#5C3A21]/10 text-[#5C3A21] border border-[#5C3A21]/30">
-                        ${placedIds.length} / 4
+                        ${placedIds.length} / ${state.statements.length}
                     </span>
                 </div>
 
@@ -2891,10 +3312,14 @@
                                             ${task.skill}
                                         </span>
                                         <span class="text-[10px] font-bold font-mono-crisp px-1.5 py-0.5 rounded-md bg-[#241B15]/8 text-[#241B15]">
-                                            ${task.paid ? '✓ Paid' : `RM ${task.cost}`}
+                                            ${task.paid ? '✓ Paid' : `RM ${task.cost.toLocaleString()}`}
+                                        </span>
+                                        <span class="text-[10px] font-semibold font-mono-crisp px-1.5 py-0.5 rounded-md bg-[#5C3A21]/8 text-[#3D2412]">
+                                            ⏱️ ${task.effort || 1} ${state.level === 3 ? ((task.effort || 1) === 1 ? 'Wk' : 'Wks') : ((task.effort || 1) === 1 ? 'Day' : 'Days')}
                                         </span>
                                         ${task.critical ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#C85A32]/15 text-[#943011] border border-[#C85A32]/30 font-bold">🔥 Critical Path</span>` : ''}
                                         ${task.outdoor ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#2B5783]/12 text-[#1E4063] border border-[#2B5783]/25 font-semibold">🌤️ Outdoor</span>` : ''}
+                                        ${task.crashed ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#9E3514] text-white font-bold">⚡ Crashed +50%</span>` : ''}
                                     </div>
 
                                     <div class="flex items-center gap-1.5">
@@ -2935,9 +3360,16 @@
                                                 <div class="text-[9px] font-medium">${assignedArtisan.skill === task.skill ? '+25% Boost' : 'Assigned'}</div>
                                             </div>
                                         </div>
-                                        <button type="button" onclick="swapTaskArtisan('${task.id}', event)" class="px-2 py-0.5 rounded bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A]/60 text-[9px] font-bold text-[#3D2412] cursor-pointer">
-                                            🔄 Swap
-                                        </button>
+                                        <div class="flex items-center gap-1">
+                                            <button type="button" onclick="swapTaskArtisan('${task.id}', event)" class="px-2 py-0.5 rounded bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A]/60 text-[9px] font-bold text-[#3D2412] cursor-pointer">
+                                                🔄 Swap
+                                            </button>
+                                            ${state.level === 3 ? `
+                                                <button type="button" onclick="toggleTaskCrash('${task.id}', event)" title="Schedule Crashing: +50% Speed for +RM ${CRASH_COST} & -${CRASH_EXTRA_STAMINA}% extra stamina" class="px-2 py-0.5 rounded border text-[9px] font-bold transition cursor-pointer ${task.crashed ? 'bg-[#9E3514] text-white border-[#5C1A06]' : 'bg-[#FFF9E6] hover:bg-[#F5E6BC] text-[#7A5404] border-[#C58F2A]'}">
+                                                    ${task.crashed ? '⚡ Crashed' : `⚡ Crash +RM ${CRASH_COST}`}
+                                                </button>
+                                            ` : ''}
+                                        </div>
                                     ` : `
                                         <button type="button" onclick="autoAssignTask('${task.id}', event)" class="min-h-[34px] px-2.5 py-1.5 rounded-lg bg-[#2E6F40] hover:bg-[#235732] text-white text-[10px] font-bold border border-[#1B4226] shadow-sm cursor-pointer">
                                             ⚡ Assign
@@ -2977,11 +3409,113 @@
         container.innerHTML = stepBannerHtml + treeHtml;
     }
 
+    function renderWbsBuilder() {
+        const container = document.getElementById('charter-workspace');
+        const placedIds = Object.values(state.wbsBuckets).flatMap(b => b.filledIds);
+        const remainingCards = state.wbsCards.filter(c => !placedIds.includes(c.id));
+
+        const cardsHtml = remainingCards.length > 0
+            ? `
+                <div class="paper-card rounded-xl p-3 bg-[#FFFDF9]">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">📋</span>
+                            <div>
+                                <div class="text-xs font-bold text-[#5C3A21]">Scope Deliverable Cards</div>
+                                <div class="text-[11px] text-[#5A4D41]">Decompose each task into its WBS Work Package (or Out of Scope)</div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold font-mono-crisp px-2 py-0.5 rounded bg-[#F1E7D3] text-[#5C3A21]">${remainingCards.length} left</span>
+                    </div>
+                    <div class="grid grid-cols-1 gap-1.5">
+                        ${remainingCards.map(c => {
+                            const isSelected = state.selectedWbsCardId === c.id;
+                            const isBounced = state.bouncedWbsCardId === c.id;
+                            return `
+                                <div onclick="selectWbsCard('${c.id}')" class="min-h-[44px] p-2.5 rounded-xl border-[1.5px] transition cursor-pointer flex items-center justify-between gap-2 ${isBounced ? 'animate-bounce-back border-[#B91C1C] bg-[#FEE2E2]' : isSelected ? 'bg-[#FFF5D6] border-[#C85A32] ring-2 ring-[#C85A32]/25' : 'bg-[#FFFDF5] border-[#C58F2A] hover:bg-[#FFF9E6]'}">
+                                    <div class="min-w-0">
+                                        <div class="text-xs font-bold text-[#241B15]">${c.title}</div>
+                                        <div class="text-[11px] text-[#5A4D41] leading-snug">${c.desc}</div>
+                                    </div>
+                                    <span class="shrink-0 px-2 py-1 rounded-lg ${isSelected ? 'bg-[#C85A32] text-white' : 'bg-[#F1E7D3] text-[#3D2412] border border-[#8C6A4A]/60'} text-[10px] font-bold">
+                                        ${isSelected ? 'Selected' : 'Select'}
+                                    </span>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `
+            : '';
+
+        const bucketsHtml = Object.entries(state.wbsBuckets).map(([key, bucket]) => {
+            const filledCards = bucket.filledIds.map(id => state.wbsCards.find(c => c.id === id)).filter(Boolean);
+            const isComplete = filledCards.length >= bucket.maxItems;
+            const awaitingTarget = Boolean(state.selectedWbsCardId) && !isComplete;
+            const isOutBucket = key === 'outOfScope';
+            return `
+                <div onclick="handleWbsBucketClick('${key}')" class="min-h-[48px] p-2.5 rounded-xl border-[1.5px] transition cursor-pointer ${isComplete ? (isOutBucket ? 'bg-[#FEF2F2] border-[#B91C1C]' : 'bg-[#EFF6F1] border-[#2E6F40]') : awaitingTarget ? 'bg-[#FFFDF5] border-dashed border-[#C85A32] hover:bg-[#FFF5D6]' : 'bg-[#FAF5EB] border-dashed border-[#8C6A4A] hover:bg-[#F1E7D3]'}">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <span class="text-[9px] font-bold font-mono-crisp px-1.5 py-0.5 rounded ${isOutBucket ? 'bg-[#B91C1C]/15 text-[#991B1B]' : 'bg-[#5C3A21]/10 text-[#5C3A21]'}">${bucket.code}</span>
+                            <span class="text-xs font-bold text-[#5C3A21] truncate">${bucket.icon} ${bucket.label}</span>
+                        </div>
+                        <span class="shrink-0 text-[10px] font-bold ${isComplete ? (isOutBucket ? 'text-[#991B1B]' : 'text-[#2E6F40]') : awaitingTarget ? 'text-[#C85A32]' : 'text-[#7A5434]'}">
+                            ${isComplete ? `✓ Ready (${filledCards.length}/${bucket.maxItems})` : awaitingTarget ? `Tap to Place (${filledCards.length}/${bucket.maxItems})` : `${filledCards.length}/${bucket.maxItems}`}
+                        </span>
+                    </div>
+                    ${filledCards.length > 0 ? `
+                        <div class="mt-1.5 space-y-1 pl-3 border-l-2 ${isOutBucket ? 'border-[#B91C1C]/40' : 'border-[#2E6F40]/40'}">
+                            ${filledCards.map((fc, idx) => `
+                                <div class="text-[11px] font-bold text-[#241B15] bg-white/85 px-2 py-1 rounded border border-[#8C6A4A]/40 flex items-center justify-between gap-2">
+                                    <span>${isOutBucket ? '🚫' : `${bucket.code}.${idx + 1}`} ${fc.title}</span>
+                                    <span class="text-[9px] font-mono-crisp text-[#5A4D41] shrink-0">${fc.meta}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = `
+            ${cardsHtml}
+
+            <div class="paper-card rounded-2xl p-4 bg-[#FFFDF8] border-2 border-[#7A5434] relative overflow-hidden">
+                <div class="flex items-center justify-between pb-2 mb-2.5 border-b-[1.5px] border-[#8C6A4A]/50">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-[#C85A32]">Step 1 • WBS 100% Rule Decomposition</span>
+                        <h3 class="text-base font-bold text-[#5C3A21]">📦 Work Breakdown Structure (1.0 Stall)</h3>
+                    </div>
+                    <span class="text-[11px] font-bold font-mono-crisp px-2 py-0.5 rounded-md bg-[#5C3A21]/10 text-[#5C3A21] border border-[#5C3A21]/30">
+                        ${placedIds.length} / ${state.wbsCards.length}
+                    </span>
+                </div>
+
+                <div class="space-y-2">
+                    ${bucketsHtml}
+                </div>
+
+                ${state.wbsAuthorized ? `
+                    <div class="mt-3 pt-2.5 border-t-[1.5px] border-[#8C6A4A]/40 flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-[#2E6F40]">WBS 100% Rule Verified</span>
+                        <div class="animate-seal">
+                            <svg width="136" height="32" viewBox="0 0 136 32" shape-rendering="geometricPrecision" class="block">
+                                <rect x="1.5" y="1.5" width="133" height="29" rx="5" fill="#DCFCE7" stroke="#2E6F40" stroke-width="2"/>
+                                <text x="68" y="20" text-anchor="middle" fill="#235732" font-family="Fraunces, serif" font-weight="700" font-size="10.5" letter-spacing="0.8">WBS APPROVED</text>
+                            </svg>
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+
     function renderDock() {
         const artisanWrapper = document.getElementById('artisan-dock-wrapper');
         const primaryBtn = document.getElementById('btn-primary-action');
 
-        if (state.level === 1 && state.phase === 'charter') {
+        if (state.level === 1) {
             artisanWrapper.classList.add('hidden');
             const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
             const allSorted = totalSorted === state.statements.length;
@@ -2990,7 +3524,20 @@
                 : 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-not-allowed';
             primaryBtn.innerHTML = allSorted
                 ? '<span>📜 Approve Project Charter</span>'
-                : `<span>📜 Sort All 4 Statements (${totalSorted}/4)</span>`;
+                : `<span>📜 Sort All ${state.statements.length} Statements (${totalSorted}/${state.statements.length})</span>`;
+            return;
+        }
+
+        if (state.level === 2 && state.phase === 'wbs_build') {
+            artisanWrapper.classList.add('hidden');
+            const totalPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+            const allMapped = totalPlaced === state.wbsCards.length;
+            primaryBtn.className = allMapped
+                ? 'w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer'
+                : 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-not-allowed';
+            primaryBtn.innerHTML = allMapped
+                ? '<span>📦 Approve WBS &amp; Start Build →</span>'
+                : `<span>📦 Map All ${state.wbsCards.length} Scope Cards (${totalPlaced}/${state.wbsCards.length})</span>`;
             return;
         }
 
@@ -3001,8 +3548,9 @@
             primaryBtn.className = 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-pointer';
             primaryBtn.innerHTML = '<span>🔒 Step 1: Decompose All Work Packages First</span>';
         } else {
+            const turnIcon = state.level === 3 ? '🗓️' : '☀️';
             primaryBtn.className = 'w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
-            primaryBtn.innerHTML = `<span>☀️ Start Workday (Day ${state.day} of ${state.maxDays})</span>`;
+            primaryBtn.innerHTML = `<span>${turnIcon} Start ${getWorkTurnLabel()} (${getTimeUnit(false)} ${state.day} of ${state.maxDays})</span>`;
         }
 
         const dock = document.getElementById('artisans-dock');
@@ -3055,10 +3603,14 @@
         const charterWs = document.getElementById('charter-workspace');
         const wbsTreeWs = document.getElementById('wbs-tree-workspace');
 
-        if (state.level === 1 && state.phase === 'charter') {
+        if (state.level === 1) {
             charterWs.classList.remove('hidden');
             wbsTreeWs.classList.add('hidden');
             renderCharter();
+        } else if (state.level === 2 && state.phase === 'wbs_build') {
+            charterWs.classList.remove('hidden');
+            wbsTreeWs.classList.add('hidden');
+            renderWbsBuilder();
         } else {
             charterWs.classList.add('hidden');
             wbsTreeWs.classList.remove('hidden');
