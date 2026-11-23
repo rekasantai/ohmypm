@@ -63,10 +63,11 @@
             height: 100dvh;
             max-height: 100dvh;
             background-color: var(--parchment);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
             position: relative;
             display: grid;
             grid-template-columns: 1fr;
-            grid-template-rows: auto 1fr;
+            grid-template-rows: auto minmax(0, 1fr);
             overflow: hidden;
             padding-left: env(safe-area-inset-left, 0px);
             padding-right: env(safe-area-inset-right, 0px);
@@ -81,12 +82,14 @@
         }
 
         #right-stage {
+            position: relative;
             display: flex;
             flex-direction: column;
             min-width: 0;
             min-height: 0;
             overflow: hidden;
             background-color: var(--parchment);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
         }
 
         #left-diorama-wrap {
@@ -96,7 +99,7 @@
         }
 
         #diorama-svg-el {
-            height: clamp(104px, 16dvh, 134px);
+            height: clamp(108px, 16dvh, 134px);
         }
 
         /* Narrow Folded Cover Screen (< 360px) Compact Safeguards */
@@ -144,7 +147,7 @@
                 justify-content: space-between;
             }
             #diorama-svg-el {
-                height: clamp(168px, 28dvh, 240px);
+                height: clamp(192px, 31dvh, 268px);
             }
             #right-stage {
                 padding-top: max(0.25rem, env(safe-area-inset-top, 0px));
@@ -154,7 +157,7 @@
         .paper-card {
             background-color: #FFFDF9;
             border: 1.5px solid #8C6A4A;
-            box-shadow: 0 2px 0 #8C6A4A;
+            box-shadow: 0 2px 0 #8C6A4A, 0 5px 14px rgba(61, 36, 18, 0.08);
             transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
         }
 
@@ -164,20 +167,53 @@
         }
 
         .teak-panel {
-            background: linear-gradient(180deg, #684226 0%, #5C3A21 100%);
+            background:
+                repeating-linear-gradient(90deg, rgba(255, 232, 196, 0.025) 0px, rgba(255, 232, 196, 0.025) 2px, transparent 2px, transparent 14px),
+                linear-gradient(180deg, #6E4628 0%, #58361E 60%, #4B2D18 100%);
             border-bottom: 2px solid #3D2412;
+            box-shadow: inset 0 -1px 0 rgba(197, 143, 42, 0.35);
             color: #FDF9F0;
             padding-top: calc(0.65rem + env(safe-area-inset-top, 0px));
+        }
+
+        .sarawak-trim {
+            height: 5px;
+            width: 100%;
+            background: repeating-linear-gradient(
+                135deg,
+                #C58F2A 0px, #C58F2A 7px,
+                #C85A32 7px, #C85A32 14px,
+                #2E6F40 14px, #2E6F40 21px,
+                #3D2412 21px, #3D2412 28px
+            );
+            border-bottom: 1px solid #3D2412;
+        }
+
+        .btn-tactile:active:not(:disabled) {
+            transform: translateY(1.5px);
         }
 
         .teak-dock {
             background-color: #F3E9D4;
             border-top: 2px solid #7A5434;
+            box-shadow: 0 -4px 12px rgba(61, 36, 18, 0.06);
             padding-bottom: calc(0.625rem + env(safe-area-inset-bottom, 0px));
         }
 
         #balance-beam {
-            transform-origin: 120px 26px;
+            transform-origin: 130px 22px;
+            transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+        }
+
+        #scale-pan-left {
+            transform-origin: 42px 22px;
+            transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+        }
+
+        #scale-pan-right {
+            transform-origin: 218px 22px;
             transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
             will-change: transform;
         }
@@ -255,6 +291,46 @@
             animation: dioramaPopIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
+        @keyframes rainFall {
+            0% { transform: translate(0, -14px); opacity: 0.75; }
+            100% { transform: translate(-18px, 34px); opacity: 0.15; }
+        }
+        .animate-rain {
+            animation: rainFall 0.68s linear infinite;
+        }
+        .animate-rain-delay {
+            animation: rainFall 0.68s linear 0.34s infinite;
+        }
+
+        @keyframes lanternSway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+        .animate-lantern-sway {
+            transform-box: fill-box;
+            transform-origin: top center;
+            animation: lanternSway 3.4s ease-in-out infinite;
+        }
+
+        @keyframes starPop {
+            0% { opacity: 0; transform: scale(0.3) rotate(-18deg); }
+            65% { opacity: 1; transform: scale(1.22) rotate(6deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        .animate-star-pop {
+            display: inline-block;
+            opacity: 0;
+            animation: starPop 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes fatiguePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(185, 28, 28, 0.28); }
+            50% { box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.14); }
+        }
+        .animate-fatigue-pulse {
+            animation: fatiguePulse 1.8s ease-in-out infinite;
+        }
+
         /* Guaranteed High-Z-Index Welcome & Tutorial Overlay */
         #tutorial-overlay {
             position: fixed;
@@ -298,7 +374,7 @@
 
 <div id="app-shell">
     <!-- Toast Notification Banner -->
-    <div id="toast-container" class="pointer-events-none fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[390px] flex flex-col items-center gap-1.5"></div>
+    <div id="toast-container" class="pointer-events-none fixed bottom-16 left-1/2 -translate-x-1/2 min-[600px]:top-auto min-[600px]:bottom-4 min-[600px]:left-auto min-[600px]:right-4 min-[600px]:translate-x-0 z-50 w-[90%] max-w-[340px] flex flex-col items-center min-[600px]:items-end gap-1.5"></div>
 
     <!-- LEFT STAGE: Header HUD, Iron Triangle & Permanently Visible Live Diorama -->
     <div id="left-stage">
@@ -320,98 +396,145 @@
                 </div>
 
                 <div class="flex items-center gap-1.5 shrink-0">
-                    <button id="btn-tutorial" type="button" onclick="openTutorialModal(0)" aria-label="Open Guide" class="min-h-[36px] px-2.5 py-1.5 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] text-[#FAF0DC] text-xs font-bold border border-[#C58F2A] flex items-center gap-1 transition cursor-pointer">
-                        <span>?</span> <span>Guide</span>
+                    <button id="btn-tutorial" type="button" onclick="openTutorialModal(0)" aria-label="Open Guide" class="btn-tactile min-h-[36px] px-2.5 py-1.5 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] text-[#FAF0DC] text-xs font-bold border border-[#C58F2A] flex items-center gap-1 transition cursor-pointer">
+                        <svg viewBox="0 0 16 16" class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.2 6.2a1.9 1.9 0 0 1 3.6.7c0 1.3-1.8 1.6-1.8 2.8"/><circle cx="8" cy="12" r="0.6" fill="currentColor" stroke="none"/></svg>
+                        <span>Guide</span>
                     </button>
-                    <button id="btn-mute" type="button" onclick="toggleMute()" aria-label="Toggle Sound" class="w-9 h-9 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] text-[#FAF0DC] flex items-center justify-center border border-[#9E6E43] transition text-sm cursor-pointer">
-                        🔊
+                    <button id="btn-mute" type="button" onclick="toggleMute()" aria-label="Toggle Sound" class="btn-tactile w-9 h-9 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] text-[#FAF0DC] flex items-center justify-center border border-[#9E6E43] transition cursor-pointer">
+                        <svg viewBox="0 0 16 16" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6v4h3l3.5 3V3L5.5 6h-3z"/><path d="M11.5 5.3a3.8 3.8 0 0 1 0 5.4"/><path d="M13.5 3.5a6.5 6.5 0 0 1 0 9"/></svg>
                     </button>
                 </div>
             </div>
 
             <!-- Sequential Lifecycle Level Switcher Tabs with 3-Star Mastery Badges -->
             <nav aria-label="Project Lifecycle Levels" class="grid grid-cols-3 gap-1.5 mb-2 bg-[#3D2412] p-1 rounded-xl border border-[#8C5E35]">
-                <button id="tab-lvl-1" type="button" onclick="requestLevelSwitch(1)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
-                    <span class="flex items-center gap-1"><span>📜</span> <span>L1: Charter</span></span>
+                <button id="tab-lvl-1" type="button" onclick="requestLevelSwitch(1)" class="btn-tactile min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                    <span class="flex items-center gap-1">
+                        <svg viewBox="0 0 16 16" class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2.5h7a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 11 14H3.5A1.5 1.5 0 0 1 2 12.5V4.5A2 2 0 0 1 4 2.5z"/><path d="M5.5 6h4.5M5.5 8.5h4.5M5.5 11h3"/></svg>
+                        <span>L1: Charter</span>
+                    </span>
                     <span id="tab-stars-1" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
-                <button id="tab-lvl-2" type="button" onclick="requestLevelSwitch(2)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
-                    <span class="flex items-center gap-1"><span>📦</span> <span>L2: WBS</span></span>
+                <button id="tab-lvl-2" type="button" onclick="requestLevelSwitch(2)" class="btn-tactile min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                    <span class="flex items-center gap-1">
+                        <svg viewBox="0 0 16 16" class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.8L13.5 5v6L8 14.2 2.5 11V5L8 1.8z"/><path d="M2.5 5L8 8.2 13.5 5M8 8.2v6"/></svg>
+                        <span>L2: WBS</span>
+                    </span>
                     <span id="tab-stars-2" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
-                <button id="tab-lvl-3" type="button" onclick="requestLevelSwitch(3)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
-                    <span class="flex items-center gap-1"><span>🗓️</span> <span>L3: Control</span></span>
+                <button id="tab-lvl-3" type="button" onclick="requestLevelSwitch(3)" class="btn-tactile min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                    <span class="flex items-center gap-1">
+                        <svg viewBox="0 0 16 16" class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="11" rx="2"/><path d="M5 1.5v3M11 1.5v3M2 6.5h12M5.5 9.5h2v2h-2z"/></svg>
+                        <span>L3: Control</span>
+                    </span>
                     <span id="tab-stars-3" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
             </nav>
 
             <!-- Iron Triangle HUD & Interactive SVG Balance Scale -->
-            <div class="bg-[#3D2412] rounded-xl p-2 border border-[#C58F2A]">
+            <div class="bg-[#3D2412] rounded-xl p-2 border border-[#C58F2A]/90 shadow-inner">
                 <div class="flex items-center justify-between text-[10px] px-1 mb-0.5">
-                    <span class="font-bold uppercase tracking-wider text-[#F6D365]">⚖️ Iron Triangle Balance</span>
+                    <span class="font-bold uppercase tracking-wider text-[#F6D365] flex items-center gap-1">
+                        <svg viewBox="0 0 16 16" class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 2v11M3 5h10M4.5 13h7"/><path d="M3 5l-1.5 4h3zM13 5l-1.5 4h3z"/></svg>
+                        <span>Iron Triangle Balance</span>
+                    </span>
                     <span id="scale-status-text" class="font-semibold text-[#A7F3D0]">Balanced &amp; Steady</span>
                 </div>
 
-                <svg viewBox="0 0 240 44" shape-rendering="geometricPrecision" class="w-full h-8 overflow-visible block">
-                    <path d="M120 2 L120 14 M114 6 Q120 0 126 6" stroke="#C58F2A" stroke-width="2" fill="none" stroke-linecap="round"/>
-                    <circle cx="120" cy="16" r="3.5" fill="#F6D365" stroke="#241B15" stroke-width="1.2"/>
+                <svg viewBox="0 0 260 66" shape-rendering="geometricPrecision" class="w-full h-12 overflow-visible block mb-1.5">
+                    <defs>
+                        <linearGradient id="hud-brass" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#FDE68A"/>
+                            <stop offset="50%" stop-color="#C58F2A"/>
+                            <stop offset="100%" stop-color="#7A5404"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Brass Suspension Arch & Pedestal Finial -->
+                    <path d="M130 3 L130 17 M121 9 Q130 0 139 9" stroke="url(#hud-brass)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                    <polygon points="130,10 127,16 133,16" fill="#F6D365" stroke="#241B15" stroke-width="0.8"/>
 
                     <g id="balance-beam">
-                        <line x1="28" y1="26" x2="212" y2="26" stroke="#C58F2A" stroke-width="3" stroke-linecap="round"/>
-                        <!-- Left Pan: Budget & Schedule -->
-                        <line x1="38" y1="26" x2="30" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
-                        <line x1="38" y1="26" x2="46" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
-                        <path d="M26 38 Q38 44 50 38 Z" fill="#C58F2A" stroke="#241B15" stroke-width="0.8"/>
-                        <text x="38" y="20" text-anchor="middle" fill="#FDE68A" font-size="7.5" font-weight="700" letter-spacing="0.3">BUDGET &amp; TIME</text>
+                        <!-- Sculpted Brass Beam -->
+                        <path d="M24 22 Q130 18 236 22 L236 24 Q130 21 24 24 Z" fill="url(#hud-brass)" stroke="#241B15" stroke-width="0.9"/>
+                        <circle cx="42" cy="22" r="2.6" fill="#FDE68A" stroke="#241B15" stroke-width="0.9"/>
+                        <circle cx="218" cy="22" r="2.6" fill="#FDE68A" stroke="#241B15" stroke-width="0.9"/>
 
-                        <!-- Center Brass Counterweight -->
-                        <rect x="114" y="21" width="12" height="10" rx="2" fill="#C85A32" stroke="#FFFDF8" stroke-width="1"/>
+                        <!-- Center Brass Fulcrum Collar -->
+                        <rect x="123" y="17" width="14" height="10" rx="2.5" fill="#C85A32" stroke="#FFFDF8" stroke-width="1"/>
 
-                        <!-- Right Pan: Scope -->
-                        <line x1="202" y1="26" x2="194" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
-                        <line x1="202" y1="26" x2="210" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
-                        <path d="M190 38 Q202 44 214 38 Z" fill="#C85A32" stroke="#241B15" stroke-width="0.8"/>
-                        <text x="202" y="20" text-anchor="middle" fill="#FECACA" font-size="7.5" font-weight="700" letter-spacing="0.3">SCOPE</text>
+                        <!-- Left Hanging Pan (Counter-Rotated so it stays level) -->
+                        <g id="scale-pan-left">
+                            <line x1="42" y1="22" x2="27" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                            <line x1="42" y1="22" x2="57" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                            <path d="M22 38 Q42 46 62 38 Z" fill="url(#hud-brass)" stroke="#241B15" stroke-width="1"/>
+                            <text x="42" y="54" text-anchor="middle" fill="#FDE68A" font-size="7" font-weight="700" letter-spacing="0.35">BUDGET &amp; TIME</text>
+                        </g>
+
+                        <!-- Right Hanging Pan (Counter-Rotated so it stays level) -->
+                        <g id="scale-pan-right">
+                            <line x1="218" y1="22" x2="203" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                            <line x1="218" y1="22" x2="233" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                            <path d="M198 38 Q218 46 238 38 Z" fill="#C85A32" stroke="#241B15" stroke-width="1"/>
+                            <text x="218" y="54" text-anchor="middle" fill="#FECACA" font-size="7" font-weight="700" letter-spacing="0.35">SCOPE</text>
+                        </g>
                     </g>
+
+                    <!-- Dynamic Fulcrum Status Jewel -->
+                    <circle id="scale-jewel" cx="130" cy="22" r="4.5" fill="#34D399" stroke="#241B15" stroke-width="1.3"/>
                 </svg>
 
-                <!-- 3 Core Iron Triangle Pill Meters -->
+                <!-- 3 Core Iron Triangle Pill Meters with Micro Progress Bars -->
                 <div class="grid grid-cols-3 gap-1.5 mt-1">
                     <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
-                        <div class="text-[10px] font-medium text-[#DECBA8]">💰 Budget</div>
+                        <div class="text-[10px] font-medium text-[#DECBA8] flex items-center justify-center gap-1">
+                            <svg viewBox="0 0 16 16" class="w-3 h-3 text-[#F6D365]" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="5.8"/><path d="M8 4.8v6.4M9.6 6.2c0-.7-.7-1.1-1.6-1.1s-1.6.4-1.6 1.1.7 1 1.6 1.2 1.6.5 1.6 1.3-.7 1.1-1.6 1.1-1.6-.4-1.6-1.1" stroke-linecap="round"/></svg>
+                            <span>Budget</span>
+                        </div>
                         <div id="hud-budget" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#F6D365] truncate">RM 500</div>
+                        <div class="mt-1 h-1 w-full rounded-full bg-[#1C0F07] overflow-hidden"><div id="hud-budget-bar" class="h-full rounded-full bg-[#F6D365] transition-all duration-300" style="width:100%"></div></div>
                     </div>
                     <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
-                        <div class="text-[10px] font-medium text-[#DECBA8]">📅 Schedule</div>
+                        <div class="text-[10px] font-medium text-[#DECBA8] flex items-center justify-center gap-1">
+                            <svg viewBox="0 0 16 16" class="w-3 h-3 text-[#FFFDF8]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8" cy="8.5" r="5.5"/><path d="M8 5.5v3l2 1.2M6 1.8h4"/></svg>
+                            <span>Schedule</span>
+                        </div>
                         <div id="hud-day" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#FFFDF8] truncate">3 Days Left</div>
+                        <div class="mt-1 h-1 w-full rounded-full bg-[#1C0F07] overflow-hidden"><div id="hud-day-bar" class="h-full rounded-full bg-[#FFFDF8] transition-all duration-300" style="width:100%"></div></div>
                     </div>
                     <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
-                        <div class="text-[10px] font-medium text-[#DECBA8]">📐 Scope</div>
+                        <div class="text-[10px] font-medium text-[#DECBA8] flex items-center justify-center gap-1">
+                            <svg viewBox="0 0 16 16" class="w-3 h-3 text-[#A7F3D0]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13V3l10 10H3z"/><path d="M5.5 10.5V8l2.5 2.5H5.5z"/></svg>
+                            <span>Scope</span>
+                        </div>
                         <div id="hud-scope" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#A7F3D0] truncate">0/8 Charter</div>
+                        <div class="mt-1 h-1 w-full rounded-full bg-[#1C0F07] overflow-hidden"><div id="hud-scope-bar" class="h-full rounded-full bg-[#34D399] transition-all duration-300" style="width:0%"></div></div>
                     </div>
                 </div>
             </div>
         </header>
+        <div class="sarawak-trim shrink-0"></div>
 
         <!-- LIVE CROSS-SECTION DIORAMA SCENE & UNFOLDED PROJECT BRIEF -->
         <div id="left-diorama-wrap" class="px-3 pt-2 pb-1.5 shrink-0">
-            <section id="live-diorama-card" aria-label="Live Restoration Diorama" class="rounded-xl overflow-hidden border-[1.5px] border-[#7A5434] bg-[#FFFDF9] shadow-[0_2px_0_#7A5434]">
+            <section id="live-diorama-card" aria-label="Live Restoration Diorama" class="rounded-xl overflow-hidden border-[1.5px] border-[#7A5434] bg-[#FFFDF9] shadow-[0_3px_0_#7A5434]">
                 <div id="diorama-viewport" class="relative w-full"></div>
             </section>
 
             <!-- Wide / Unfolded Duo Project Brief & PM Concept Reference Card -->
-            <div id="wide-brief-card" class="block mt-1.5 min-[600px]:mt-2.5 paper-card rounded-xl p-2.5 min-[600px]:p-3 bg-[#FFFDF9]"></div>
+            <div id="wide-brief-card" class="hidden min-[600px]:block mt-2.5 paper-card rounded-xl p-3 bg-[#FFFDF9]"></div>
         </div>
     </div>
 
     <!-- RIGHT STAGE: Guidance, Scrollable Charter/WBS Tree Board & Sticky Bottom Team Dock -->
     <div id="right-stage">
-        <!-- CONTEXTUAL LEVEL BANNER (Approved Charter Summary in L2 OR Contingency Reserve in L3) -->
-        <div id="context-banner" class="hidden mx-3 mt-1.5 min-[600px]:mt-2.5 px-3 py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] shrink-0"></div>
+        <!-- CONTEXTUAL LEVEL BANNER (Collapsible 1-Line Charter/Reserve Bar) -->
+        <div id="context-banner" class="hidden mx-3 mt-1.5 min-[600px]:mt-2.5 px-3 py-1.5 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] shrink-0"></div>
 
         <!-- ADVISOR GUIDANCE BANNER -->
-        <div id="guidance-strip" class="mx-3 mt-1.5 min-[600px]:mt-2.5 px-3 py-2 rounded-xl bg-[#FFFDF9] border-[1.5px] border-[#C58F2A] text-xs text-[#241B15] flex items-center gap-2 shrink-0">
-            <span class="text-sm shrink-0">💡</span>
+        <div id="guidance-strip" class="mx-3 mt-1.5 min-[600px]:mt-2 px-3 py-2 rounded-xl bg-[#FFFDF9] border-[1.5px] border-[#C58F2A] text-xs text-[#241B15] flex items-center gap-2 shrink-0">
+            <span class="w-5 h-5 rounded-md bg-[#C58F2A]/15 text-[#8C6106] flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 16 16" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5.5 11.5h5M6.2 13.5h3.6M8 2a4 4 0 0 0-2.5 7.1c.5.4.8 1 .9 1.6h3.2c.1-.6.4-1.2.9-1.6A4 4 0 0 0 8 2z"/></svg>
+            </span>
             <span id="guidance-text" class="leading-snug">Tap a statement from Auntie Mei, then tap its matching <strong>Project Charter</strong> slot.</span>
         </div>
 
@@ -428,7 +551,10 @@
         <footer id="bottom-dock" class="teak-dock px-3 pt-2 z-30 shrink-0">
             <div id="artisan-dock-wrapper">
                 <div class="flex items-center justify-between mb-1.5 px-0.5">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#3D2412]">👷 Project Team Roster</span>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#3D2412] flex items-center gap-1.5">
+                        <svg viewBox="0 0 16 16" class="w-3.5 h-3.5 text-[#5C3A21]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13c0-2.2 2-3.8 4.5-3.8s4.5 1.6 4.5 3.8"/><circle cx="11.5" cy="6" r="2"/><path d="M11 9.5c1.9.2 3.5 1.5 3.5 3.5"/></svg>
+                        <span>Project Team Roster</span>
+                    </span>
                     <span id="selected-artisan-pill" class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35 truncate max-w-[185px]">
                         Tap Assign on any Task
                     </span>
@@ -437,8 +563,8 @@
                 <div id="artisans-dock" class="grid grid-cols-3 gap-1.5 sm:gap-2 mb-2"></div>
             </div>
 
-            <button id="btn-primary-action" type="button" onclick="handlePrimaryCTA()" class="w-full min-h-[44px] py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer">
-                <span>☀️ Start Workday</span>
+            <button id="btn-primary-action" type="button" onclick="handlePrimaryCTA()" class="btn-tactile w-full min-h-[44px] py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer">
+                <span>Start Workday</span>
             </button>
 
             <!-- Subtle studio credit -->
@@ -446,23 +572,23 @@
                 <span>Oh my PM! • A RekaSantai Game</span>
             </div>
         </footer>
-    </div>
 
-    <!-- EXECUTION OVERLAY (Workday Progress Simulation) -->
-    <div id="execution-overlay" class="hidden absolute inset-0 z-40 bg-[#241B15]/80 flex items-center justify-center p-4">
-        <div class="paper-card w-full max-w-[400px] rounded-2xl p-5 text-center animate-crisp-in border-2 border-[#5C3A21]">
-            <div id="exec-icon" class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#F1E7D3] text-3xl mb-2 border-[1.5px] border-[#8C6A4A]">
-                ☕
+        <!-- EXECUTION OVERLAY (Scoped to #right-stage so live diorama stays uncovered!) -->
+        <div id="execution-overlay" class="hidden absolute inset-0 z-40 bg-[#241B15]/70 backdrop-blur-[2px] flex items-center justify-center p-4">
+            <div class="paper-card w-full max-w-[400px] rounded-2xl p-5 text-center animate-crisp-in border-2 border-[#5C3A21]">
+                <div id="exec-icon" class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#F1E7D3] text-3xl mb-2 border-[1.5px] border-[#8C6A4A]">
+                    ☕
+                </div>
+                <h3 id="exec-title" class="text-lg font-bold text-[#5C3A21]">Executing Day 1 Workday</h3>
+                <p id="exec-subtitle" class="text-xs font-medium text-[#5A4D41] mt-0.5 mb-4">Your team is building on site in Sarawak...</p>
+
+                <div class="w-full h-3.5 bg-[#F1E7D3] rounded-full overflow-hidden p-0.5 border-[1.5px] border-[#8C6A4A] mb-3">
+                    <div id="exec-progress-bar" class="h-full bg-[#2E6F40] rounded-full transition-all duration-150" style="width: 0%"></div>
+                </div>
+
+                <div id="exec-logs" class="bg-[#FAF5EB] rounded-xl p-3 text-left space-y-2 min-h-[104px] border-[1.5px] border-[#8C6A4A]/60 text-xs text-[#241B15]"></div>
+                <div id="exec-skip-hint" class="text-[10px] text-[#7A5434] mt-2 font-medium">Tap anywhere to continue faster ⏩</div>
             </div>
-            <h3 id="exec-title" class="text-lg font-bold text-[#5C3A21]">Executing Day 1 Workday</h3>
-            <p id="exec-subtitle" class="text-xs font-medium text-[#5A4D41] mt-0.5 mb-4">Your team is building on site in Sarawak...</p>
-
-            <div class="w-full h-3.5 bg-[#F1E7D3] rounded-full overflow-hidden p-0.5 border-[1.5px] border-[#8C6A4A] mb-3">
-                <div id="exec-progress-bar" class="h-full bg-[#2E6F40] rounded-full transition-all duration-150" style="width: 0%"></div>
-            </div>
-
-            <div id="exec-logs" class="bg-[#FAF5EB] rounded-xl p-3 text-left space-y-2 min-h-[104px] border-[1.5px] border-[#8C6A4A]/60 text-xs text-[#241B15]"></div>
-            <div id="exec-skip-hint" class="text-[10px] text-[#7A5434] mt-2 font-medium">Tap anywhere to continue faster ⏩</div>
         </div>
     </div>
 </div>
@@ -505,103 +631,118 @@
     </div>
 </div>
 
-<!-- MODAL: Mid-Project Event (Stakeholder Scope Creep Change Request / Monsoon Risk Mitigation) -->
-<div id="event-modal" class="hidden fixed inset-0 z-50 bg-[#241B15]/85 flex items-center justify-center p-4">
-    <div class="paper-card max-w-[400px] w-full rounded-2xl p-5 animate-crisp-in border-2 border-[#5C3A21]">
-        <div class="flex items-center gap-2.5 mb-2.5">
-            <span id="modal-emoji" class="text-3xl">🎤</span>
-            <div>
-                <span id="modal-tag" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#C85A32]/15 text-[#9E3514] border border-[#C85A32]/30">Change Control</span>
-                <h3 id="modal-title" class="text-base font-bold text-[#241B15] mt-1">Stakeholder Change Request</h3>
-            </div>
+<!-- MODAL: Mid-Project Event (Community Clipboard Memo) -->
+<div id="event-modal" class="hidden fixed inset-0 z-50 bg-[#241B15]/85 backdrop-blur-[2px] flex items-center justify-center p-4">
+    <div class="paper-card max-w-[404px] w-full rounded-2xl animate-crisp-in border-2 border-[#5C3A21] relative overflow-visible">
+        <!-- Wooden Clipboard Brass Clip Ornament -->
+        <div class="mx-auto -mt-3 w-20 h-4 rounded-t-lg bg-gradient-to-b from-[#FDE68A] via-[#C58F2A] to-[#8C6106] border-[1.5px] border-[#241B15] shadow-sm flex items-center justify-center">
+            <span class="w-8 h-1 rounded-full bg-[#3D2412]/70"></span>
         </div>
-        <p id="modal-body" class="text-xs text-[#241B15] leading-relaxed bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-4"></p>
-        <div id="modal-actions" class="space-y-2"></div>
+        <div class="sarawak-trim mt-1.5"></div>
+        <div class="p-5 pt-3.5">
+            <div class="flex items-center gap-3 mb-3">
+                <div id="modal-emoji" class="w-12 h-12 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] flex items-center justify-center shrink-0 overflow-hidden"></div>
+                <div class="min-w-0">
+                    <span id="modal-tag" class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#C85A32]/15 text-[#9E3514] border border-[#C85A32]/30">Change Control</span>
+                    <h3 id="modal-title" class="text-base font-bold text-[#241B15] mt-1 leading-snug">Stakeholder Change Request</h3>
+                </div>
+            </div>
+            <div id="modal-body" class="text-xs text-[#241B15] leading-relaxed bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-4"></div>
+            <div id="modal-actions" class="space-y-2"></div>
+        </div>
     </div>
 </div>
 
-<!-- MODAL: Level Completion & Project Retrospective -->
-<div id="retro-modal" class="hidden fixed inset-0 z-50 bg-[#241B15]/85 flex items-center justify-center p-3 overflow-y-auto">
-    <div class="paper-card max-w-[410px] w-full rounded-2xl p-5 animate-crisp-in border-2 border-[#C58F2A] my-auto">
-        <div class="text-center mb-3">
-            <span id="retro-phase-tag" class="inline-block px-3 py-1 rounded-full bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40 text-[11px] font-bold mb-1.5">📜 Phase 1 Complete • Initiating</span>
-            <h2 id="retro-headline" class="text-xl font-bold text-[#5C3A21]">Project Complete!</h2>
-            <p id="retro-sub" class="text-xs font-medium text-[#5A4D41] mt-0.5">Review your Iron Triangle performance and capture lessons learned.</p>
-        </div>
-
-        <!-- Iron Triangle Final Scorecard -->
-        <div class="grid grid-cols-3 gap-2 bg-[#FAF5EB] p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A] mb-2.5 text-center">
-            <div>
-                <div class="text-[10px] font-semibold text-[#5A4D41]">Budget Saved</div>
-                <div id="retro-budget" class="text-sm font-bold font-mono-crisp text-[#2E6F40]">RM 120</div>
+<!-- MODAL: Level Completion & Project Retrospective (Heritage Guild Certificate) -->
+<div id="retro-modal" class="hidden fixed inset-0 z-50 bg-[#241B15]/85 backdrop-blur-[2px] flex items-center justify-center p-3">
+    <div class="paper-card max-w-[464px] w-full max-h-[92dvh] flex flex-col overflow-hidden rounded-2xl animate-crisp-in border-2 border-[#C58F2A] my-auto shadow-2xl">
+        <div class="sarawak-trim shrink-0"></div>
+        <div class="flex-1 min-h-0 overflow-y-auto p-3.5 border-[1.5px] border-[#C58F2A]/35 m-1.5 mb-0 rounded-t-xl bg-[#FFFDF9]">
+            <div class="text-center mb-2">
+                <span id="retro-phase-tag" class="inline-block px-3 py-0.5 rounded-full bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40 text-[10px] font-bold mb-1">Phase 1 Complete • Initiating</span>
+                <h2 id="retro-headline" class="text-lg font-bold text-[#5C3A21] leading-snug">Project Complete!</h2>
+                <p id="retro-sub" class="text-[11px] font-medium text-[#5A4D41] mt-0.5">Review your Iron Triangle performance and capture lessons learned.</p>
             </div>
-            <div>
-                <div id="retro-time-label" class="text-[10px] font-semibold text-[#5A4D41]">Days Remaining</div>
-                <div id="retro-days" class="text-sm font-bold font-mono-crisp text-[#5C3A21]">1 Day</div>
-            </div>
-            <div>
-                <div class="text-[10px] font-semibold text-[#5A4D41]">Scope &amp; Quality</div>
-                <div id="retro-quality" class="text-sm font-bold text-[#C58F2A]">100% ✅</div>
-            </div>
-        </div>
 
-        <!-- 3-Star Iron Triangle Mastery Breakdown -->
-        <div id="retro-stars-box" class="bg-[#FFFDF9] p-2.5 rounded-xl border-[1.5px] border-[#C58F2A] mb-3">
-            <div class="flex items-center justify-between mb-1.5">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#7A5404]">Iron Triangle Mastery Rating</span>
-                <span id="retro-stars-display" class="text-sm tracking-wide">⭐⭐⭐</span>
-            </div>
-            <div id="retro-stars-criteria" class="space-y-1 text-[11px] text-[#241B15]"></div>
-            <div id="retro-scope-feedback" class="hidden mt-2 pt-2 border-t border-[#C58F2A]/40 text-[11px] leading-snug"></div>
-        </div>
-
-        <!-- Project Retrospective Selection (Populated dynamically per chapter) -->
-        <div id="retro-reflection-section" class="space-y-2.5 mb-3"></div>
-
-        <!-- Unlocked PM Principle Badge -->
-        <div id="retro-badge-box" class="bg-[#FFF9E6] p-3 rounded-xl border-[1.5px] border-[#C58F2A] mb-4">
-            <div class="flex items-center gap-2 mb-1">
-                <span id="badge-icon" class="text-2xl">🏅</span>
+            <!-- Iron Triangle Final Scorecard -->
+            <div class="grid grid-cols-3 gap-2 bg-[#FAF5EB] p-2 rounded-xl border-[1.5px] border-[#8C6A4A] mb-2 text-center">
                 <div>
-                    <div class="text-[10px] font-bold uppercase tracking-wider text-[#8C6106]">PM Principle Badge Unlocked</div>
-                    <div id="badge-title" class="text-sm font-bold text-[#241B15]">Project Charter Architect</div>
+                    <div class="text-[10px] font-semibold text-[#5A4D41]">Budget Saved</div>
+                    <div id="retro-budget" class="text-sm font-bold font-mono-crisp text-[#2E6F40]">RM 120</div>
+                </div>
+                <div>
+                    <div id="retro-time-label" class="text-[10px] font-semibold text-[#5A4D41]">Days Remaining</div>
+                    <div id="retro-days" class="text-sm font-bold font-mono-crisp text-[#5C3A21]">1 Day</div>
+                </div>
+                <div>
+                    <div class="text-[10px] font-semibold text-[#5A4D41]">Scope &amp; Quality</div>
+                    <div id="retro-quality" class="text-sm font-bold text-[#C58F2A]">100% ✅</div>
                 </div>
             </div>
-            <p id="badge-desc" class="text-xs text-[#241B15] leading-relaxed">
-                A clear Project Charter defines Objective, Constraints, Success Criteria, and Out-of-Scope boundaries before execution begins.
-            </p>
+
+            <!-- 3-Star Iron Triangle Mastery Breakdown -->
+            <div id="retro-stars-box" class="bg-[#FFFDF9] p-2 rounded-xl border-[1.5px] border-[#C58F2A] mb-2">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#7A5404]">Iron Triangle Mastery Rating</span>
+                    <span id="retro-stars-display" class="text-sm tracking-wide flex items-center gap-0.5">⭐⭐⭐</span>
+                </div>
+                <div id="retro-stars-criteria" class="space-y-0.5 text-[11px] text-[#241B15]"></div>
+                <div id="retro-scope-feedback" class="hidden mt-1.5 pt-1.5 border-t border-[#C58F2A]/40 text-[11px] leading-snug"></div>
+            </div>
+
+            <!-- Project Retrospective Selection (Populated dynamically per chapter) -->
+            <div id="retro-reflection-section" class="space-y-1.5 mb-2"></div>
+
+            <!-- Unlocked PM Principle Badge -->
+            <div id="retro-badge-box" class="bg-[#FFF9E6] p-2 rounded-xl border-[1.5px] border-[#C58F2A] mb-1.5">
+                <div class="flex items-center gap-2 mb-0.5">
+                    <span id="badge-icon" class="text-lg">🏅</span>
+                    <div>
+                        <div class="text-[9.5px] font-bold uppercase tracking-wider text-[#8C6106]">PM Principle Badge Unlocked</div>
+                        <div id="badge-title" class="text-xs font-bold text-[#241B15]">Project Charter Architect</div>
+                    </div>
+                </div>
+                <p id="badge-desc" class="text-[11px] text-[#241B15] leading-snug">
+                    A clear Project Charter defines Objective, Constraints, Success Criteria, and Out-of-Scope boundaries before execution begins.
+                </p>
+            </div>
+
+            <div id="retro-hints" class="hidden bg-[#FFF9E6] p-2 rounded-xl border-[1.5px] border-[#C58F2A] mt-1.5"></div>
         </div>
-
-        <div id="retro-hints" class="hidden bg-[#FFF9E6] p-3 rounded-xl border-[1.5px] border-[#C58F2A] mb-3"></div>
-
-        <div id="retro-footer-actions" class="space-y-2"></div>
+        <div id="retro-footer-actions" class="shrink-0 p-3 pt-2 mx-1.5 mb-1.5 border-[1.5px] border-t-0 border-[#C58F2A]/35 rounded-b-xl bg-[#FFFDF9] space-y-1.5"></div>
     </div>
 </div>
 
 <!-- MODAL: Chapter Story Intro (shown after the level-complete pop-up, before the next level starts) -->
-<div id="chapter-intro-modal" class="hidden fixed inset-0 flex items-center justify-center p-3 overflow-y-auto" style="z-index:60; background-color:rgba(36,27,21,0.90); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);" role="dialog" aria-modal="true" aria-labelledby="intro-title">
-    <div class="paper-card max-w-[410px] w-full rounded-2xl p-5 animate-crisp-in border-2 border-[#5C3A21] my-auto">
-        <div id="intro-progress" class="flex items-center justify-center gap-1.5 mb-3" aria-label="Chapter progress"></div>
+<div id="chapter-intro-modal" class="hidden fixed inset-0 flex items-center justify-center p-3" style="z-index:60; background-color:rgba(36,27,21,0.90); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+    <div class="paper-card max-w-[464px] w-full max-h-[92dvh] flex flex-col overflow-hidden rounded-2xl animate-crisp-in border-2 border-[#5C3A21] my-auto">
+        <div id="intro-scene-banner" class="hidden h-16 shrink-0 relative overflow-hidden border-b-2 border-[#7A5434]"></div>
+        <div class="flex-1 min-h-0 overflow-y-auto px-4 pt-2.5 pb-2">
+            <div id="intro-progress" class="flex items-center justify-center gap-1.5 mb-1.5" aria-label="Chapter progress"></div>
 
-        <div class="text-center mb-3">
-            <span id="intro-tag" class="inline-block px-3 py-1 rounded-full bg-[#C85A32]/15 text-[#9E3514] border border-[#C85A32]/35 text-[11px] font-bold mb-1.5"></span>
-            <div id="intro-emoji" class="text-4xl leading-none my-1.5"></div>
-            <h2 id="intro-title" class="text-xl font-bold text-[#5C3A21] leading-snug"></h2>
-            <p id="intro-place" class="text-[11px] font-semibold text-[#7A5434] mt-0.5"></p>
+            <div class="text-center mb-2">
+                <span id="intro-tag" class="inline-block px-2.5 py-0.5 rounded-full bg-[#C85A32]/15 text-[#9E3514] border border-[#C85A32]/35 text-[10px] font-bold mb-1"></span>
+                <div class="flex items-center justify-center gap-1.5">
+                    <span id="intro-emoji" class="text-xl leading-none"></span>
+                    <h2 id="intro-title" class="text-lg font-bold text-[#5C3A21] leading-snug"></h2>
+                </div>
+                <p id="intro-place" class="sr-only"></p>
+            </div>
+
+            <div id="intro-story" class="text-[11px] text-[#241B15] leading-snug bg-[#FAF5EB] p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-2 space-y-1.5"></div>
+
+            <div id="intro-stats" class="grid grid-cols-3 gap-2 text-center mb-2"></div>
+
+            <div id="intro-carry" class="hidden text-[10.5px] text-[#3D2412] bg-[#F1E7D3] p-2 rounded-xl border border-[#8C6A4A]/60 mb-2 leading-snug"></div>
+
+            <div class="bg-[#FFF9E6] p-2 rounded-xl border-[1.5px] border-[#C58F2A]">
+                <div id="intro-skill-label" class="text-[10px] font-bold uppercase tracking-wider text-[#8C6106] mb-1"></div>
+                <div id="intro-skills" class="text-[11px] text-[#3D2412] space-y-0.5 leading-snug"></div>
+            </div>
         </div>
-
-        <div id="intro-story" class="text-xs text-[#241B15] leading-relaxed bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-2.5 space-y-2"></div>
-
-        <div id="intro-stats" class="grid grid-cols-3 gap-2 text-center mb-2.5"></div>
-
-        <div id="intro-carry" class="hidden text-[11px] text-[#3D2412] bg-[#F1E7D3] p-2.5 rounded-xl border border-[#8C6A4A]/60 mb-2.5"></div>
-
-        <div class="bg-[#FFF9E6] p-2.5 rounded-xl border-[1.5px] border-[#C58F2A] mb-3.5">
-            <div id="intro-skill-label" class="text-[10px] font-bold uppercase tracking-wider text-[#8C6106] mb-1"></div>
-            <div id="intro-skills" class="text-[11px] text-[#3D2412] space-y-1"></div>
+        <div class="shrink-0 px-4 py-2.5 border-t border-[#8C6A4A]/30 bg-[#FFFDF9]">
+            <button id="intro-start-btn" type="button" onclick="startChapterFromIntro()" class="btn-tactile w-full min-h-[42px] py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 transition cursor-pointer"></button>
         </div>
-
-        <button id="intro-start-btn" type="button" onclick="startChapterFromIntro()" class="w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 transition cursor-pointer"></button>
     </div>
 </div>
 
@@ -884,6 +1025,45 @@
         if (tutIcon) tutIcon.innerHTML = getGameIconSVG(36);
     }
 
+    const UI_ICONS = {
+        scroll: '<path d="M4 2.5h7a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 11 14H3.5A1.5 1.5 0 0 1 2 12.5V4.5A2 2 0 0 1 4 2.5z"/><path d="M5.5 6h4.5M5.5 8.5h4.5M5.5 11h3"/>',
+        box: '<path d="M8 1.8L13.5 5v6L8 14.2 2.5 11V5L8 1.8z"/><path d="M2.5 5L8 8.2 13.5 5M8 8.2v6"/>',
+        calendar: '<rect x="2" y="3" width="12" height="11" rx="2"/><path d="M5 1.5v3M11 1.5v3M2 6.5h12M5.5 9.5h2v2h-2z"/>',
+        coin: '<circle cx="8" cy="8" r="5.8"/><path d="M8 4.8v6.4M9.6 6.2c0-.7-.7-1.1-1.6-1.1s-1.6.4-1.6 1.1.7 1 1.6 1.2 1.6.5 1.6 1.3-.7 1.1-1.6 1.1-1.6-.4-1.6-1.1"/>',
+        clock: '<circle cx="8" cy="8.5" r="5.5"/><path d="M8 5.5v3l2 1.2M6 1.8h4"/>',
+        compass: '<circle cx="8" cy="8" r="6"/><polygon points="10.8,5.2 9,9 5.2,10.8 7,7" fill="currentColor" stroke="none"/>',
+        shield: '<path d="M8 1.8L13 4v3.8c0 3.2-2.1 5.4-5 6.4-2.9-1-5-3.2-5-6.4V4l5-2.2z"/>',
+        flame: '<path d="M8.5 1.8c.4 2.2-1.2 3.4-1.2 5 0 1 .8 1.7 1.7 1.7s1.7-.9 1.7-2.2c1.4 1.2 2.1 2.7 2.1 4.2a4.8 4.8 0 1 1-9.6 0c0-2.8 2-4.6 5.3-8.7z"/>',
+        sunCloud: '<circle cx="6" cy="5.5" r="2.2"/><path d="M6 1.8v.8M2.5 5.5h.8M3.6 3.1l.6.6M8.4 3.1l-.6.6"/><path d="M6.5 13h5a2.3 2.3 0 0 0 .3-4.5A3.2 3.2 0 0 0 5.6 9a2 2 0 0 0 .9 4z"/>',
+        rain: '<path d="M4.5 10h7a2.5 2.5 0 0 0 .3-4.9A3.5 3.5 0 0 0 5.2 5a2.4 2.4 0 0 0-.7 5z"/><path d="M5.5 12l-1 2.2M8.5 12l-1 2.2M11.5 12l-1 2.2"/>',
+        coffee: '<path d="M3 6.5h7.5v4a3.5 3.5 0 0 1-7.5 0v-4z"/><path d="M10.5 7.5h1.8a1.5 1.5 0 0 1 0 3h-1.8"/><path d="M5 3.8c0-.8.8-1 .8-1.8M7.8 3.8c0-.8.8-1 .8-1.8"/>',
+        lock: '<rect x="3.5" y="7" width="9" height="6.8" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/>',
+        check: '<circle cx="8" cy="8" r="6"/><path d="M5.2 8.2l1.9 1.9 3.7-3.8"/>',
+        bolt: '<polygon points="9,1.5 3.5,9 7.8,9 7,14.5 12.5,7 8.2,7"/>',
+        refresh: '<path d="M13 5.5A5.5 5.5 0 0 0 3.7 4.2M3 2v2.5h2.5"/><path d="M3 10.5a5.5 5.5 0 0 0 9.3 1.3M13 14v-2.5h-2.5"/>',
+        hammer: '<path d="M9.5 3l3.5 3.5-1.8 1.8-1.4-1.4-5.6 5.6-1.4-1.4 5.6-5.6-1.4-1.4L9.5 3z"/>',
+        utensils: '<path d="M4.5 2v4.5M6.2 2v4.5M2.8 2v4.5a1.7 1.7 0 0 0 3.4 0M4.5 8v6"/><path d="M11.5 2v12M11.5 2c1.6 1 1.8 4 0 5.5"/>',
+        truck: '<rect x="1.5" y="4.5" width="8.5" height="6.5" rx="1"/><path d="M10 6.5h2.8l1.7 2v2.5H10z"/><circle cx="4.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/>',
+        sun: '<circle cx="8" cy="8" r="3"/><path d="M8 1.8v1.5M8 12.7v1.5M1.8 8h1.5M12.7 8h1.5M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M3.6 12.4l1.1-1.1M11.3 4.7l1.1-1.1"/>',
+        volumeOn: '<path d="M2.5 6v4h3l3.5 3V3L5.5 6h-3z"/><path d="M11.5 5.3a3.8 3.8 0 0 1 0 5.4"/><path d="M13.5 3.5a6.5 6.5 0 0 1 0 9"/>',
+        volumeOff: '<path d="M2.5 6v4h3l3.5 3V3L5.5 6h-3z"/><path d="M11.5 6l3 4M14.5 6l-3 4"/>',
+        guide: '<circle cx="8" cy="8" r="6.5"/><path d="M6.2 6.2a1.9 1.9 0 0 1 3.6.7c0 1.3-1.8 1.6-1.8 2.8"/><circle cx="8" cy="12" r="0.6" fill="currentColor" stroke="none"/>',
+        chevronDown: '<path d="M4 6l4 4 4-4"/>',
+        spark: '<path d="M8 1.8L9.5 6.5 14.2 8 9.5 9.5 8 14.2 6.5 9.5 1.8 8 6.5 6.5z"/>',
+        stage: '<path d="M8 2.5a2 2 0 0 1 2 2v3a2 2 0 0 1-4 0v-3a2 2 0 0 1 2-2z"/><path d="M4.5 7.5a3.5 3.5 0 0 0 7 0M8 11v3M5.5 14h5"/>'
+    };
+
+    function uiIcon(name, cls = 'w-3.5 h-3.5 inline-block shrink-0') {
+        const body = UI_ICONS[name] || UI_ICONS.spark;
+        return `<svg viewBox="0 0 16 16" aria-hidden="true" class="${cls}" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
+    }
+
+    function getSkillIconName(skill) {
+        if (skill === 'Carpentry') return 'hammer';
+        if (skill === 'Culinary') return 'utensils';
+        return 'truck';
+    }
+
     // ==========================================
     // 2. TOAST NOTIFICATION SYSTEM
     // ==========================================
@@ -1152,50 +1332,60 @@
     // ==========================================
     // 5. CRISP VECTOR ARTISAN PORTRAITS & DIORAMA
     // ==========================================
-    function getArtisanPortraitSVG(id, size = 28) {
-        if (id === 'lim') {
-            return `<svg width="${size}" height="${size}" viewBox="0 0 32 32" shape-rendering="geometricPrecision" class="shrink-0 block">
-                <rect x="1" y="1" width="30" height="30" rx="8" fill="#F1E7D3" stroke="#5C3A21" stroke-width="1.5"/>
-                <circle cx="16" cy="18" r="8" fill="#D9A377" stroke="#241B15" stroke-width="1.4"/>
-                <path d="M8 14 C8 9, 24 9, 24 14 Z" fill="#3D2412" stroke="#241B15" stroke-width="1.4"/>
-                <rect x="10.5" y="15.5" width="4.5" height="3.5" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1.2"/>
-                <rect x="17" y="15.5" width="4.5" height="3.5" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1.2"/>
-                <line x1="15" y1="17" x2="17" y2="17" stroke="#241B15" stroke-width="1.2"/>
-                <path d="M13.5 21.5 Q16 23.5 18.5 21.5" stroke="#241B15" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-            </svg>`;
+    function getArtisanPortraitSVG(id, size = 28, opts = {}) {
+        const safeId = ['lim', 'salmah', 'danny', 'auntie-mei', 'committee'].includes(id) ? id : 'danny';
+        const isFatigued = Boolean(opts && opts.fatigued);
+        const isResting = Boolean(opts && opts.resting);
+        const isWorking = Boolean(opts && opts.working);
+
+        let fallbackInner = '';
+        if (safeId === 'lim') {
+            fallbackInner = `<rect x="1" y="1" width="30" height="30" rx="8" fill="#F1E7D3" stroke="#5C3A21" stroke-width="1.5"/><circle cx="16" cy="18" r="8" fill="#D9A377" stroke="#241B15" stroke-width="1.4"/><path d="M8 14 C8 9, 24 9, 24 14 Z" fill="#6B7280" stroke="#241B15" stroke-width="1.4"/><rect x="10.5" y="15.5" width="4.5" height="3.5" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1.2"/><rect x="17" y="15.5" width="4.5" height="3.5" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1.2"/><line x1="15" y1="17" x2="17" y2="17" stroke="#241B15" stroke-width="1.2"/><path d="M13.5 21.5 Q16 23.5 18.5 21.5" stroke="#241B15" stroke-width="1.4" fill="none" stroke-linecap="round"/>`;
+        } else if (safeId === 'salmah') {
+            fallbackInner = `<rect x="1" y="1" width="30" height="30" rx="8" fill="#FCEEE8" stroke="#C85A32" stroke-width="1.5"/><path d="M7 27 C7 12, 25 12, 25 27 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.4"/><circle cx="16" cy="17.5" r="6.5" fill="#E0AC82" stroke="#241B15" stroke-width="1.4"/><circle cx="13.8" cy="16.8" r="1" fill="#241B15"/><circle cx="18.2" cy="16.8" r="1" fill="#241B15"/><path d="M14 20 Q16 22 18 20" stroke="#241B15" stroke-width="1.4" fill="none" stroke-linecap="round"/>`;
+        } else if (safeId === 'auntie-mei') {
+            fallbackInner = `<rect x="1" y="1" width="30" height="30" rx="8" fill="#FAF5EB" stroke="#2E6F40" stroke-width="1.5"/><circle cx="16" cy="18" r="7.5" fill="#E6B894" stroke="#241B15" stroke-width="1.4"/><path d="M8.5 15 C8.5 8.5, 23.5 8.5, 23.5 15 Z" fill="#CBD5E1" stroke="#241B15" stroke-width="1.3"/><circle cx="13.8" cy="17.5" r="1" fill="#241B15"/><circle cx="18.2" cy="17.5" r="1" fill="#241B15"/><path d="M13.8 21 Q16 22.8 18.2 21" stroke="#241B15" stroke-width="1.3" fill="none" stroke-linecap="round"/>`;
+        } else if (safeId === 'committee') {
+            fallbackInner = `<rect x="1" y="1" width="30" height="30" rx="8" fill="#FFF9E6" stroke="#C58F2A" stroke-width="1.5"/><circle cx="16" cy="18" r="7.5" fill="#D9A377" stroke="#241B15" stroke-width="1.4"/><path d="M9 14 C9 9, 23 9, 23 14 Z" fill="#475569" stroke="#241B15" stroke-width="1.3"/><rect x="11" y="15.8" width="4" height="3" rx="0.8" fill="none" stroke="#241B15" stroke-width="1.1"/><rect x="17" y="15.8" width="4" height="3" rx="0.8" fill="none" stroke="#241B15" stroke-width="1.1"/>`;
+        } else {
+            fallbackInner = `<rect x="1" y="1" width="30" height="30" rx="8" fill="#E6F2EA" stroke="#2E6F40" stroke-width="1.5"/><circle cx="16" cy="19" r="7.5" fill="#C98F63" stroke="#241B15" stroke-width="1.4"/><path d="M5 14 L16 6 L27 14 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1.4" stroke-linejoin="round"/><circle cx="13.5" cy="18" r="1" fill="#241B15"/><circle cx="18.5" cy="18" r="1" fill="#241B15"/><path d="M13.5 21.5 Q16 23.5 18.5 21.5" stroke="#241B15" stroke-width="1.4" fill="none" stroke-linecap="round"/>`;
         }
-        if (id === 'salmah') {
-            return `<svg width="${size}" height="${size}" viewBox="0 0 32 32" shape-rendering="geometricPrecision" class="shrink-0 block">
-                <rect x="1" y="1" width="30" height="30" rx="8" fill="#FCEEE8" stroke="#C85A32" stroke-width="1.5"/>
-                <path d="M7 27 C7 12, 25 12, 25 27 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.4"/>
-                <circle cx="16" cy="17.5" r="6.5" fill="#E0AC82" stroke="#241B15" stroke-width="1.4"/>
-                <circle cx="13.8" cy="16.8" r="1" fill="#241B15"/>
-                <circle cx="18.2" cy="16.8" r="1" fill="#241B15"/>
-                <path d="M14 20 Q16 22 18 20" stroke="#241B15" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-            </svg>`;
-        }
-        return `<svg width="${size}" height="${size}" viewBox="0 0 32 32" shape-rendering="geometricPrecision" class="shrink-0 block">
-            <rect x="1" y="1" width="30" height="30" rx="8" fill="#E6F2EA" stroke="#2E6F40" stroke-width="1.5"/>
-            <circle cx="16" cy="19" r="7.5" fill="#C98F63" stroke="#241B15" stroke-width="1.4"/>
-            <path d="M5 14 L16 6 L27 14 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1.4" stroke-linejoin="round"/>
-            <circle cx="13.5" cy="18" r="1" fill="#241B15"/>
-            <circle cx="18.5" cy="18" r="1" fill="#241B15"/>
-            <path d="M13.5 21.5 Q16 23.5 18.5 21.5" stroke="#241B15" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-        </svg>`;
+
+        const borderCls = isFatigued
+            ? 'border-[#B91C1C]'
+            : isResting
+                ? 'border-[#C58F2A]'
+                : isWorking
+                    ? 'border-[#C85A32]'
+                    : 'border-[#5C3A21]/75';
+        const radiusCls = size >= 32 ? 'rounded-xl' : 'rounded-md';
+        const badgeHtml = isFatigued
+            ? `<span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#E0F2FE] border border-[#1E3A8A] flex items-center justify-center shadow-sm"><svg viewBox="0 0 12 12" class="w-2.5 h-2.5"><path d="M6 1.5C8 4.4 8.5 6 8.5 7.3a2.5 2.5 0 1 1-5 0C3.5 6 4 4.4 6 1.5z" fill="#0284C7"/></svg></span>`
+            : isResting
+                ? `<span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#FFF9E6] border border-[#8C6106] flex items-center justify-center text-[#5C3A21] shadow-sm">${uiIcon('coffee', 'w-2 h-2')}</span>`
+                : '';
+
+        return `
+            <span class="relative inline-block shrink-0 align-middle" style="width:${size}px;height:${size}px;">
+                <img src="assets/portrait-${safeId}.jpg" alt="${safeId}" width="${size}" height="${size}" class="w-full h-full object-cover ${radiusCls} border-[1.5px] ${borderCls} block bg-[#F1E7D3]" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='block';"/>
+                <svg width="${size}" height="${size}" viewBox="0 0 32 32" style="display:none;" shape-rendering="geometricPrecision" class="block">${fallbackInner}</svg>
+                ${badgeHtml}
+            </span>
+        `;
     }
 
     function getDioramaTimeOfDay() {
         if (state.level === 1) {
             if (state.charterAuthorized) {
                 return {
-                    label: '🎉 Charter Approved',
+                    label: 'Charter Approved',
                     skyTop: '#2D223C',
                     skyBottom: '#C85A32',
                     ambientTint: 'rgba(255, 196, 92, 0.14)'
                 };
             }
             return {
-                label: '📜 Initiating Phase',
+                label: 'Initiating Phase',
                 skyTop: '#CFE8F3',
                 skyBottom: '#FAF0D7',
                 ambientTint: 'rgba(255, 250, 235, 0.04)'
@@ -1204,7 +1394,7 @@
         const allDone = state.tasks && state.tasks.length > 0 && state.tasks.every(t => t.progress >= 100);
         if (allDone) {
             return {
-                label: '🎉 Restoration Complete',
+                label: 'Restoration Complete',
                 skyTop: '#2D223C',
                 skyBottom: '#C85A32',
                 ambientTint: 'rgba(255, 196, 92, 0.14)'
@@ -1212,7 +1402,7 @@
         }
         if (state.isExecuting) {
             return {
-                label: `⚙️ ${getWorkTurnLabel()} ${state.day} of ${state.maxDays}`,
+                label: `${getWorkTurnLabel()} ${state.day} of ${state.maxDays}`,
                 skyTop: '#F3B45A',
                 skyBottom: '#FCE5B4',
                 ambientTint: 'rgba(246, 180, 68, 0.12)'
@@ -1220,14 +1410,14 @@
         }
         if (state.level === 2 && state.phase === 'wbs_build') {
             return {
-                label: '📦 Scope Planning (WBS)',
+                label: 'Scope Planning (WBS)',
                 skyTop: '#CFE8F3',
                 skyBottom: '#FAF0D7',
                 ambientTint: 'rgba(255, 250, 235, 0.04)'
             };
         }
         return {
-            label: `📅 ${getTimeUnit(false)} ${state.day} of ${state.maxDays}`,
+            label: `${getTimeUnit(false)} ${state.day} of ${state.maxDays}`,
             skyTop: '#CFE8F3',
             skyBottom: '#FAF0D7',
             ambientTint: 'rgba(255, 250, 235, 0.04)'
@@ -1238,62 +1428,86 @@
         const isBurnoutRisk = artisan.stamina < 35;
         let hatAndHead = '';
         let tunicColor = '#5C3A21';
+        let toolMarkup = '';
 
         if (artisan.id === 'lim') {
             tunicColor = '#4B6B88';
             hatAndHead = `
-                <circle cx="0" cy="-16" r="5" fill="#D9A377" stroke="#241B15" stroke-width="1.1"/>
-                <path d="M-5 -18.5 C-5 -22, 5 -22, 5 -18.5 Z" fill="#3D2412" stroke="#241B15" stroke-width="1"/>
-                <rect x="-3.2" y="-17.2" width="2.6" height="2" rx="0.5" fill="#FFFDF9" stroke="#241B15" stroke-width="0.8"/>
-                <rect x="0.6" y="-17.2" width="2.6" height="2" rx="0.5" fill="#FFFDF9" stroke="#241B15" stroke-width="0.8"/>
+                <circle cx="0" cy="-19" r="5.5" fill="#D9A377" stroke="#241B15" stroke-width="1.2"/>
+                <path d="M-5.5 -21.5 C-5.5 -25.5, 5.5 -25.5, 5.5 -21.5 Z" fill="#6B7280" stroke="#241B15" stroke-width="1.1"/>
+                <rect x="-3.6" y="-20.2" width="3" height="2.3" rx="0.6" fill="#FFFDF9" stroke="#241B15" stroke-width="0.9"/>
+                <rect x="0.6" y="-20.2" width="3" height="2.3" rx="0.6" fill="#FFFDF9" stroke="#241B15" stroke-width="0.9"/>
+                <line x1="-0.6" y1="-19" x2="0.6" y2="-19" stroke="#241B15" stroke-width="0.9"/>
+            `;
+            // Carpentry mallet in hand
+            toolMarkup = `
+                <line x1="6" y1="-10" x2="12" y2="-15" stroke="#5C3A21" stroke-width="1.8" stroke-linecap="round"/>
+                <rect x="10" y="-18" width="6" height="3.5" rx="1" transform="rotate(-35 13 -16)" fill="#8C582B" stroke="#241B15" stroke-width="1"/>
             `;
         } else if (artisan.id === 'salmah') {
             tunicColor = '#C85A32';
             hatAndHead = `
-                <path d="M-5.5 -10 C-5.5 -21, 5.5 -21, 5.5 -10 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.1"/>
-                <circle cx="0" cy="-15.5" r="4.2" fill="#E0AC82" stroke="#241B15" stroke-width="1"/>
-                <circle cx="-1.3" cy="-16" r="0.7" fill="#241B15"/>
-                <circle cx="1.3" cy="-16" r="0.7" fill="#241B15"/>
+                <path d="M-6 -12.5 C-6 -25, 6 -25, 6 -12.5 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.2"/>
+                <circle cx="0" cy="-18.5" r="4.6" fill="#E0AC82" stroke="#241B15" stroke-width="1.1"/>
+                <circle cx="-1.5" cy="-19" r="0.8" fill="#241B15"/>
+                <circle cx="1.5" cy="-19" r="0.8" fill="#241B15"/>
+                <path d="M-1.5 -16.8 Q0 -15.5 1.5 -16.8" stroke="#241B15" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+            `;
+            // Brass kopi ladle
+            toolMarkup = `
+                <line x1="6" y1="-10" x2="12" y2="-16" stroke="#C58F2A" stroke-width="1.6" stroke-linecap="round"/>
+                <circle cx="13" cy="-17" r="2.3" fill="#F6D365" stroke="#241B15" stroke-width="0.9"/>
             `;
         } else {
             tunicColor = '#2E6F40';
             hatAndHead = `
-                <circle cx="0" cy="-15.5" r="4.8" fill="#C98F63" stroke="#241B15" stroke-width="1.1"/>
-                <path d="M-7.5 -18.5 L0 -23.5 L7.5 -18.5 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1.1" stroke-linejoin="round"/>
-                <circle cx="-1.4" cy="-15.8" r="0.7" fill="#241B15"/>
-                <circle cx="1.4" cy="-15.8" r="0.7" fill="#241B15"/>
+                <circle cx="0" cy="-18.5" r="5.2" fill="#C98F63" stroke="#241B15" stroke-width="1.2"/>
+                <path d="M-8.5 -21.5 L0 -27.5 L8.5 -21.5 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1.2" stroke-linejoin="round"/>
+                <circle cx="-1.6" cy="-18.8" r="0.8" fill="#241B15"/>
+                <circle cx="1.6" cy="-18.8" r="0.8" fill="#241B15"/>
+                <path d="M-1.8 -16.5 Q0 -15.2 1.8 -16.5" stroke="#241B15" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+            `;
+            // Small crate / lantern rig
+            toolMarkup = `
+                <rect x="6" y="-13" width="6.5" height="5.5" rx="1" fill="#D9A76A" stroke="#241B15" stroke-width="1"/>
+                <line x1="6" y1="-10.5" x2="12.5" y2="-10.5" stroke="#5C3A21" stroke-width="0.8"/>
             `;
         }
+
+        const groundShadow = `<ellipse cx="0" cy="4.5" rx="9" ry="2.6" fill="rgba(36, 27, 21, 0.28)"/>`;
 
         if (mode === 'resting') {
             return `
                 <g transform="translate(${x}, ${y})">
-                    <rect x="-6" y="-4" width="12" height="2.5" rx="1" fill="#8C582B" stroke="#241B15" stroke-width="1"/>
-                    <line x1="-4" y1="-1.5" x2="-5" y2="5" stroke="#3D2412" stroke-width="1.3"/>
-                    <line x1="4" y1="-1.5" x2="5" y2="5" stroke="#3D2412" stroke-width="1.3"/>
-                    <rect x="-4.5" y="-11" width="9" height="7" rx="2.5" fill="${tunicColor}" stroke="#241B15" stroke-width="1.1"/>
+                    ${groundShadow}
+                    <rect x="-7" y="-5" width="14" height="3" rx="1.2" fill="#8C582B" stroke="#241B15" stroke-width="1.1"/>
+                    <line x1="-5" y1="-2" x2="-6" y2="4.5" stroke="#3D2412" stroke-width="1.5"/>
+                    <line x1="5" y1="-2" x2="6" y2="4.5" stroke="#3D2412" stroke-width="1.5"/>
+                    <rect x="-5" y="-13.5" width="10" height="8.5" rx="3" fill="${tunicColor}" stroke="#241B15" stroke-width="1.2"/>
                     ${hatAndHead}
-                    <rect x="5" y="-12" width="4" height="4.5" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="0.9"/>
-                    <line x1="5" y1="-10" x2="9" y2="-10" stroke="#2E6F40" stroke-width="0.9"/>
-                    <path d="M7 -14 Q6 -16.5 7.5 -19" stroke="#FFFDF9" stroke-width="1.1" fill="none" stroke-linecap="round" class="diorama-steam"/>
-                    <rect x="-14" y="-31" width="28" height="7.5" rx="3.5" fill="#FFF9E6" stroke="#8C6106" stroke-width="0.8"/>
-                    <text x="0" y="-25.5" text-anchor="middle" fill="#5C3A21" font-size="4.8" font-weight="700">☕ REST</text>
+                    <rect x="6" y="-14" width="4.8" height="5.2" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1"/>
+                    <line x1="6" y1="-11.6" x2="10.8" y2="-11.6" stroke="#2E6F40" stroke-width="1"/>
+                    <path d="M8.4 -16 Q7.4 -18.5 8.8 -21.5" stroke="#FFFDF9" stroke-width="1.2" fill="none" stroke-linecap="round" class="diorama-steam"/>
+                    <rect x="-15" y="-36" width="30" height="8.5" rx="4" fill="#FFF9E6" stroke="#8C6106" stroke-width="0.9"/>
+                    <text x="0" y="-29.8" text-anchor="middle" fill="#5C3A21" font-size="5.2" font-weight="700">REST</text>
                 </g>
             `;
         }
 
         const sweatMarkup = isBurnoutRisk ? `
-            <path d="M7.5 -20 C9 -18, 9 -16.2, 7.5 -16.2 C6 -16.2, 6 -18, 7.5 -20 Z" fill="#38BDF8" stroke="#1E3A8A" stroke-width="0.7"/>
+            <path d="M8.5 -24 C10.2 -21.6, 10.2 -19.5, 8.5 -19.5 C6.8 -19.5, 6.8 -21.6, 8.5 -24 Z" fill="#38BDF8" stroke="#1E3A8A" stroke-width="0.8"/>
         ` : '';
 
         return `
             <g transform="translate(${x}, ${y})">
+                ${groundShadow}
                 <g class="artisan-working-bob">
-                    <line x1="-2.2" y1="-4" x2="-2.5" y2="4" stroke="#241B15" stroke-width="1.6" stroke-linecap="round"/>
-                    <line x1="2.2" y1="-4" x2="2.5" y2="4" stroke="#241B15" stroke-width="1.6" stroke-linecap="round"/>
-                    <rect x="-5" y="-11.5" width="10" height="8" rx="3" fill="${tunicColor}" stroke="#241B15" stroke-width="1.1"/>
-                    <line x1="4" y1="-9" x2="9" y2="-12" stroke="#D9A377" stroke-width="1.8" stroke-linecap="round"/>
-                    <circle cx="10.5" cy="-13" r="1.8" fill="#F6D365" class="diorama-sparkle"/>
+                    <line x1="-2.5" y1="-4.5" x2="-2.8" y2="4" stroke="#241B15" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="2.5" y1="-4.5" x2="2.8" y2="4" stroke="#241B15" stroke-width="1.8" stroke-linecap="round"/>
+                    <rect x="-5.5" y="-13.5" width="11" height="9.5" rx="3.2" fill="${tunicColor}" stroke="#241B15" stroke-width="1.2"/>
+                    <line x1="4" y1="-10.5" x2="8" y2="-11.5" stroke="#D9A377" stroke-width="2" stroke-linecap="round"/>
+                    ${toolMarkup}
+                    <circle cx="12.5" cy="-16.5" r="2" fill="#F6D365" class="diorama-sparkle"/>
                     ${hatAndHead}
                     ${sweatMarkup}
                 </g>
@@ -1311,17 +1525,17 @@
 
     function renderDioramaLayerWrapper(layerState, completedSVG, blueprintSVG, activeSparklePos) {
         if (layerState === 'done') {
-            return `<g class="diorama-layer-done">${completedSVG}</g>`;
+            return `<g class="diorama-layer-done" filter="url(#soft-shadow)">${completedSVG}</g>`;
         }
         const activeClass = layerState === 'active' ? 'diorama-active-blueprint' : '';
         const sparkle = (layerState === 'active' && activeSparklePos) ? `
             <g transform="translate(${activeSparklePos.x}, ${activeSparklePos.y})" class="diorama-sparkle">
-                <circle cx="0" cy="0" r="3" fill="#F6D365" stroke="#C85A32" stroke-width="0.9"/>
-                <path d="M-5 0 L5 0 M0 -5 L0 5" stroke="#F6D365" stroke-width="1.1" stroke-linecap="round"/>
+                <circle cx="0" cy="0" r="3.6" fill="#F6D365" stroke="#C85A32" stroke-width="1"/>
+                <path d="M-6 0 L6 0 M0 -6 L0 6" stroke="#F6D365" stroke-width="1.3" stroke-linecap="round"/>
             </g>
         ` : '';
         return `
-            <g opacity="${layerState === 'active' ? '0.9' : '0.45'}" class="${activeClass}">
+            <g opacity="${layerState === 'active' ? '0.92' : '0.52'}" class="${activeClass}">
                 ${blueprintSVG}
             </g>
             ${sparkle}
@@ -1344,79 +1558,94 @@
 
         const cartLayer = renderDioramaLayerWrapper(
             s1,
-            `<rect x="118" y="64" width="114" height="36" rx="3" fill="#8C5227" stroke="#241B15" stroke-width="1.5"/>
-            <line x1="118" y1="76" x2="232" y2="76" stroke="#5C3A21" stroke-width="1.2"/>
-            <line x1="156" y1="64" x2="156" y2="100" stroke="#5C3A21" stroke-width="1.2"/>
-            <line x1="194" y1="64" x2="194" y2="100" stroke="#5C3A21" stroke-width="1.2"/>
-            <rect x="114" y="60" width="122" height="5" rx="2" fill="#D9A76A" stroke="#241B15" stroke-width="1.4"/>
-            <line x1="124" y1="32" x2="124" y2="60" stroke="#3D2412" stroke-width="2.2"/>
-            <line x1="226" y1="32" x2="226" y2="60" stroke="#3D2412" stroke-width="2.2"/>
-            <path d="M110 34 L122 20 L228 20 L240 34 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.4" stroke-linejoin="round"/>
-            <path d="M134 20 L128 34 L144 34 L148 20 Z M164 20 L162 34 L178 34 L180 20 Z M196 20 L198 34 L214 34 L210 20 Z" fill="#FFFDF5"/>
-            <circle cx="138" cy="103" r="9" fill="#5C3A21" stroke="#241B15" stroke-width="1.5"/>
-            <circle cx="138" cy="103" r="3" fill="#C58F2A" stroke="#241B15" stroke-width="1"/>
-            <circle cx="212" cy="103" r="9" fill="#5C3A21" stroke="#241B15" stroke-width="1.5"/>
-            <circle cx="212" cy="103" r="3" fill="#C58F2A" stroke="#241B15" stroke-width="1"/>
-            <rect x="145" y="80" width="60" height="13" rx="2" fill="#FFF9E6" stroke="#241B15" stroke-width="1"/>
-            <text x="175" y="89" text-anchor="middle" fill="#5C3A21" font-family="Fraunces, serif" font-weight="700" font-size="6.5">KOPI MEI</text>`,
-            `<rect x="118" y="64" width="114" height="36" rx="3" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>
-            <path d="M112 34 L122 20 L228 20 L238 34 Z" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>
-            <line x1="124" y1="34" x2="124" y2="64" stroke="#5C3A21" stroke-width="1.2" stroke-dasharray="3 3"/>
-            <line x1="226" y1="34" x2="226" y2="64" stroke="#5C3A21" stroke-width="1.2" stroke-dasharray="3 3"/>
-            <circle cx="138" cy="103" r="9" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>
-            <circle cx="212" cy="103" r="9" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>`,
-            { x: 175, y: 52 }
+            `<ellipse cx="210" cy="158" rx="84" ry="7" fill="rgba(36, 27, 21, 0.25)"/>
+            <!-- Teak Cart Body & Brass Corner Brackets -->
+            <rect x="135" y="106" width="150" height="44" rx="4" fill="url(#wood-teak)" stroke="#241B15" stroke-width="1.6"/>
+            <rect x="141" y="112" width="40" height="32" rx="2" fill="url(#wood-warm)" stroke="#3D2412" stroke-width="1"/>
+            <rect x="239" y="112" width="40" height="32" rx="2" fill="url(#wood-warm)" stroke="#3D2412" stroke-width="1"/>
+            <rect x="131" y="101" width="158" height="6.5" rx="2.5" fill="#E3B96B" stroke="#241B15" stroke-width="1.4"/>
+            <!-- Posts & Scalloped Awning -->
+            <rect x="141" y="69" width="4.5" height="32" fill="#3D2412" stroke="#241B15" stroke-width="1"/>
+            <rect x="274.5" y="69" width="4.5" height="32" fill="#3D2412" stroke="#241B15" stroke-width="1"/>
+            <path d="M126 70 L141 51 L279 51 L294 70 Z" fill="url(#roof-terra)" stroke="#241B15" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M158 51 L150 70 L170 70 L176 51 Z M198 51 L195 70 L215 70 L218 51 Z M240 51 L243 70 L263 70 L256 51 Z" fill="#FAF5EB" opacity="0.92"/>
+            <path d="M126 70 Q136 76 147 70 Q157 76 168 70 Q178 76 189 70 Q199 76 210 70 Q220 76 231 70 Q241 76 252 70 Q262 76 273 70 Q283 76 294 70" fill="#C85A32" stroke="#241B15" stroke-width="1.1"/>
+            <!-- Spoked Teak Wheels -->
+            <g transform="translate(160, 150)">
+                <circle cx="0" cy="0" r="12" fill="#5C3A21" stroke="#241B15" stroke-width="1.6"/>
+                <circle cx="0" cy="0" r="8.5" fill="none" stroke="#C58F2A" stroke-width="1.1"/>
+                <line x1="-8" y1="0" x2="8" y2="0" stroke="#D9A76A" stroke-width="1.2"/>
+                <line x1="0" y1="-8" x2="0" y2="8" stroke="#D9A76A" stroke-width="1.2"/>
+                <circle cx="0" cy="0" r="3.5" fill="url(#brass-grad)" stroke="#241B15" stroke-width="1"/>
+            </g>
+            <g transform="translate(260, 150)">
+                <circle cx="0" cy="0" r="12" fill="#5C3A21" stroke="#241B15" stroke-width="1.6"/>
+                <circle cx="0" cy="0" r="8.5" fill="none" stroke="#C58F2A" stroke-width="1.1"/>
+                <line x1="-8" y1="0" x2="8" y2="0" stroke="#D9A76A" stroke-width="1.2"/>
+                <line x1="0" y1="-8" x2="0" y2="8" stroke="#D9A76A" stroke-width="1.2"/>
+                <circle cx="0" cy="0" r="3.5" fill="url(#brass-grad)" stroke="#241B15" stroke-width="1"/>
+            </g>
+            <!-- Carved KOPI MEI Signboard -->
+            <rect x="184" y="119" width="52" height="18" rx="3" fill="#FFF9E6" stroke="#C58F2A" stroke-width="1.5"/>
+            <text x="210" y="131" text-anchor="middle" fill="#5C3A21" font-family="Fraunces, serif" font-weight="700" font-size="8.2">KOPI MEI</text>`,
+            `<rect x="135" y="106" width="150" height="44" rx="4" fill="rgba(255,253,249,0.45)" stroke="#2B5783" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <path d="M126 70 L141 51 L279 51 L294 70 Z" fill="rgba(255,253,249,0.35)" stroke="#2B5783" stroke-width="1.4" stroke-dasharray="4 3"/>
+            <line x1="143" y1="70" x2="143" y2="106" stroke="#2B5783" stroke-width="1.4" stroke-dasharray="3 3"/>
+            <line x1="277" y1="70" x2="277" y2="106" stroke="#2B5783" stroke-width="1.4" stroke-dasharray="3 3"/>
+            <circle cx="160" cy="150" r="12" fill="none" stroke="#2B5783" stroke-width="1.4" stroke-dasharray="3 3"/>
+            <circle cx="260" cy="150" r="12" fill="none" stroke="#2B5783" stroke-width="1.4" stroke-dasharray="3 3"/>`,
+            { x: 210, y: 86 }
         );
 
         const stockLayer = renderDioramaLayerWrapper(
             s2,
-            `<rect x="130" y="48" width="12" height="12" rx="2" fill="#E6F4EA" stroke="#241B15" stroke-width="1.1"/>
-            <rect x="131" y="52" width="10" height="7" fill="#68A357"/>
-            <rect x="130" y="46" width="12" height="2.5" rx="1" fill="#C85A32" stroke="#241B15" stroke-width="0.9"/>
-            <rect x="148" y="53" width="18" height="7" rx="1.5" fill="#FCE7F3" stroke="#241B15" stroke-width="1.1"/>
-            <line x1="148" y1="56.5" x2="166" y2="56.5" stroke="#DB2777" stroke-width="1.5"/>
-            <rect x="206" y="47" width="13" height="13" rx="1.5" fill="#C58F2A" stroke="#241B15" stroke-width="1.1"/>
-            <text x="212.5" y="55.5" text-anchor="middle" fill="#241B15" font-size="5" font-weight="700">KOPI</text>`,
-            `<rect x="130" y="48" width="12" height="12" rx="2" fill="none" stroke="#2E6F40" stroke-width="1.2" stroke-dasharray="3 3"/>
-            <rect x="148" y="53" width="18" height="7" rx="1.5" fill="none" stroke="#2E6F40" stroke-width="1.2" stroke-dasharray="3 3"/>
-            <rect x="206" y="47" width="13" height="13" rx="1.5" fill="none" stroke="#2E6F40" stroke-width="1.2" stroke-dasharray="3 3"/>`,
-            { x: 148, y: 44 }
+            `<!-- Pandan Kaya Jar, Roti Stack & Heritage Kopi Tin -->
+            <rect x="150" y="85" width="15" height="16" rx="2.5" fill="#E6F4EA" stroke="#241B15" stroke-width="1.2"/>
+            <rect x="151.5" y="90" width="12" height="9.5" fill="#68A357"/>
+            <rect x="149.5" y="82.5" width="16" height="3.2" rx="1" fill="#C85A32" stroke="#241B15" stroke-width="1"/>
+            <rect x="172" y="92" width="24" height="9" rx="2" fill="#FCE7F3" stroke="#241B15" stroke-width="1.2"/>
+            <line x1="172" y1="96.5" x2="196" y2="96.5" stroke="#C85A32" stroke-width="1.8"/>
+            <rect x="252" y="84" width="17" height="17" rx="2" fill="url(#brass-grad)" stroke="#241B15" stroke-width="1.2"/>
+            <text x="260.5" y="95" text-anchor="middle" fill="#241B15" font-size="5.6" font-weight="700">KOPI</text>`,
+            `<rect x="150" y="85" width="15" height="16" rx="2.5" fill="none" stroke="#2E6F40" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <rect x="172" y="92" width="24" height="9" rx="2" fill="none" stroke="#2E6F40" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <rect x="252" y="84" width="17" height="17" rx="2" fill="none" stroke="#2E6F40" stroke-width="1.3" stroke-dasharray="3 3"/>`,
+            { x: 175, y: 78 }
         );
 
         const brewLayer = renderDioramaLayerWrapper(
             s3,
-            `<path d="M174 60 L176 47 L190 47 L192 60 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1.2" stroke-linejoin="round"/>
-            <path d="M190 52 L197 48" stroke="#C58F2A" stroke-width="2" stroke-linecap="round"/>
-            <path d="M177 46 Q183 41 189 46 Z" fill="#C85A32" stroke="#241B15" stroke-width="1"/>
-            <path d="M181 40 Q179 35 182 30" stroke="#FFFDF9" stroke-width="1.4" fill="none" stroke-linecap="round" class="diorama-steam"/>
-            <path d="M186 41 Q188 36 185 31" stroke="#FFFDF9" stroke-width="1.4" fill="none" stroke-linecap="round" class="diorama-steam-delay"/>
-            <rect x="196" y="55" width="6" height="5" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1"/>
-            <line x1="196" y1="57.5" x2="202" y2="57.5" stroke="#2E6F40" stroke-width="1"/>
-            <circle cx="132" cy="39" r="4" fill="#F6D365" stroke="#B91C1C" stroke-width="1.2"/>
-            <circle cx="218" cy="39" r="4" fill="#F6D365" stroke="#B91C1C" stroke-width="1.2"/>`,
-            `<path d="M174 60 L176 47 L190 47 L192 60 Z" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>
-            <circle cx="132" cy="39" r="4" fill="none" stroke="#C85A32" stroke-width="1.1" stroke-dasharray="2 2"/>
-            <circle cx="218" cy="39" r="4" fill="none" stroke="#C85A32" stroke-width="1.1" stroke-dasharray="2 2"/>`,
-            { x: 184, y: 42 }
+            `<!-- Brass Kopi Kettle, Rising Steam, Kopitiam Cup & Warm Bulbs -->
+            <path d="M206 101 L209 84 L227 84 L230 101 Z" fill="url(#brass-grad)" stroke="#241B15" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M227 90 L236 84" stroke="#C58F2A" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M210 83 Q218 76 226 83 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.1"/>
+            <path d="M215 74 Q212 67 216 60" stroke="#FFFDF9" stroke-width="1.6" fill="none" stroke-linecap="round" class="diorama-steam"/>
+            <path d="M222 75 Q225 68 221 61" stroke="#FFFDF9" stroke-width="1.6" fill="none" stroke-linecap="round" class="diorama-steam-delay"/>
+            <rect x="236" y="94" width="8.5" height="7" rx="1.2" fill="#FFFDF9" stroke="#241B15" stroke-width="1.1"/>
+            <line x1="236" y1="97.5" x2="244.5" y2="97.5" stroke="#2E6F40" stroke-width="1.3"/>
+            <circle cx="152" cy="76" r="8" fill="url(#glow-gold)"/>
+            <circle cx="152" cy="76" r="4.5" fill="#FDE68A" stroke="#C85A32" stroke-width="1.2"/>
+            <circle cx="268" cy="76" r="8" fill="url(#glow-gold)"/>
+            <circle cx="268" cy="76" r="4.5" fill="#FDE68A" stroke="#C85A32" stroke-width="1.2"/>`,
+            `<path d="M206 101 L209 84 L227 84 L230 101 Z" fill="none" stroke="#C85A32" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <circle cx="152" cy="76" r="4.5" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="2 2"/>
+            <circle cx="268" cy="76" r="4.5" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="2 2"/>`,
+            { x: 218, y: 76 }
         );
 
         return {
             backdrop: `
-                <rect x="0" y="0" width="360" height="122" fill="url(#diorama-sky)"/>
-                <rect x="18" y="8" width="324" height="102" fill="#F5E8CE" stroke="#7A5434" stroke-width="1.2"/>
-                <rect x="34" y="24" width="36" height="48" rx="2" fill="#2E6F40" stroke="#241B15" stroke-width="1.3"/>
-                <line x1="52" y1="24" x2="52" y2="72" stroke="#241B15" stroke-width="1.2"/>
-                <path d="M38 32 H48 M38 38 H48 M38 44 H48 M38 50 H48 M56 32 H66 M56 38 H66 M56 44 H66 M56 50 H66" stroke="#A7F3D0" stroke-width="1.1"/>
-                <path d="M294 94 L297 108 L311 108 L314 94 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.2"/>
-                <path d="M304 94 Q292 80 286 84 M304 94 Q304 75 304 72 M304 94 Q316 80 322 84" stroke="#2E6F40" stroke-width="2" fill="none" stroke-linecap="round"/>
-                <rect x="0" y="0" width="22" height="112" fill="#E6D2B1" stroke="#5C3A21" stroke-width="1.4"/>
-                <rect x="338" y="0" width="22" height="112" fill="#E6D2B1" stroke="#5C3A21" stroke-width="1.4"/>
-                <path d="M22 22 Q54 4 86 4 L274 4 Q306 4 338 22 L338 0 L22 0 Z" fill="#D9BC91" stroke="#5C3A21" stroke-width="1.4"/>
-                <rect x="0" y="108" width="360" height="14" fill="#B85332" stroke="#3D2412" stroke-width="1.3"/>
+                <!-- Vector Fallback -->
+                <rect x="0" y="0" width="420" height="170" fill="url(#diorama-sky)"/>
+                <rect x="20" y="10" width="380" height="138" fill="#F5E8CE" stroke="#7A5434" stroke-width="1.2"/>
+                <rect x="0" y="148" width="420" height="22" fill="#B85332"/>
+                <!-- Hand-Painted Main Bazaar Backdrop -->
+                <image href="assets/bg-l1-bazaar.jpg" x="0" y="0" width="420" height="170" preserveAspectRatio="xMidYMid slice"/>
+                <rect x="0" y="148" width="420" height="22" fill="rgba(61, 36, 18, 0.14)" pointer-events="none"/>
             `,
             layers: cartLayer + stockLayer + brewLayer,
             stationCoords: {},
-            restSlots: [{ x: 52, y: 104 }, { x: 280, y: 104 }, { x: 324, y: 104 }]
+            restSlots: [{ x: 64, y: 155 }, { x: 332, y: 155 }, { x: 374, y: 155 }]
         };
     }
 
@@ -1430,94 +1659,120 @@
 
         const frameLayer = renderDioramaLayerWrapper(
             s1,
-            `<rect x="108" y="66" width="144" height="42" rx="2" fill="#A6743E" stroke="#241B15" stroke-width="1.5"/>
-            <path d="M114 72 H246 M114 80 H246 M114 88 H246 M114 96 H246" stroke="#7A5024" stroke-width="1.1"/>
-            <rect x="112" y="28" width="6" height="80" rx="2" fill="#C58F2A" stroke="#241B15" stroke-width="1.3"/>
-            <rect x="242" y="28" width="6" height="80" rx="2" fill="#C58F2A" stroke="#241B15" stroke-width="1.3"/>
-            <rect x="104" y="63" width="152" height="5" rx="2" fill="#E3B96B" stroke="#241B15" stroke-width="1.3"/>`,
-            `<rect x="108" y="66" width="144" height="42" rx="2" fill="none" stroke="#8C6106" stroke-width="1.3" stroke-dasharray="3 3"/>
-            <line x1="115" y1="28" x2="115" y2="108" stroke="#8C6106" stroke-width="1.5" stroke-dasharray="3 3"/>
-            <line x1="245" y1="28" x2="245" y2="108" stroke="#8C6106" stroke-width="1.5" stroke-dasharray="3 3"/>`,
-            { x: 180, y: 74 }
+            `<ellipse cx="210" cy="157" rx="94" ry="6.5" fill="rgba(20, 12, 18, 0.35)"/>
+            <rect x="128" y="108" width="164" height="46" rx="2.5" fill="url(#wood-warm)" stroke="#241B15" stroke-width="1.6"/>
+            <path d="M134 116 H286 M134 125 H286 M134 134 H286 M134 143 H286" stroke="#684226" stroke-width="1.1" opacity="0.7"/>
+            <rect x="130" y="54" width="7" height="100" rx="2" fill="url(#brass-grad)" stroke="#241B15" stroke-width="1.4"/>
+            <rect x="283" y="54" width="7" height="100" rx="2" fill="url(#brass-grad)" stroke="#241B15" stroke-width="1.4"/>
+            <!-- Bamboo Cross-Lashings -->
+            <path d="M130 62 L137 68 M137 62 L130 68 M283 62 L290 68 M290 62 L283 68" stroke="#3D2412" stroke-width="1.3"/>
+            <rect x="124" y="104" width="172" height="6" rx="2" fill="#E3B96B" stroke="#241B15" stroke-width="1.4"/>`,
+            `<rect x="128" y="108" width="164" height="46" rx="2.5" fill="rgba(255,253,249,0.18)" stroke="#F6D365" stroke-width="1.4" stroke-dasharray="4 3"/>
+            <line x1="133.5" y1="54" x2="133.5" y2="154" stroke="#F6D365" stroke-width="1.6" stroke-dasharray="4 3"/>
+            <line x1="286.5" y1="54" x2="286.5" y2="154" stroke="#F6D365" stroke-width="1.6" stroke-dasharray="4 3"/>`,
+            { x: 210, y: 122 }
         );
 
         const canopyLayer = renderDioramaLayerWrapper(
             s2,
-            `<path d="M96 32 L114 16 L246 16 L264 32 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.5" stroke-linejoin="round"/>
-            <path d="M104 32 H256 V36 H104 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1"/>`,
-            `<path d="M96 32 L114 16 L246 16 L264 32 Z" fill="none" stroke="#C85A32" stroke-width="1.3" stroke-dasharray="3 3"/>`,
-            { x: 180, y: 22 }
+            `<path d="M112 58 L134 36 L286 36 L308 58 Z" fill="url(#roof-terra)" stroke="#241B15" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M134 36 L286 36" stroke="#F6D365" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M120 58 H300 V63 H120 Z" fill="url(#brass-grad)" stroke="#241B15" stroke-width="1.1"/>`,
+            `<path d="M112 58 L134 36 L286 36 L308 58 Z" fill="rgba(200,90,50,0.16)" stroke="#FCA5A5" stroke-width="1.4" stroke-dasharray="4 3"/>`,
+            { x: 210, y: 46 }
         );
 
         const glassCaseLayer = renderDioramaLayerWrapper(
             s3,
-            `<rect x="122" y="45" width="48" height="18" rx="1.5" fill="#E0F2FE" fill-opacity="0.85" stroke="#241B15" stroke-width="1.2"/>
-            <line x1="122" y1="54" x2="170" y2="54" stroke="#5C3A21" stroke-width="1.1"/>
-            <line x1="146" y1="45" x2="146" y2="63" stroke="#5C3A21" stroke-width="1.1"/>`,
-            `<rect x="122" y="45" width="48" height="18" rx="1.5" fill="none" stroke="#2B5783" stroke-width="1.2" stroke-dasharray="3 3"/>`,
-            { x: 146, y: 50 }
+            `<rect x="142" y="79" width="60" height="25" rx="2" fill="url(#glass-sheen)" stroke="#241B15" stroke-width="1.3"/>
+            <line x1="142" y1="91.5" x2="202" y2="91.5" stroke="#5C3A21" stroke-width="1.2"/>
+            <line x1="172" y1="79" x2="172" y2="104" stroke="#5C3A21" stroke-width="1.2"/>
+            <line x1="148" y1="82" x2="156" y2="90" stroke="#FFFFFF" stroke-width="1.3" opacity="0.65" stroke-linecap="round"/>`,
+            `<rect x="142" y="79" width="60" height="25" rx="2" fill="none" stroke="#93C5FD" stroke-width="1.4" stroke-dasharray="4 3"/>`,
+            { x: 172, y: 90 }
         );
 
         const kuihLayer = renderDioramaLayerWrapper(
             s4,
-            `<rect x="126" y="49" width="16" height="4.5" rx="1" fill="#F472B6" stroke="#241B15" stroke-width="0.8"/>
-            <rect x="150" y="49" width="16" height="4.5" rx="1" fill="#4ADE80" stroke="#241B15" stroke-width="0.8"/>
-            <rect x="126" y="57.5" width="16" height="4.5" rx="1" fill="#FBBF24" stroke="#241B15" stroke-width="0.8"/>
-            <rect x="184" y="47" width="16" height="16" rx="2" fill="#C58F2A" stroke="#241B15" stroke-width="1.2"/>
-            <path d="M192 44 Q190 39 193 35" stroke="#FFFDF9" stroke-width="1.3" fill="none" stroke-linecap="round" class="diorama-steam"/>`,
-            `<rect x="184" y="47" width="16" height="16" rx="2" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>`,
-            { x: 192, y: 44 }
+            `<!-- Authentic Multi-Layer Sarawak Kek Lapis & Brass Teh Tarik Dispensers -->
+            <g>
+                <rect x="147" y="83" width="20" height="2.2" fill="#EC4899"/>
+                <rect x="147" y="85.2" width="20" height="2.2" fill="#FBBF24"/>
+                <rect x="147" y="87.4" width="20" height="2.2" fill="#22C55E"/>
+                <rect x="147" y="83" width="20" height="6.6" rx="1" fill="none" stroke="#241B15" stroke-width="0.8"/>
+
+                <rect x="177" y="83" width="20" height="2.2" fill="#2E6F40"/>
+                <rect x="177" y="85.2" width="20" height="2.2" fill="#FAF5EB"/>
+                <rect x="177" y="87.4" width="20" height="2.2" fill="#C85A32"/>
+                <rect x="177" y="83" width="20" height="6.6" rx="1" fill="none" stroke="#241B15" stroke-width="0.8"/>
+
+                <rect x="147" y="95" width="20" height="6.2" rx="1" fill="#F59E0B" stroke="#241B15" stroke-width="0.8"/>
+                <line x1="147" y1="98" x2="167" y2="98" stroke="#9E3514" stroke-width="1.3"/>
+            </g>
+            <!-- Twin Brass Teh Tarik Urns -->
+            <rect x="214" y="80" width="18" height="24" rx="2.5" fill="url(#brass-grad)" stroke="#241B15" stroke-width="1.3"/>
+            <path d="M223 76 Q220 69 224 63" stroke="#FFFDF9" stroke-width="1.5" fill="none" stroke-linecap="round" class="diorama-steam"/>
+            <circle cx="223" cy="96" r="2.2" fill="#C85A32" stroke="#241B15" stroke-width="0.8"/>`,
+            `<rect x="214" y="80" width="18" height="24" rx="2.5" fill="none" stroke="#FDE68A" stroke-width="1.3" stroke-dasharray="3 3"/>`,
+            { x: 223, y: 78 }
         );
 
+        const lanternPositions = [
+            { x: 46, y: 18, color: '#DC2626', glow: 'glow-red' },
+            { x: 96, y: 24, color: '#F59E0B', glow: 'glow-gold' },
+            { x: 162, y: 20, color: '#DC2626', glow: 'glow-red' },
+            { x: 258, y: 20, color: '#F59E0B', glow: 'glow-gold' },
+            { x: 324, y: 24, color: '#DC2626', glow: 'glow-red' },
+            { x: 374, y: 18, color: '#F59E0B', glow: 'glow-gold' }
+        ];
         const lanternLayer = renderDioramaLayerWrapper(
             s5,
-            `<line x1="18" y1="14" x2="342" y2="14" stroke="#241B15" stroke-width="1.2"/>
-            <ellipse cx="48" cy="22" rx="6.5" ry="8" fill="#DC2626" stroke="#241B15" stroke-width="1.1"/>
-            <rect x="45" y="13" width="6" height="2" fill="#F6D365"/>
-            <ellipse cx="86" cy="22" rx="6.5" ry="8" fill="#F59E0B" stroke="#241B15" stroke-width="1.1"/>
-            <rect x="83" y="13" width="6" height="2" fill="#DC2626"/>
-            <ellipse cx="274" cy="22" rx="6.5" ry="8" fill="#F59E0B" stroke="#241B15" stroke-width="1.1"/>
-            <rect x="271" y="13" width="6" height="2" fill="#DC2626"/>
-            <ellipse cx="312" cy="22" rx="6.5" ry="8" fill="#DC2626" stroke="#241B15" stroke-width="1.1"/>
-            <rect x="309" y="13" width="6" height="2" fill="#F6D365"/>`,
-            `<ellipse cx="48" cy="22" rx="6.5" ry="8" fill="none" stroke="#DC2626" stroke-width="1.1" stroke-dasharray="2 2"/>
-            <ellipse cx="86" cy="22" rx="6.5" ry="8" fill="none" stroke="#F59E0B" stroke-width="1.1" stroke-dasharray="2 2"/>
-            <ellipse cx="274" cy="22" rx="6.5" ry="8" fill="none" stroke="#F59E0B" stroke-width="1.1" stroke-dasharray="2 2"/>
-            <ellipse cx="312" cy="22" rx="6.5" ry="8" fill="none" stroke="#DC2626" stroke-width="1.1" stroke-dasharray="2 2"/>`,
-            { x: 274, y: 22 }
+            `<path d="M18 14 Q112 29 210 20 Q308 29 402 14" stroke="#241B15" stroke-width="1.4" fill="none"/>
+            ${lanternPositions.map(l => `
+                <g class="animate-lantern-sway">
+                    <circle cx="${l.x}" cy="${l.y + 10}" r="18" fill="url(#${l.glow})"/>
+                    <ellipse cx="${l.x}" cy="${l.y + 10}" rx="7.5" ry="9.5" fill="${l.color}" stroke="#241B15" stroke-width="1.1"/>
+                    <rect x="${l.x - 3.5}" y="${l.y}" width="7" height="2.4" fill="#F6D365"/>
+                    <line x1="${l.x}" y1="${l.y + 19.5}" x2="${l.x}" y2="${l.y + 24}" stroke="#F6D365" stroke-width="1.2"/>
+                </g>
+            `).join('')}
+            <ellipse cx="96" cy="161" rx="22" ry="3.5" fill="rgba(251, 191, 36, 0.16)"/>
+            <ellipse cx="324" cy="161" rx="22" ry="3.5" fill="rgba(220, 38, 38, 0.16)"/>`,
+            `${lanternPositions.map(l => `
+                <ellipse cx="${l.x}" cy="${l.y + 10}" rx="7.5" ry="9.5" fill="none" stroke="${l.color}" stroke-width="1.2" stroke-dasharray="3 2"/>
+            `).join('')}`,
+            { x: 324, y: 28 }
         );
 
         const menuBoardLayer = renderDioramaLayerWrapper(
             s6,
-            `<rect x="210" y="42" width="26" height="21" rx="2" fill="#243028" stroke="#5C3A21" stroke-width="1.5"/>
-            <line x1="214" y1="47" x2="232" y2="47" stroke="#F6D365" stroke-width="1.2"/>
-            <line x1="214" y1="52" x2="229" y2="52" stroke="#FFFDF9" stroke-width="1"/>
-            <line x1="214" y1="57" x2="231" y2="57" stroke="#A7F3D0" stroke-width="1"/>`,
-            `<rect x="210" y="42" width="26" height="21" rx="2" fill="none" stroke="#2E6F40" stroke-width="1.2" stroke-dasharray="3 3"/>`,
-            { x: 223, y: 48 }
+            `<rect x="246" y="76" width="33" height="28" rx="2.5" fill="#1F2E24" stroke="#5C3A21" stroke-width="1.8"/>
+            <line x1="251" y1="83" x2="274" y2="83" stroke="#F6D365" stroke-width="1.5"/>
+            <line x1="251" y1="89" x2="270" y2="89" stroke="#FFFDF9" stroke-width="1.2"/>
+            <line x1="251" y1="95" x2="272" y2="95" stroke="#A7F3D0" stroke-width="1.2"/>
+            <line x1="251" y1="100" x2="265" y2="100" stroke="#FDBA74" stroke-width="1.1"/>`,
+            `<rect x="246" y="76" width="33" height="28" rx="2.5" fill="none" stroke="#86EFAC" stroke-width="1.4" stroke-dasharray="3 3"/>`,
+            { x: 262, y: 88 }
         );
 
         return {
             backdrop: `
-                <rect x="0" y="0" width="360" height="122" fill="#3B2838"/>
-                <rect x="6" y="16" width="76" height="92" fill="#6E472B" stroke="#241B15" stroke-width="1.3"/>
-                <rect x="18" y="34" width="22" height="36" fill="#FDE68A" stroke="#241B15" stroke-width="1.2"/>
-                <rect x="48" y="34" width="22" height="36" fill="#FDE68A" stroke="#241B15" stroke-width="1.2"/>
-                <rect x="278" y="16" width="76" height="92" fill="#6E472B" stroke="#241B15" stroke-width="1.3"/>
-                <rect x="290" y="34" width="22" height="36" fill="#FDE68A" stroke="#241B15" stroke-width="1.2"/>
-                <rect x="320" y="34" width="22" height="36" fill="#FDE68A" stroke="#241B15" stroke-width="1.2"/>
-                <rect x="0" y="108" width="360" height="14" fill="#52463E" stroke="#241B15" stroke-width="1.3"/>
+                <!-- Vector Fallback -->
+                <rect x="0" y="0" width="420" height="170" fill="#2A1D2D"/>
+                <rect x="0" y="146" width="420" height="24" fill="#3C3330"/>
+                <!-- Hand-Painted Siniawan Twilight Backdrop -->
+                <image href="assets/bg-l2-siniawan.jpg" x="0" y="0" width="420" height="170" preserveAspectRatio="xMidYMid slice"/>
             `,
             layers: frameLayer + canopyLayer + glassCaseLayer + kuihLayer + lanternLayer + menuBoardLayer,
             stationCoords: {
-                'l2-t1': { x: 96, y: 105 },
-                'l2-t2': { x: 112, y: 105 },
-                'l2-t3': { x: 146, y: 105 },
-                'l2-t4': { x: 192, y: 105 },
-                'l2-t5': { x: 266, y: 105 },
-                'l2-t6': { x: 226, y: 105 }
+                'l2-t1': { x: 112, y: 154 },
+                'l2-t2': { x: 130, y: 154 },
+                'l2-t3': { x: 170, y: 154 },
+                'l2-t4': { x: 226, y: 154 },
+                'l2-t5': { x: 310, y: 154 },
+                'l2-t6': { x: 266, y: 154 }
             },
-            restSlots: [{ x: 40, y: 104 }, { x: 318, y: 104 }, { x: 74, y: 104 }]
+            restSlots: [{ x: 52, y: 154 }, { x: 368, y: 154 }, { x: 82, y: 154 }]
         };
     }
 
@@ -1530,113 +1785,152 @@
         const s6 = getTaskLayerState('t6');
         const hasStage = state.tasks.some(t => t.id === 't-stage');
         const sStage = hasStage ? getTaskLayerState('t-stage') : null;
+        const isMonsoonActive = Boolean(state.hasWeatherRisk && (state.day === 3 || state.day === 4));
 
         const shuttersLayer = renderDioramaLayerWrapper(
             s1,
-            `<rect x="30" y="34" width="44" height="44" rx="2" fill="#2E6F40" stroke="#241B15" stroke-width="1.4"/>
-            <line x1="52" y1="34" x2="52" y2="78" stroke="#241B15" stroke-width="1.3"/>
-            <path d="M34 42 H48 M34 48 H48 M34 54 H48 M34 60 H48 M34 66 H48 M56 42 H70 M56 48 H70 M56 54 H70 M56 60 H70 M56 66 H70" stroke="#A7F3D0" stroke-width="1.2"/>
-            <rect x="84" y="34" width="22" height="36" rx="1.5" fill="#9E2A2B" stroke="#241B15" stroke-width="1.2"/>
-            <path d="M88 40 L95 46 L102 40 M88 52 L95 58 L102 52 M88 64 L95 68 L102 64" stroke="#F6D365" stroke-width="1.3" fill="none"/>`,
-            `<rect x="30" y="34" width="44" height="44" rx="2" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>
-            <path d="M36 44 L44 52 L39 62" stroke="#8C6A4A" stroke-width="1" fill="none"/>`,
-            { x: 52, y: 54 }
+            `<rect x="38" y="45" width="54" height="58" rx="2" fill="#2E6F40" stroke="#241B15" stroke-width="1.6"/>
+            <line x1="65" y1="45" x2="65" y2="103" stroke="#241B15" stroke-width="1.4"/>
+            <path d="M43 54 H60 M43 61 H60 M43 68 H60 M43 75 H60 M43 82 H60 M43 89 H60 M70 54 H87 M70 61 H87 M70 68 H87 M70 75 H87 M70 82 H87 M70 89 H87" stroke="#A7F3D0" stroke-width="1.3"/>
+            <!-- Brass Hinges & Carved Transom -->
+            <rect x="36" y="54" width="3" height="6" fill="#C58F2A"/>
+            <rect x="36" y="88" width="3" height="6" fill="#C58F2A"/>
+            <rect x="102" y="45" width="26" height="46" rx="2" fill="#9E2A2B" stroke="#241B15" stroke-width="1.4"/>
+            <path d="M107 53 L115 61 L123 53 M107 68 L115 76 L123 68 M107 82 L115 88 L123 82" stroke="#F6D365" stroke-width="1.5" fill="none"/>`,
+            `<rect x="38" y="45" width="54" height="58" rx="2" fill="rgba(255,253,249,0.35)" stroke="#2B5783" stroke-width="1.4" stroke-dasharray="4 3"/>
+            <rect x="102" y="45" width="26" height="46" rx="2" fill="none" stroke="#2B5783" stroke-width="1.3" stroke-dasharray="3 3"/>`,
+            { x: 65, y: 74 }
         );
 
         const awningLayer = renderDioramaLayerWrapper(
             s2,
-            `<path d="M204 31 L332 31 L338 43 L198 43 Z" fill="#C58F2A" stroke="#241B15" stroke-width="1.3" stroke-linejoin="round"/>
-            <path d="M216 31 L213 43 M234 31 L232 43 M252 31 L251 43 M270 31 L270 43 M288 31 L289 43 M306 31 L308 43 M322 31 L325 43" stroke="#5C3A21" stroke-width="1.1"/>`,
-            `<path d="M204 31 L332 31 L338 43 L198 43 Z" fill="none" stroke="#8C6106" stroke-width="1.2" stroke-dasharray="3 3"/>`,
-            { x: 268, y: 36 }
+            `<path d="M238 44 L384 44 L392 60 L230 60 Z" fill="url(#brass-grad)" stroke="#241B15" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M252 44 L249 60 M272 44 L270 60 M292 44 L291 60 M312 44 L312 60 M332 44 L333 60 M352 44 L354 60 M372 44 L375 60" stroke="#5C3A21" stroke-width="1.2"/>
+            <path d="M230 60 L392 60 L392 63 L230 63 Z" fill="#5C3A21" opacity="0.25"/>`,
+            `<path d="M238 44 L384 44 L392 60 L230 60 Z" fill="none" stroke="#8C6106" stroke-width="1.4" stroke-dasharray="4 3"/>`,
+            { x: 312, y: 50 }
         );
 
         const counterLayer = renderDioramaLayerWrapper(
             s3,
-            `<rect x="210" y="70" width="114" height="38" rx="2" fill="#E6F4EA" stroke="#241B15" stroke-width="1.4"/>
-            <rect x="207" y="66" width="120" height="4.5" rx="1.5" fill="#5C3A21" stroke="#241B15" stroke-width="1.3"/>
-            <path d="M210 82 H324 M210 95 H324 M233 70 V108 M256 70 V108 M279 70 V108 M302 70 V108" stroke="#2E6F40" stroke-width="1"/>
-            <circle cx="221.5" cy="76" r="2.5" fill="#C85A32"/>
-            <circle cx="244.5" cy="76" r="2.5" fill="#C58F2A"/>
-            <circle cx="267.5" cy="76" r="2.5" fill="#C85A32"/>
-            <circle cx="290.5" cy="76" r="2.5" fill="#C58F2A"/>
-            <circle cx="313.5" cy="76" r="2.5" fill="#C85A32"/>`,
-            `<rect x="210" y="70" width="114" height="38" rx="2" fill="none" stroke="#2E6F40" stroke-width="1.3" stroke-dasharray="3 3"/>`,
-            { x: 267, y: 74 }
+            `<ellipse cx="312" cy="156" rx="72" ry="5" fill="rgba(36, 27, 21, 0.25)"/>
+            <rect x="246" y="104" width="132" height="48" rx="2.5" fill="#E6F4EA" stroke="#241B15" stroke-width="1.6"/>
+            <rect x="242" y="99" width="140" height="6" rx="2" fill="url(#wood-teak)" stroke="#241B15" stroke-width="1.4"/>
+            <!-- Peranakan Majolica Diamond Tiles -->
+            <path d="M246 120 H378 M246 136 H378 M272 104 V152 M298 104 V152 M324 104 V152 M350 104 V152" stroke="#2E6F40" stroke-width="1.1"/>
+            ${[259, 285, 311, 337, 363].map((cx, i) => `
+                <polygon points="${cx},108 ${cx + 5},112 ${cx},116 ${cx - 5},112" fill="${i % 2 === 0 ? '#C85A32' : '#C58F2A'}"/>
+                <polygon points="${cx},124 ${cx + 5},128 ${cx},132 ${cx - 5},128" fill="${i % 2 === 0 ? '#2E6F40' : '#C85A32'}"/>
+            `).join('')}`,
+            `<rect x="246" y="104" width="132" height="48" rx="2.5" fill="rgba(255,253,249,0.4)" stroke="#2E6F40" stroke-width="1.4" stroke-dasharray="4 3"/>`,
+            { x: 312, y: 122 }
         );
 
         const brewStationLayer = renderDioramaLayerWrapper(
             s4,
-            `<rect x="224" y="51" width="18" height="15" rx="2" fill="#C58F2A" stroke="#241B15" stroke-width="1.2"/>
-            <path d="M242 55 L249 51" stroke="#C58F2A" stroke-width="2" stroke-linecap="round"/>
-            <path d="M230 48 Q228 42 231 37" stroke="#FFFDF9" stroke-width="1.4" fill="none" stroke-linecap="round" class="diorama-steam"/>
-            <path d="M236 49 Q238 43 235 38" stroke="#FFFDF9" stroke-width="1.4" fill="none" stroke-linecap="round" class="diorama-steam-delay"/>
-            <rect x="256" y="60" width="6" height="6" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1"/>
-            <rect x="266" y="60" width="6" height="6" rx="1" fill="#FFFDF9" stroke="#241B15" stroke-width="1"/>
-            <rect x="284" y="58" width="22" height="8" rx="1.5" fill="#FCE7F3" stroke="#241B15" stroke-width="1.1"/>
-            <line x1="284" y1="62" x2="306" y2="62" stroke="#2E6F40" stroke-width="1.6"/>`,
-            `<rect x="224" y="51" width="18" height="15" rx="2" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>
-            <rect x="284" y="58" width="22" height="8" rx="1.5" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>`,
-            { x: 235, y: 50 }
+            `<rect x="258" y="77" width="24" height="22" rx="2.5" fill="url(#brass-grad)" stroke="#241B15" stroke-width="1.3"/>
+            <path d="M282 83 L291 77" stroke="#C58F2A" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M266 74 Q263 66 267 59" stroke="#FFFDF9" stroke-width="1.6" fill="none" stroke-linecap="round" class="diorama-steam"/>
+            <path d="M274 75 Q277 67 273 60" stroke="#FFFDF9" stroke-width="1.6" fill="none" stroke-linecap="round" class="diorama-steam-delay"/>
+            <rect x="298" y="91" width="8" height="8" rx="1.2" fill="#FFFDF9" stroke="#241B15" stroke-width="1.1"/>
+            <line x1="298" y1="95" x2="306" y2="95" stroke="#2E6F40" stroke-width="1.2"/>
+            <rect x="311" y="91" width="8" height="8" rx="1.2" fill="#FFFDF9" stroke="#241B15" stroke-width="1.1"/>
+            <line x1="311" y1="95" x2="319" y2="95" stroke="#2E6F40" stroke-width="1.2"/>
+            <rect x="330" y="88" width="28" height="11" rx="2" fill="#FCE7F3" stroke="#241B15" stroke-width="1.2"/>
+            <line x1="330" y1="93.5" x2="358" y2="93.5" stroke="#2E6F40" stroke-width="1.8"/>`,
+            `<rect x="258" y="77" width="24" height="22" rx="2.5" fill="none" stroke="#C85A32" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <rect x="330" y="88" width="28" height="11" rx="2" fill="none" stroke="#C85A32" stroke-width="1.3" stroke-dasharray="3 3"/>`,
+            { x: 270, y: 76 }
         );
 
         const seatingLayer = renderDioramaLayerWrapper(
             s5,
-            `<ellipse cx="136" cy="88" rx="15" ry="4" fill="#FFFDF9" stroke="#241B15" stroke-width="1.3"/>
-            <line x1="136" y1="92" x2="136" y2="108" stroke="#3D2412" stroke-width="2.2"/>
-            <line x1="128" y1="108" x2="144" y2="108" stroke="#3D2412" stroke-width="2"/>
-            <path d="M114 82 Q114 75 120 75 L120 93 L112 93 Z" fill="#C48B45" stroke="#241B15" stroke-width="1.2"/>
-            <line x1="113" y1="93" x2="112" y2="108" stroke="#3D2412" stroke-width="1.4"/>
-            <line x1="119" y1="93" x2="120" y2="108" stroke="#3D2412" stroke-width="1.4"/>
-            <path d="M158 82 Q158 75 152 75 L152 93 L160 93 Z" fill="#C48B45" stroke="#241B15" stroke-width="1.2"/>
-            <line x1="153" y1="93" x2="152" y2="108" stroke="#3D2412" stroke-width="1.4"/>
-            <line x1="159" y1="93" x2="160" y2="108" stroke="#3D2412" stroke-width="1.4"/>`,
-            `<ellipse cx="136" cy="88" rx="15" ry="4" fill="none" stroke="#5C3A21" stroke-width="1.2" stroke-dasharray="3 3"/>
-            <rect x="112" y="77" width="8" height="28" fill="none" stroke="#5C3A21" stroke-width="1.1" stroke-dasharray="2 2"/>
-            <rect x="152" y="77" width="8" height="28" fill="none" stroke="#5C3A21" stroke-width="1.1" stroke-dasharray="2 2"/>`,
-            { x: 136, y: 82 }
+            `<ellipse cx="176" cy="155" rx="34" ry="5" fill="rgba(36, 27, 21, 0.25)"/>
+            <ellipse cx="176" cy="126" rx="20" ry="5" fill="#FFFDF9" stroke="#241B15" stroke-width="1.4"/>
+            <line x1="176" y1="131" x2="176" y2="152" stroke="#3D2412" stroke-width="2.6"/>
+            <line x1="166" y1="152" x2="186" y2="152" stroke="#3D2412" stroke-width="2.4" stroke-linecap="round"/>
+            <!-- Woven Serian Rattan Chairs -->
+            <path d="M148 118 Q148 109 156 109 L156 133 L146 133 Z" fill="#C48B45" stroke="#241B15" stroke-width="1.3"/>
+            <line x1="147" y1="133" x2="146" y2="152" stroke="#3D2412" stroke-width="1.6"/>
+            <line x1="155" y1="133" x2="156" y2="152" stroke="#3D2412" stroke-width="1.6"/>
+            <path d="M204 118 Q204 109 196 109 L196 133 L206 133 Z" fill="#C48B45" stroke="#241B15" stroke-width="1.3"/>
+            <line x1="197" y1="133" x2="196" y2="152" stroke="#3D2412" stroke-width="1.6"/>
+            <line x1="205" y1="133" x2="206" y2="152" stroke="#3D2412" stroke-width="1.6"/>`,
+            `<ellipse cx="176" cy="126" rx="20" ry="5" fill="none" stroke="#5C3A21" stroke-width="1.3" stroke-dasharray="3 3"/>
+            <rect x="146" y="112" width="10" height="38" fill="none" stroke="#5C3A21" stroke-width="1.2" stroke-dasharray="2 2"/>
+            <rect x="196" y="112" width="10" height="38" fill="none" stroke="#5C3A21" stroke-width="1.2" stroke-dasharray="2 2"/>`,
+            { x: 176, y: 118 }
         );
 
         const signboardLayer = renderDioramaLayerWrapper(
             s6,
-            `<rect x="114" y="6" width="132" height="19" rx="3" fill="#3D2412" stroke="#C58F2A" stroke-width="1.8"/>
-            <text x="180" y="18.5" text-anchor="middle" fill="#F6D365" font-family="Fraunces, serif" font-weight="700" font-size="8.2" letter-spacing="0.6">CARPENTER ST. KOPITIAM</text>`,
-            `<rect x="114" y="6" width="132" height="19" rx="3" fill="none" stroke="#C58F2A" stroke-width="1.3" stroke-dasharray="3 3"/>`,
-            { x: 180, y: 15 }
+            `<rect x="134" y="9" width="152" height="23" rx="4" fill="#3D2412" stroke="#C58F2A" stroke-width="2"/>
+            <circle cx="141" cy="20.5" r="2.2" fill="#F6D365"/>
+            <circle cx="279" cy="20.5" r="2.2" fill="#F6D365"/>
+            <text x="210" y="23.5" text-anchor="middle" fill="#F6D365" font-family="Fraunces, serif" font-weight="700" font-size="9" letter-spacing="0.7">CARPENTER ST. KOPITIAM</text>`,
+            `<rect x="134" y="9" width="152" height="23" rx="4" fill="rgba(61,36,18,0.2)" stroke="#C58F2A" stroke-width="1.4" stroke-dasharray="4 3"/>`,
+            { x: 210, y: 20 }
         );
 
         const stageLayer = hasStage ? renderDioramaLayerWrapper(
             sStage,
-            `<rect x="36" y="96" width="66" height="12" rx="2" fill="#8C5227" stroke="#241B15" stroke-width="1.3"/>
-            <rect x="44" y="8" width="54" height="14" rx="3" fill="#3D2412" stroke="#C58F2A" stroke-width="1.4"/>
-            <text x="71" y="17.5" text-anchor="middle" fill="#F6D365" font-size="6.2" font-weight="700">🎤 STAGE</text>`,
-            `<rect x="36" y="96" width="66" height="12" rx="2" fill="none" stroke="#C85A32" stroke-width="1.2" stroke-dasharray="3 3"/>`,
-            { x: 68, y: 92 }
+            `<rect x="40" y="136" width="84" height="16" rx="2.5" fill="url(#wood-teak)" stroke="#241B15" stroke-width="1.4"/>
+            <line x1="82" y1="116" x2="82" y2="136" stroke="#241B15" stroke-width="1.5"/>
+            <circle cx="82" cy="114" r="3" fill="#C58F2A" stroke="#241B15" stroke-width="1"/>
+            <rect x="48" y="10" width="66" height="17" rx="3" fill="#3D2412" stroke="#C58F2A" stroke-width="1.5"/>
+            <text x="81" y="21" text-anchor="middle" fill="#F6D365" font-size="7" font-weight="700">STAGE</text>`,
+            `<rect x="40" y="136" width="84" height="16" rx="2.5" fill="none" stroke="#C85A32" stroke-width="1.3" stroke-dasharray="3 3"/>`,
+            { x: 82, y: 128 }
         ) : '';
+
+        // Heavy-Duty Contingency Reserve Tarp Shelter (rendered when tarpBought is true)
+        const tarpLayer = state.tarpBought ? `
+            <g id="diorama-tarp-layer" class="diorama-layer-done">
+                <path d="M22 36 Q210 26 398 36 L406 50 Q210 43 14 50 Z" fill="#2E6F40" fill-opacity="0.88" stroke="#1B4226" stroke-width="1.5"/>
+                <path d="M54 35 L48 50 M114 32 L110 48 M174 30 L172 47 M246 30 L248 47 M306 32 L310 48 M366 35 L372 50" stroke="#1B4226" stroke-width="1" opacity="0.55"/>
+                <line x1="16" y1="50" x2="6" y2="72" stroke="#D9A76A" stroke-width="1.2" stroke-dasharray="2 2"/>
+                <line x1="404" y1="50" x2="414" y2="72" stroke="#D9A76A" stroke-width="1.2" stroke-dasharray="2 2"/>
+                <circle cx="24" cy="48" r="2" fill="#F6D365"/>
+                <circle cx="210" cy="43" r="2" fill="#F6D365"/>
+                <circle cx="396" cy="48" r="2" fill="#F6D365"/>
+            </g>
+        ` : '';
+
+        // Animated Monsoon Rain Overlay during Weeks 3-4
+        const rainDrops = [34, 68, 102, 144, 186, 224, 266, 304, 344, 384];
+        const monsoonLayer = isMonsoonActive ? `
+            <g id="monsoon-rain-layer" pointer-events="none">
+                <rect x="0" y="0" width="420" height="170" fill="rgba(30, 58, 95, 0.22)"/>
+                <g class="animate-rain" stroke="#BAE6FD" stroke-width="1.2" stroke-linecap="round" opacity="0.7">
+                    ${rainDrops.map((rx, idx) => `<line x1="${rx}" y1="${(idx % 3) * 18}" x2="${rx - 10}" y2="${(idx % 3) * 18 + 20}"/>`).join('')}
+                </g>
+                <g class="animate-rain-delay" stroke="#E0F2FE" stroke-width="1.1" stroke-linecap="round" opacity="0.55">
+                    ${rainDrops.map((rx, idx) => `<line x1="${rx + 18}" y1="${((idx + 1) % 3) * 20 + 60}" x2="${rx + 8}" y2="${((idx + 1) % 3) * 20 + 80}"/>`).join('')}
+                </g>
+            </g>
+        ` : '';
 
         return {
             backdrop: `
-                <rect x="0" y="0" width="360" height="122" fill="url(#diorama-sky)"/>
-                <rect x="14" y="14" width="332" height="94" fill="#F7ECD7" stroke="#5C3A21" stroke-width="1.4"/>
-                <rect x="174" y="25" width="12" height="83" fill="#E3CEAA" stroke="#5C3A21" stroke-width="1.3"/>
-                <path d="M14 28 H346" stroke="#5C3A21" stroke-width="2"/>
-                <rect x="0" y="0" width="16" height="112" fill="#D9BC91" stroke="#3D2412" stroke-width="1.4"/>
-                <rect x="344" y="0" width="16" height="112" fill="#D9BC91" stroke="#3D2412" stroke-width="1.4"/>
-                <path d="M22 95 L25 108 L35 108 L38 95 Z" fill="#C85A32" stroke="#241B15" stroke-width="1.1"/>
-                <path d="M30 95 Q21 82 17 86 M30 95 Q30 78 30 75 M30 95 Q39 82 43 86" stroke="#2E6F40" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-                <rect x="0" y="108" width="360" height="14" fill="#A84A2C" stroke="#3D2412" stroke-width="1.3"/>
+                <!-- Vector Fallback -->
+                <rect x="0" y="0" width="420" height="170" fill="url(#diorama-sky)"/>
+                <rect x="16" y="14" width="388" height="134" fill="#F7ECD7" stroke="#5C3A21" stroke-width="1.4"/>
+                <rect x="0" y="148" width="420" height="22" fill="#A84A2C"/>
+                <!-- Hand-Painted Carpenter Street Backdrop -->
+                <image href="assets/bg-l3-carpenter.jpg" x="0" y="0" width="420" height="170" preserveAspectRatio="xMidYMid slice"/>
+                <rect x="0" y="148" width="420" height="22" fill="rgba(61, 36, 18, 0.14)" pointer-events="none"/>
             `,
-            layers: shuttersLayer + awningLayer + counterLayer + brewStationLayer + seatingLayer + signboardLayer + stageLayer,
+            layers: shuttersLayer + awningLayer + counterLayer + brewStationLayer + seatingLayer + signboardLayer + stageLayer + tarpLayer + monsoonLayer,
             stationCoords: {
-                't1': { x: 52, y: 104 },
-                't2': { x: 312, y: 104 },
-                't3': { x: 244, y: 104 },
-                't4': { x: 278, y: 104 },
-                't5': { x: 136, y: 104 },
-                't6': { x: 180, y: 104 },
-                't-stage': { x: 74, y: 96 }
+                't1': { x: 66, y: 152 },
+                't2': { x: 366, y: 152 },
+                't3': { x: 282, y: 152 },
+                't4': { x: 324, y: 152 },
+                't5': { x: 175, y: 152 },
+                't6': { x: 210, y: 152 },
+                't-stage': { x: 84, y: 138 }
             },
-            restSlots: [{ x: 88, y: 104 }, { x: 162, y: 104 }, { x: 332, y: 104 }]
+            restSlots: [{ x: 110, y: 152 }, { x: 215, y: 152 }, { x: 392, y: 152 }]
         };
     }
 
@@ -1665,38 +1959,72 @@
             }
         });
 
-        let phaseBadgeText = `🏗️ Scope Built: ${pct}%`;
+        let phaseBadgeText = `Built: ${pct}%`;
         if (state.level === 1) {
             const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
             const totalStmts = state.statements.length;
             phaseBadgeText = state.charterAuthorized
-                ? '📜 Charter: 100% Approved'
-                : `📜 Charter: ${totalSorted}/${totalStmts} Defined`;
+                ? 'Charter: Approved'
+                : `Charter: ${totalSorted}/${totalStmts}`;
         } else if (state.level === 2 && state.phase === 'wbs_build') {
             const totalPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
-            phaseBadgeText = `📦 WBS: ${totalPlaced}/${state.wbsCards.length} Mapped`;
+            phaseBadgeText = `WBS: ${totalPlaced}/${state.wbsCards.length}`;
         }
 
         container.innerHTML = `
-            <svg id="diorama-svg-el" viewBox="0 0 360 122" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision" class="w-full block">
+            <svg id="diorama-svg-el" viewBox="0 0 420 170" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision" class="w-full block bg-[#3D2412]">
                 <defs>
                     <linearGradient id="diorama-sky" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="${tod.skyTop}"/>
                         <stop offset="100%" stop-color="${tod.skyBottom}"/>
                     </linearGradient>
+                    <linearGradient id="wood-teak" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#8C5227"/>
+                        <stop offset="100%" stop-color="#5C3A21"/>
+                    </linearGradient>
+                    <linearGradient id="wood-warm" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#B87E45"/>
+                        <stop offset="100%" stop-color="#8C582B"/>
+                    </linearGradient>
+                    <linearGradient id="brass-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#FDE68A"/>
+                        <stop offset="50%" stop-color="#C58F2A"/>
+                        <stop offset="100%" stop-color="#8C6106"/>
+                    </linearGradient>
+                    <linearGradient id="roof-terra" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#D96E47"/>
+                        <stop offset="100%" stop-color="#A84220"/>
+                    </linearGradient>
+                    <linearGradient id="glass-sheen" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#F0F9FF" stop-opacity="0.92"/>
+                        <stop offset="100%" stop-color="#BAE6FD" stop-opacity="0.72"/>
+                    </linearGradient>
+                    <radialGradient id="glow-gold" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#FDE68A" stop-opacity="0.85"/>
+                        <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+                    </radialGradient>
+                    <radialGradient id="glow-red" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#FCA5A5" stop-opacity="0.75"/>
+                        <stop offset="100%" stop-color="#DC2626" stop-opacity="0"/>
+                    </radialGradient>
+                    <filter id="soft-shadow" x="-8%" y="-8%" width="116%" height="116%">
+                        <feDropShadow dx="0" dy="1.5" stdDeviation="1.2" flood-color="#241B15" flood-opacity="0.28"/>
+                    </filter>
                 </defs>
                 ${scene.backdrop}
                 ${scene.layers}
                 ${artisansMarkup}
-                <rect x="0" y="0" width="360" height="122" fill="${tod.ambientTint}" pointer-events="none"/>
+                <rect x="0" y="0" width="420" height="170" fill="${tod.ambientTint}" pointer-events="none"/>
             </svg>
 
             <div class="absolute top-1.5 left-2 right-2 flex items-center justify-between pointer-events-none">
-                <span class="px-2 py-0.5 rounded-md bg-[#241B15]/85 text-[#FFFDF8] text-[10px] font-bold font-mono-crisp border border-[#C58F2A]">
-                    ${phaseBadgeText}
+                <span class="px-2 py-0.5 rounded-md bg-[#241B15]/85 backdrop-blur-[2px] text-[#FFFDF8] text-[10px] font-bold font-mono-crisp border border-[#C58F2A] flex items-center gap-1">
+                    ${uiIcon('compass', 'w-3 h-3 text-[#F6D365]')}
+                    <span>${phaseBadgeText}</span>
                 </span>
-                <span class="px-2 py-0.5 rounded-md bg-[#FFFDF9]/95 text-[#3D2412] text-[10px] font-bold border border-[#8C6A4A]">
-                    ${tod.label}
+                <span class="px-2 py-0.5 rounded-md bg-[#FFFDF9]/95 backdrop-blur-[2px] text-[#3D2412] text-[10px] font-bold border border-[#8C6A4A] flex items-center gap-1">
+                    ${uiIcon('clock', 'w-3 h-3 text-[#5C3A21]')}
+                    <span>${tod.label}</span>
                 </span>
             </div>
         `;
@@ -1793,7 +2121,7 @@
 
     function toggleMute() {
         const isMuted = SoundFX.toggleMute();
-        document.getElementById('btn-mute').textContent = isMuted ? '🔇' : '🔊';
+        document.getElementById('btn-mute').innerHTML = uiIcon(isMuted ? 'volumeOff' : 'volumeOn', 'w-4 h-4');
     }
 
     // ==========================================
@@ -2429,6 +2757,7 @@
     function switchLevel(lvl) {
         if (state.isExecuting) return;
         SoundFX.woodClick();
+        uiContextExpanded = false;
         currentLevel = lvl;
         state = createLevelState(lvl);
         levelBaselineSig = stateSignature();
@@ -2457,6 +2786,7 @@
             bucket.filledIds.pop();
             SoundFX.woodClick();
             renderHUD();
+            renderDiorama();
             renderCharter();
             renderDock();
             return;
@@ -2506,6 +2836,7 @@
         SoundFX.woodClick();
         checkCharterCompleteness(stmt.shortLabel);
         renderHUD();
+        renderDiorama();
         renderCharter();
         renderDock();
     }
@@ -3202,7 +3533,7 @@
     function triggerL2ClientRequestModal() {
         SoundFX.alertPop();
         const modal = document.getElementById('event-modal');
-        document.getElementById('modal-emoji').textContent = '🏮';
+        document.getElementById('modal-emoji').innerHTML = getArtisanPortraitSVG('committee', 44);
         document.getElementById('modal-tag').textContent = 'Day 3 • Stakeholder Request';
         document.getElementById('modal-title').textContent = 'Siniawan Committee Visit';
         document.getElementById('modal-body').innerHTML = `
@@ -3267,7 +3598,7 @@
     function triggerL2RoofKitModal() {
         SoundFX.alertPop();
         const modal = document.getElementById('event-modal');
-        document.getElementById('modal-emoji').textContent = '🪚';
+        document.getElementById('modal-emoji').innerHTML = uiIcon('hammer', 'w-6 h-6 text-[#5C3A21]');
         document.getElementById('modal-tag').textContent = 'Day 4 • Schedule vs. Budget Trade-Off';
         document.getElementById('modal-title').textContent = 'Bau Sawmill Pre-Cut Roof Offer';
         document.getElementById('modal-body').innerHTML = `
@@ -3322,7 +3653,7 @@
     function triggerScopeCreepModal() {
         SoundFX.alertPop();
         const modal = document.getElementById('event-modal');
-        document.getElementById('modal-emoji').textContent = '🎤';
+        document.getElementById('modal-emoji').innerHTML = getArtisanPortraitSVG('committee', 44);
         document.getElementById('modal-tag').textContent = 'Week 2 • Stakeholder Request';
         document.getElementById('modal-title').textContent = 'Neighborhood Committee Request';
         document.getElementById('modal-body').innerHTML = `
@@ -3425,7 +3756,7 @@
     function triggerWeatherRiskModal() {
         SoundFX.alertPop();
         const modal = document.getElementById('event-modal');
-        document.getElementById('modal-emoji').textContent = '🌧️';
+        document.getElementById('modal-emoji').innerHTML = uiIcon('rain', 'w-6 h-6 text-[#1E4063]');
         document.getElementById('modal-tag').textContent = 'Week 3 • Risk Forecast';
         document.getElementById('modal-title').textContent = 'Monsoon Rain Forecast';
         document.getElementById('modal-body').innerHTML = `
@@ -3553,7 +3884,10 @@
         document.getElementById('retro-days').textContent = `${daysRemaining} ${getTimeUnit(daysRemaining !== 1)}`;
         document.getElementById('retro-quality').textContent = state.level === 1 ? '8/8 Charter ✅' : `${scopePct}% ${isVictory ? '✅' : '⚠️'}`;
 
-        document.getElementById('retro-stars-display').textContent = '⭐'.repeat(mastery.stars) + '☆'.repeat(3 - mastery.stars);
+        document.getElementById('retro-stars-display').innerHTML = [0, 1, 2].map(idx => {
+            const filled = idx < mastery.stars;
+            return `<span class="animate-star-pop text-base ${filled ? 'text-[#C58F2A]' : 'text-[#B49474]/60'}" style="animation-delay:${idx * 120}ms">${filled ? '⭐' : '☆'}</span>`;
+        }).join('');
         document.getElementById('retro-stars-criteria').innerHTML = mastery.criteria.map(c => `
             <div class="flex items-start gap-1.5 ${c.met ? 'text-[#235732] font-semibold' : 'text-[#5A4D41]'}">
                 <span class="shrink-0">${c.met ? '✅' : '⬜'}</span>
@@ -3579,20 +3913,20 @@
         if (retroSection) {
             retroSection.innerHTML = `
                 <div>
-                    <label class="block text-[11px] font-bold text-[#2E6F40] mb-1">✅ Project Retrospective — What Went Well</label>
-                    <div class="grid grid-cols-1 gap-1.5">
+                    <label class="block text-[10.5px] font-bold text-[#2E6F40] mb-1">✅ Project Retrospective — What Went Well</label>
+                    <div class="grid grid-cols-1 gap-1">
                         ${lvlRetro.well.map((txt, idx) => `
-                            <button type="button" onclick="selectRetro('wentWell', ${idx}, this)" class="retro-opt-well min-h-[42px] text-left text-xs p-2.5 rounded-xl ${idx === 0 ? 'border-2 border-[#2E6F40] bg-[#FFF9E6]' : 'border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#2E6F40]/10'} transition cursor-pointer">
+                            <button type="button" onclick="selectRetro('wentWell', ${idx}, this)" class="retro-opt-well min-h-[36px] text-left text-[11px] leading-snug p-2 rounded-xl ${idx === 0 ? 'border-2 border-[#2E6F40] bg-[#FFF9E6]' : 'border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#2E6F40]/10'} transition cursor-pointer">
                                 ${txt}
                             </button>
                         `).join('')}
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-[#C85A32] mb-1">📝 Project Retrospective — What to Improve</label>
-                    <div class="grid grid-cols-1 gap-1.5">
+                    <label class="block text-[10.5px] font-bold text-[#C85A32] mb-1">📝 Project Retrospective — What to Improve</label>
+                    <div class="grid grid-cols-1 gap-1">
                         ${lvlRetro.improve.map((txt, idx) => `
-                            <button type="button" onclick="selectRetro('toImprove', ${idx}, this)" class="retro-opt-improve min-h-[42px] text-left text-xs p-2.5 rounded-xl ${idx === 0 ? 'border-2 border-[#C85A32] bg-[#FFF9E6]' : 'border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#C85A32]/10'} transition cursor-pointer">
+                            <button type="button" onclick="selectRetro('toImprove', ${idx}, this)" class="retro-opt-improve min-h-[36px] text-left text-[11px] leading-snug p-2 rounded-xl ${idx === 0 ? 'border-2 border-[#C85A32] bg-[#FFF9E6]' : 'border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#C85A32]/10'} transition cursor-pointer">
                                 ${txt}
                             </button>
                         `).join('')}
@@ -3642,6 +3976,23 @@
             const line = n < 3 ? `<span class="w-6 h-[2px] ${n < lvl ? 'bg-[#2E6F40]' : 'bg-[#8C6A4A]/40'}"></span>` : '';
             return `<span class="w-7 h-7 rounded-full border-2 text-[11px] font-bold flex items-center justify-center ${dot}">${done ? '✓' : n}</span>${line}`;
         }).join('');
+
+        const sceneBanner = document.getElementById('intro-scene-banner');
+        const bgByLvl = {
+            1: 'assets/bg-l1-bazaar.jpg',
+            2: 'assets/bg-l2-siniawan.jpg',
+            3: 'assets/bg-l3-carpenter.jpg'
+        };
+        if (sceneBanner && bgByLvl[lvl]) {
+            sceneBanner.innerHTML = `
+                <img src="${bgByLvl[lvl]}" alt="${data.title}" class="w-full h-full object-cover block" onerror="this.parentElement.classList.add('hidden')"/>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#241B15]/70 via-[#241B15]/15 to-transparent"></div>
+                <span class="absolute bottom-1.5 left-3 text-[10px] font-bold uppercase tracking-wider text-[#FAF5EB] drop-shadow">${data.place}</span>
+            `;
+            sceneBanner.classList.remove('hidden');
+        } else if (sceneBanner) {
+            sceneBanner.classList.add('hidden');
+        }
 
         document.getElementById('intro-tag').textContent = data.tag;
         document.getElementById('intro-emoji').textContent = data.emoji;
@@ -3814,6 +4165,14 @@
         });
     }
 
+    let uiContextExpanded = false;
+
+    function toggleContextBanner() {
+        SoundFX.woodClick();
+        uiContextExpanded = !uiContextExpanded;
+        renderHUD();
+    }
+
     function renderHUD() {
         document.getElementById('header-commission-subtitle').textContent = state.subtitle;
 
@@ -3826,15 +4185,27 @@
         document.getElementById('hud-day').textContent = `${daysLeft} ${getTimeUnit(daysLeft !== 1)} Left`;
 
         const totalStatements = state.statements ? state.statements.length : 8;
+        let scopeProgressPct = scopePct;
         if (state.level === 1) {
             const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
             document.getElementById('hud-scope').textContent = `${totalSorted}/${totalStatements} Charter`;
+            scopeProgressPct = Math.round((totalSorted / Math.max(1, totalStatements)) * 100);
         } else if (state.level === 2 && state.phase === 'wbs_build') {
             const totalWbsPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
             document.getElementById('hud-scope').textContent = `${totalWbsPlaced}/${state.wbsCards.length} WBS`;
+            scopeProgressPct = Math.round((totalWbsPlaced / Math.max(1, state.wbsCards.length)) * 100);
         } else {
             document.getElementById('hud-scope').textContent = `${scopePct}% (${doneCount}/${totalCount})`;
         }
+
+        const budgetPct = Math.max(0, Math.min(100, Math.round((state.budget / Math.max(1, state.initialBudget || 1)) * 100)));
+        const dayPct = Math.max(0, Math.min(100, Math.round((daysLeft / Math.max(1, state.maxDays || 1)) * 100)));
+        const budgetBar = document.getElementById('hud-budget-bar');
+        const dayBar = document.getElementById('hud-day-bar');
+        const scopeBar = document.getElementById('hud-scope-bar');
+        if (budgetBar) budgetBar.style.width = `${budgetPct}%`;
+        if (dayBar) dayBar.style.width = `${dayPct}%`;
+        if (scopeBar) scopeBar.style.width = `${Math.max(0, Math.min(100, scopeProgressPct))}%`;
 
         let tiltDeg = 0;
         if (state.level === 1) {
@@ -3853,60 +4224,85 @@
         }
 
         document.getElementById('balance-beam').style.transform = `rotate(${tiltDeg}deg)`;
+        const panLeft = document.getElementById('scale-pan-left');
+        const panRight = document.getElementById('scale-pan-right');
+        if (panLeft) panLeft.style.transform = `rotate(${-tiltDeg}deg)`;
+        if (panRight) panRight.style.transform = `rotate(${-tiltDeg}deg)`;
 
         const statusEl = document.getElementById('scale-status-text');
+        const jewelEl = document.getElementById('scale-jewel');
+        let jewelColor = '#34D399';
         if (state.level === 1) {
             const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
             statusEl.textContent = state.charterAuthorized
-                ? '⚖️ Charter Approved'
-                : totalSorted === totalStatements ? '⚖️ Charter Ready to Approve' : `Defining Charter (${totalSorted}/${totalStatements})`;
+                ? 'Charter Approved'
+                : totalSorted === totalStatements ? 'Charter Ready to Approve' : `Defining Charter (${totalSorted}/${totalStatements})`;
             statusEl.className = totalSorted === totalStatements ? 'font-semibold text-[#A7F3D0]' : 'font-semibold text-[#FDE68A]';
+            jewelColor = totalSorted === totalStatements ? '#34D399' : '#FBBF24';
         } else if (state.level === 2 && state.phase === 'wbs_build') {
             const totalWbsPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
-            statusEl.textContent = totalWbsPlaced === state.wbsCards.length ? '⚖️ WBS Ready to Approve' : `Decomposing WBS (${totalWbsPlaced}/${state.wbsCards.length})`;
+            statusEl.textContent = totalWbsPlaced === state.wbsCards.length ? 'WBS Ready to Approve' : `Decomposing WBS (${totalWbsPlaced}/${state.wbsCards.length})`;
             statusEl.className = totalWbsPlaced === state.wbsCards.length ? 'font-semibold text-[#A7F3D0]' : 'font-semibold text-[#FDE68A]';
+            jewelColor = totalWbsPlaced === state.wbsCards.length ? '#34D399' : '#FBBF24';
         } else if (tiltDeg > 7) {
-            statusEl.textContent = '⚠️ Heavy Scope/Schedule Pressure';
+            statusEl.textContent = 'Heavy Scope/Schedule Pressure';
             statusEl.className = 'font-semibold text-[#FECACA]';
+            jewelColor = '#F87171';
         } else if (tiltDeg < -4) {
-            statusEl.textContent = '✨ Ahead of Schedule';
+            statusEl.textContent = 'Ahead of Schedule';
             statusEl.className = 'font-semibold text-[#A7F3D0]';
+            jewelColor = '#34D399';
         } else {
-            statusEl.textContent = '⚖️ Balanced & Steady';
+            statusEl.textContent = 'Balanced & Steady';
             statusEl.className = 'font-semibold text-[#A7F3D0]';
+            jewelColor = '#34D399';
         }
+        if (jewelEl) jewelEl.setAttribute('fill', jewelColor);
 
         const ctxBanner = document.getElementById('context-banner');
+        const chevronCls = `w-3.5 h-3.5 text-[#5C3A21] transition-transform duration-200 ${uiContextExpanded ? 'rotate-180' : ''}`;
         if (state.level === 2) {
             ctxBanner.classList.remove('hidden');
             ctxBanner.innerHTML = `
-                <div class="flex items-start gap-2">
-                    <span class="text-base mt-0.5">📜</span>
-                    <div class="text-[11px] leading-snug">
-                        <div class="font-bold text-[#5C3A21]">Approved Charter • Siniawan Heritage Committee</div>
+                <button type="button" onclick="toggleContextBanner()" class="w-full flex items-center justify-between gap-2 text-left cursor-pointer">
+                    <span class="flex items-center gap-1.5 min-w-0 text-[11px] font-bold text-[#5C3A21] truncate">
+                        ${uiIcon('scroll', 'w-3.5 h-3.5 text-[#C85A32] shrink-0')}
+                        <span class="truncate">Approved Charter · ${state.signedCharterSummary.constraints}</span>
+                    </span>
+                    <span class="shrink-0 flex items-center gap-1 text-[10px] font-bold text-[#7A5434]">
+                        <span>${uiContextExpanded ? 'Hide' : 'View'}</span>
+                        ${uiIcon('chevronDown', chevronCls)}
+                    </span>
+                </button>
+                ${uiContextExpanded ? `
+                    <div class="mt-1.5 pt-1.5 border-t border-[#8C6A4A]/35 text-[11px] leading-snug space-y-0.5 animate-crisp-in">
                         <div class="text-[#241B15]"><strong>Objective:</strong> ${state.signedCharterSummary.objective}</div>
-                        <div class="text-[#5A4D41] mt-0.5"><strong>Constraints:</strong> ${state.signedCharterSummary.constraints} • <strong>Out of Scope:</strong> ${state.signedCharterSummary.outOfScope}</div>
+                        <div class="text-[#5A4D41]"><strong>Out of Scope:</strong> ${state.signedCharterSummary.outOfScope}</div>
                     </div>
-                </div>
+                ` : ''}
             `;
         } else if (state.level === 3) {
             ctxBanner.classList.remove('hidden');
             ctxBanner.innerHTML = `
-                <div class="flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-2">
-                        <span class="text-base">🛡️</span>
-                        <div class="text-[11px] leading-snug">
-                            <div class="font-bold text-[#5C3A21]">Contingency Reserve: RM ${state.contingencyReserve.toLocaleString()}</div>
-                            <div class="text-[#5A4D41]">${state.tarpBought ? 'Heavy-duty tarps deployed — outdoor work sheltered from rain.' : 'Dedicated reserve for unforeseen site risks & weather mitigation.'}</div>
-                        </div>
-                    </div>
-                    <span class="shrink-0 px-2 py-0.5 rounded-md ${state.tarpBought ? 'bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40' : 'bg-[#C58F2A]/15 text-[#7A5404] border border-[#C58F2A]/40'} text-[10px] font-bold">
-                        ${state.tarpBought ? '✓ Mitigated' : 'Active Reserve'}
+                <button type="button" onclick="toggleContextBanner()" class="w-full flex items-center justify-between gap-2 text-left cursor-pointer">
+                    <span class="flex items-center gap-1.5 min-w-0 text-[11px] font-bold text-[#5C3A21] truncate">
+                        ${uiIcon('shield', 'w-3.5 h-3.5 text-[#2E6F40] shrink-0')}
+                        <span class="truncate">Reserve: RM ${state.contingencyReserve.toLocaleString()} · Approved Charter</span>
                     </span>
-                </div>
-                <div class="mt-1.5 pt-1.5 border-t border-[#8C6A4A]/35 text-[10px] text-[#3D2412] leading-snug">
-                    <strong>📜 Approved Charter:</strong> ${state.signedCharterSummary.objective} • <strong>Out of Scope:</strong> ${state.signedCharterSummary.outOfScope}
-                </div>
+                    <span class="shrink-0 flex items-center gap-1.5">
+                        <span class="px-1.5 py-0.5 rounded ${state.tarpBought ? 'bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40' : 'bg-[#C58F2A]/15 text-[#7A5404] border border-[#C58F2A]/40'} text-[9px] font-bold">
+                            ${state.tarpBought ? '✓ Mitigated' : 'Active'}
+                        </span>
+                        ${uiIcon('chevronDown', chevronCls)}
+                    </span>
+                </button>
+                ${uiContextExpanded ? `
+                    <div class="mt-1.5 pt-1.5 border-t border-[#8C6A4A]/35 text-[10px] text-[#3D2412] leading-snug space-y-0.5 animate-crisp-in">
+                        <div>${state.tarpBought ? 'Heavy-duty tarps deployed — outdoor work sheltered from rain.' : 'Dedicated Contingency Reserve for unforeseen site risks & weather mitigation.'}</div>
+                        <div><strong>Approved Charter:</strong> ${state.signedCharterSummary.objective}</div>
+                        <div><strong>Out of Scope:</strong> ${state.signedCharterSummary.outOfScope}</div>
+                    </div>
+                ` : ''}
             `;
         } else {
             ctxBanner.classList.add('hidden');
@@ -3922,8 +4318,8 @@
             ? `
                 <div class="paper-card rounded-xl p-3 bg-[#FFFDF9]">
                     <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xl">👵🏽</span>
+                        <div class="flex items-center gap-2.5">
+                            ${getArtisanPortraitSVG('auntie-mei', 36)}
                             <div>
                                 <div class="text-xs font-bold text-[#5C3A21]">Auntie Mei’s Statement Cards</div>
                                 <div class="text-[11px] text-[#5A4D41]">Tap a card, then tap its matching Project Charter slot below</div>
@@ -4016,15 +4412,15 @@
         const allDecomposed = decomposedCount === totalWPs;
         const assignedCount = state.tasks.filter(t => t.assignedArtisanId && t.progress < 100).length;
 
-        // Visual Step Progress Banner (Eliminates back-and-forth confusion)
-        const stepBannerHtml = totalWPs > 1 ? `
+        // Visual Step Progress Banner (Only shown while Work Packages remain un-decomposed)
+        const stepBannerHtml = (totalWPs > 1 && !allDecomposed) ? `
             <div class="rounded-xl p-2.5 bg-[#FFFDF9] border-[1.5px] border-[#8C6A4A] flex items-center justify-between gap-2 text-[11px]">
-                <div class="flex items-center gap-1.5 ${!allDecomposed ? 'font-bold text-[#C85A32]' : 'font-semibold text-[#2E6F40]'}">
-                    <span>${allDecomposed ? '✅' : '1️⃣'}</span>
+                <div class="flex items-center gap-1.5 font-bold text-[#C85A32]">
+                    <span>1️⃣</span>
                     <span>Step 1: Decompose WBS (${decomposedCount}/${totalWPs})</span>
                 </div>
                 <span class="text-[#8C6A4A]">→</span>
-                <div class="flex items-center gap-1.5 ${allDecomposed ? 'font-bold text-[#235732]' : 'font-medium text-[#7A5434]'}">
+                <div class="flex items-center gap-1.5 font-medium text-[#7A5434]">
                     <span>2️⃣</span>
                     <span>Step 2: Assign Team (${assignedCount} active)</span>
                 </div>
@@ -4063,15 +4459,17 @@
                 const unmetNames = getUnmetDependencies(task);
                 const wbsCode = `1.${wpIdx + 1}.${tIdx + 1}`;
 
-                let cardStyle = 'rounded-xl p-2.5 border-[1.5px] transition relative';
+                let cardStyle = 'rounded-xl p-2.5 border-[1.5px] border-l-4 transition relative';
                 if (isDone) {
-                    cardStyle += ' bg-[#EFF6F1] border-[#2E6F40]';
+                    cardStyle += ' bg-[#EFF6F1] border-[#2E6F40] border-l-[#2E6F40]';
                 } else if (!unlocked) {
-                    cardStyle += ' bg-[#EFE6D4] border-[#9C8368]';
+                    cardStyle += ' bg-[#EFE6D4] border-[#9C8368] border-l-[#9C8368]';
                 } else if (assignedArtisan) {
-                    cardStyle += ' bg-[#FFFDF9] border-[#C85A32] ring-2 ring-[#C85A32]/20';
+                    cardStyle += ` bg-[#FFFDF9] border-[#C85A32] ${task.critical ? 'border-l-[#C85A32]' : 'border-l-[#C58F2A]'} ring-2 ring-[#C85A32]/20`;
+                } else if (task.critical) {
+                    cardStyle += ' bg-[#FFFDF9] border-[#8C6A4A] border-l-[#C85A32] hover:border-[#C85A32]';
                 } else {
-                    cardStyle += ' bg-[#FFFDF9] border-[#8C6A4A] hover:border-[#C85A32]';
+                    cardStyle += ' bg-[#FFFDF9] border-[#8C6A4A] border-l-[#8C6A4A] hover:border-[#C85A32]';
                 }
 
                 const isPickerOpen = state.selectedAssignTaskId === task.id && unlocked && !isDone;
@@ -4129,44 +4527,43 @@
                         <div id="card-${task.id}" onclick="openTaskAssignPicker('${task.id}', event)" class="${cardStyle} cursor-pointer">
                             <div class="flex items-start justify-between gap-2">
                                 <div class="flex-1 min-w-0">
-                                    <div class="flex flex-wrap items-center gap-1 mb-1">
-                                        <span class="text-[9px] font-bold font-mono-crisp px-1.5 py-0.5 rounded bg-[#5C3A21]/10 text-[#5C3A21]">
-                                            WBS ${wbsCode}
+                                    <!-- Row 1: Status + Title + Craft Skill Badge -->
+                                    <div class="flex items-center gap-1.5 min-w-0">
+                                        <span class="shrink-0 flex items-center ${isDone ? 'text-[#2E6F40]' : !unlocked ? 'text-[#7A5434]' : task.critical ? 'text-[#C85A32]' : 'text-[#5C3A21]'}">
+                                            ${isDone ? uiIcon('check', 'w-3.5 h-3.5') : !unlocked ? uiIcon('lock', 'w-3.5 h-3.5') : uiIcon('compass', 'w-3.5 h-3.5')}
                                         </span>
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border ${getSkillBadgeColor(task.skill)}">
-                                            ${task.skill}
-                                        </span>
-                                        <span class="text-[10px] font-bold font-mono-crisp px-1.5 py-0.5 rounded-md bg-[#241B15]/8 text-[#241B15]">
-                                            ${task.paid ? '✓ Paid' : `RM ${task.cost.toLocaleString()}`}
-                                        </span>
-                                        <span class="text-[10px] font-semibold font-mono-crisp px-1.5 py-0.5 rounded-md bg-[#5C3A21]/8 text-[#3D2412]">
-                                            ⏱️ ${task.effort || 1} ${getLevelCfg().time.effort[(task.effort || 1) === 1 ? 0 : 1]}
-                                        </span>
-                                        ${task.critical ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#C85A32]/15 text-[#943011] border border-[#C85A32]/30 font-bold">🔥 Critical Path</span>` : ''}
-                                        ${task.outdoor ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#2B5783]/12 text-[#1E4063] border border-[#2B5783]/25 font-semibold">🌤️ Outdoor</span>` : ''}
-                                        ${task.persisted && assignedArtisan ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35 font-bold">↻ Continuing</span>` : ''}
-                                        ${task.crashed ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#9E3514] text-white font-bold">⚡ Crashed +50%</span>` : ''}
-                                    </div>
-
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="text-sm">${isDone ? '✅' : !unlocked ? '🔒' : '📌'}</span>
                                         <h4 class="text-xs font-bold text-[#241B15] truncate ${isDone ? 'line-through text-[#2E6F40]' : ''}">
                                             ${task.title}
                                         </h4>
+                                        <span class="shrink-0 inline-flex items-center gap-0.5 text-[9.5px] font-bold px-1.5 py-0.5 rounded-md border ${getSkillBadgeColor(task.skill)}">
+                                            ${uiIcon(getSkillIconName(task.skill), 'w-2.5 h-2.5')}
+                                            <span>${task.skill}</span>
+                                        </span>
+                                    </div>
+
+                                    <!-- Row 2: Crisp Metadata + Contextual Flags -->
+                                    <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                                        <span class="text-[10px] font-semibold font-mono-crisp text-[#5A4D41]">
+                                            ${wbsCode} · ${task.paid ? '✓ Paid' : `RM ${task.cost.toLocaleString()}`} · ${task.effort || 1} ${getLevelCfg().time.effort[(task.effort || 1) === 1 ? 0 : 1]}
+                                        </span>
+                                        ${task.critical ? `<span class="inline-flex items-center gap-0.5 text-[9.5px] px-1.5 py-0.5 rounded bg-[#C85A32]/15 text-[#943011] border border-[#C85A32]/30 font-bold">${uiIcon('flame', 'w-2.5 h-2.5')} Critical</span>` : ''}
+                                        ${task.outdoor ? `<span class="inline-flex items-center gap-0.5 text-[9.5px] px-1.5 py-0.5 rounded bg-[#2B5783]/12 text-[#1E4063] border border-[#2B5783]/25 font-semibold">${uiIcon('sunCloud', 'w-2.5 h-2.5')} Outdoor</span>` : ''}
+                                        ${task.persisted && assignedArtisan ? `<span class="text-[9.5px] px-1.5 py-0.5 rounded bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35 font-bold">↻ Continuing</span>` : ''}
+                                        ${task.crashed ? `<span class="inline-flex items-center gap-0.5 text-[9.5px] px-1.5 py-0.5 rounded bg-[#9E3514] text-white font-bold">${uiIcon('bolt', 'w-2.5 h-2.5')} Crashed +50%</span>` : ''}
                                     </div>
 
                                     ${!unlocked ? `
                                         <p class="text-[10px] text-[#943011] font-semibold mt-1">
-                                            🔗 Dependency — Requires: ${unmetNames.join(' &amp; ')}
+                                            Requires: ${unmetNames.join(' &amp; ')}
                                         </p>
                                     ` : task.progress > 0 && !isDone ? `
                                         <div class="mt-1.5">
                                             <div class="flex justify-between text-[10px] font-bold font-mono-crisp text-[#5C3A21] mb-0.5">
-                                                <span>Task Progress</span>
+                                                <span>Progress</span>
                                                 <span>${task.progress}%</span>
                                             </div>
                                             <div class="w-full h-1.5 bg-[#F1E7D3] rounded-full overflow-hidden border border-[#8C6A4A]/50">
-                                                <div class="h-full bg-[#2E6F40]" style="width: ${task.progress}%"></div>
+                                                <div class="h-full bg-[#2E6F40] transition-all duration-300" style="width: ${task.progress}%"></div>
                                             </div>
                                         </div>
                                     ` : ''}
@@ -4347,11 +4744,11 @@
             const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
             const allSorted = totalSorted === state.statements.length;
             primaryBtn.className = allSorted
-                ? 'w-full min-h-[46px] py-3 rounded-xl bg-[#B91C1C] hover:bg-[#991B1B] text-white font-bold text-sm border-2 border-[#7F1D1D] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer'
+                ? 'btn-tactile w-full min-h-[46px] py-3 rounded-xl bg-[#B91C1C] hover:bg-[#991B1B] text-white font-bold text-sm border-2 border-[#7F1D1D] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer'
                 : 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-not-allowed';
             primaryBtn.innerHTML = allSorted
-                ? '<span>📜 Approve Project Charter</span>'
-                : `<span>📜 Sort All ${state.statements.length} Statements (${totalSorted}/${state.statements.length})</span>`;
+                ? `${uiIcon('scroll', 'w-4 h-4')}<span>Approve Project Charter</span>`
+                : `${uiIcon('scroll', 'w-4 h-4')}<span>Sort All ${state.statements.length} Statements (${totalSorted}/${state.statements.length})</span>`;
             return;
         }
 
@@ -4360,11 +4757,11 @@
             const totalPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
             const allMapped = totalPlaced === state.wbsCards.length;
             primaryBtn.className = allMapped
-                ? 'w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer'
+                ? 'btn-tactile w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer'
                 : 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-not-allowed';
             primaryBtn.innerHTML = allMapped
-                ? '<span>📦 Approve WBS &amp; Start Build →</span>'
-                : `<span>📦 Map All ${state.wbsCards.length} Scope Cards (${totalPlaced}/${state.wbsCards.length})</span>`;
+                ? `${uiIcon('box', 'w-4 h-4')}<span>Approve WBS &amp; Start Build →</span>`
+                : `${uiIcon('box', 'w-4 h-4')}<span>Map All ${state.wbsCards.length} Scope Cards (${totalPlaced}/${state.wbsCards.length})</span>`;
             return;
         }
 
@@ -4373,11 +4770,11 @@
         const wbsReady = allWorkPackagesDecomposed();
         if (!wbsReady) {
             primaryBtn.className = 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-pointer';
-            primaryBtn.innerHTML = '<span>🔒 Step 1: Decompose All Work Packages First</span>';
+            primaryBtn.innerHTML = `${uiIcon('lock', 'w-4 h-4')}<span>Step 1: Decompose All Work Packages First</span>`;
         } else {
-            const turnIcon = getLevelCfg().time.turnIcon;
-            primaryBtn.className = 'w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
-            primaryBtn.innerHTML = `<span>${turnIcon} Start ${getWorkTurnLabel()} (${getTimeUnit(false)} ${state.day} of ${state.maxDays})</span>`;
+            const turnIconName = state.level === 3 ? 'calendar' : 'sun';
+            primaryBtn.className = 'btn-tactile w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
+            primaryBtn.innerHTML = `${uiIcon(turnIconName, 'w-4 h-4')}<span>Start ${getWorkTurnLabel()} (${getTimeUnit(false)} ${state.day} of ${state.maxDays})</span>`;
         }
 
         const dock = document.getElementById('artisans-dock');
@@ -4388,33 +4785,42 @@
 
         dock.innerHTML = state.artisans.map(a => {
             const isBurnedOut = a.stamina < 35;
+            const barColor = a.stamina >= 60 ? '#2E6F40' : a.stamina >= 35 ? '#C58F2A' : '#B91C1C';
 
             let statusTag = `<span class="text-[9px] font-bold text-[#2E6F40]">Ready</span>`;
             if (a.resting) {
-                statusTag = `<span class="text-[9px] font-bold text-[#8C6106]">☕ Resting</span>`;
+                statusTag = `<span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-[#8C6106]">${uiIcon('coffee', 'w-2.5 h-2.5')} Resting</span>`;
             } else if (a.assignedTaskId) {
-                statusTag = `<span class="text-[9px] font-bold text-[#C85A32]">📌 Assigned</span>`;
+                statusTag = `<span class="text-[9px] font-bold text-[#C85A32]">Assigned</span>`;
             } else if (isBurnedOut) {
-                statusTag = `<span class="text-[9px] font-bold text-[#B91C1C]">⚠️ Burnout</span>`;
+                statusTag = `<span class="text-[9px] font-bold text-[#B91C1C]">Fatigued</span>`;
             }
 
+            const pulseCls = (!a.resting && !a.assignedTaskId && isBurnedOut) ? 'animate-fatigue-pulse border-[#B91C1C]' : (a.assignedTaskId ? 'border-[#C85A32]' : 'border-[#8C6A4A]');
+
             return `
-                <div class="artisan-card-item rounded-xl p-2 bg-[#FFFDF9] border-[1.5px] ${a.assignedTaskId ? 'border-[#C85A32]' : 'border-[#8C6A4A]'} flex flex-col justify-between min-w-0">
+                <div class="artisan-card-item rounded-xl p-2 bg-[#FFFDF9] border-[1.5px] ${pulseCls} flex flex-col justify-between min-w-0">
                     <div>
-                        <div class="flex items-center justify-between gap-1">
-                            ${getArtisanPortraitSVG(a.id, 24)}
-                            <span class="text-[10px] font-bold font-mono-crisp ${isBurnedOut ? 'text-[#B91C1C]' : 'text-[#2E6F40]'}">
-                                ${a.stamina}%
-                            </span>
+                        <div class="flex items-center justify-between gap-1.5">
+                            ${getArtisanPortraitSVG(a.id, 34, { fatigued: isBurnedOut, resting: a.resting, working: Boolean(a.assignedTaskId) })}
+                            <div class="text-right min-w-0">
+                                <span class="text-[10px] font-bold font-mono-crisp ${isBurnedOut ? 'text-[#B91C1C]' : 'text-[#2E6F40]'}">
+                                    ${a.stamina}%
+                                </span>
+                                <div class="text-[8.5px] font-semibold text-[#7A5434] truncate">${a.skill}</div>
+                            </div>
                         </div>
                         <div class="artisan-card-name text-[11px] font-bold text-[#241B15] mt-1 truncate">${a.name}</div>
-                        <div class="text-[10px] font-medium text-[#5A4D41] truncate">${a.skill}</div>
+                        <div class="mt-1 h-1.5 w-full rounded-full bg-[#E6D9C2] relative overflow-hidden" title="Stamina ${a.stamina}% (35% burnout line)">
+                            <div class="h-full rounded-full transition-all duration-300" style="width:${a.stamina}%; background:${barColor};"></div>
+                            <span class="absolute top-0 bottom-0 w-[1.5px] bg-[#241B15]/60" style="left:35%;"></span>
+                        </div>
                     </div>
 
-                    <div class="mt-1 pt-1 border-t border-[#8C6A4A]/30 flex items-center justify-between gap-1">
+                    <div class="mt-1.5 pt-1 border-t border-[#8C6A4A]/30 flex items-center justify-between gap-1">
                         ${statusTag}
-                        <button type="button" onclick="toggleRestBreak('${a.id}', event)" title="Rest Break (+45% Stamina)" class="artisan-rest-btn min-h-[26px] px-1.5 py-0.5 rounded border text-[9px] font-bold shrink-0 cursor-pointer ${!a.resting && !a.assignedTaskId && isBurnedOut ? 'bg-[#FEE2E2] hover:bg-[#FECACA] border-[#B91C1C] text-[#991B1B]' : 'bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[#8C6A4A]/60 text-[#3D2412]'}">
-                            ${a.resting ? 'Cancel' : (!a.assignedTaskId && isBurnedOut ? '☕ Rest!' : '☕ Rest')}
+                        <button type="button" onclick="toggleRestBreak('${a.id}', event)" title="Rest Break (+45% Stamina)" class="btn-tactile artisan-rest-btn min-h-[26px] px-1.5 py-0.5 rounded border text-[9px] font-bold shrink-0 cursor-pointer flex items-center gap-0.5 ${!a.resting && !a.assignedTaskId && isBurnedOut ? 'bg-[#FEE2E2] hover:bg-[#FECACA] border-[#B91C1C] text-[#991B1B]' : 'bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[#8C6A4A]/60 text-[#3D2412]'}">
+                            ${a.resting ? 'Cancel' : `${uiIcon('coffee', 'w-2.5 h-2.5')}<span>${!a.assignedTaskId && isBurnedOut ? 'Rest!' : 'Rest'}</span>`}
                         </button>
                     </div>
                 </div>
