@@ -1,0 +1,48 @@
+Do next (quick, high payoff)
+
+Show the star goals on each chapter's story card (S). It's the cheapest way to make stars feel like goals, and it reuses the per-level config from the last refactor.
+Explain mistakes where they happen (S–M). Add the reason to the charter and WBS bounce-back messages. It was #6 on my earlier list and #4 on the new one, and it's the most direct teaching moment in the game.
+Add an "Assign suggested crew" button (S). It removes the repeated tapping over 10 days while keeping the decisions (rest breaks, what to prioritise) in the player's hands.
+
+Core gameplay (the biggest improvements)
+4. Make Level 2 a real trade-off, with a mid-chapter event (M–L). This covers the new #1 and part of #3. Before building it, I'd play Level 2 once to confirm my read that the budget and time are too generous.
+5. Cross-chapter consequences, plus a retrospective that matters (M). This merges the earlier #1 and #2 with the new #7. The config refactor makes it much easier now.
+6. Make the Critical Path visible (M). A highlighted dependency chain lets players see the concept instead of inferring it.
+
+Polish and depth
+7. Add an ending recap after Level 3 (S–M). It gives the game a sense of completion.
+8. Add ambiguous statements to Level 1 (M). This needs careful content writing, so it's best done once the mechanics are settled.
+9. Add a modal manager (M). There are now seven modals with no Esc, focus or screen-reader handling. This one is code hygiene rather than gameplay, but it matters for accessibility, so I ranked it above the remaining technical items.
+10. Shorten the tutorial and teach in context (M). It matters most if new players drop off before their first move, which I can't tell without watching someone play.
+11. Randomise the Level 3 events (M). This adds replay value only after the core loop is solid.
+
+Defer until needed
+12. Separate game rules from rendering, and move the events into the config (L). Do this when adding a fourth chapter or once the logic gets hard to follow. It would also cover the three hard-coded level tabs.
+13. Offline CSS and fonts (M). Only worthwhile if players will use it without a reliable connection.
+14. Event delegation and splitting the file (L). Low player impact and high effort.
+
+Why this order: items 1 to 3 improve the learning experience in small steps and leave the mechanics alone, so they're low-risk. Items 4 to 6 reshape how the game plays, so each deserves a playtest before the next one starts. I put the structural work last because the config refactor already did the part that unblocks the gameplay changes.
+
+If you want a concrete next step, I'd bundle 1 to 3 into one update, which fits the earlier approach, and then play Level 2 before we decide how far to take #4.
+
+since this is a teaching game, does it make sense to have repeated assignments of the same tasks over 10 days
+
+No, I don't think it does. It's a good catch, and it changes one of my earlier recommendations.
+
+Why the repetition doesn't teach much: From the code, assignments clear at the end of every workday. A two-day task like the timber frame has to be assigned again on day two, and the same goes for the canopy roof. The game is trying to teach three things: matching skills to tasks, managing stamina, and sequencing dependent work. A player gets all three right the first time they assign a task, and the second tap teaches nothing new.
+
+The repetition may also teach the wrong lesson. In real projects, you assign a task once and then check in and step in when something changes, which is called management by exception. Daily re-tapping suggests the job is micromanaging.
+
+When daily decisions are worth it: Repeating a step is fine when the decision actually changes, and a few things here do make it change:
+
+Stamina: a rested artisan is a different choice from a worn-out one.
+Events and blocked tasks: a delay or a newly unblocked task shifts priorities.
+Rest timing: this is the most interesting daily decision in the game.
+
+What I'd do: Make assignments persist. A task stays with its artisan until it's finished or the player changes it, and the player only re-engages when the situation changes (stamina low, a task unblocked, an event). A "run until something needs attention" option would be a natural next step, and it matches management by exception.
+
+A correction to my earlier list: I suggested an "Assign suggested crew" button. I'd drop it. Suggestions would automate skill matching, which is one of the few decisions that actually teaches something. Persistence removes the boring part and keeps the real decisions in the player's hands.
+
+One thing I'm unsure about is how many taps a full Level 2 run takes today. By my count it's at least nine assignments plus rest decisions, but I haven't played it through to confirm. I'd check that before deciding how far to go. Do you want me to go ahead with persistent assignments?
+
+check again based on the 
