@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#58361E">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Oh my PM! — A RekaSantai Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,8 +27,20 @@
 
         html {
             -webkit-text-size-adjust: 100%;
-            font-size: clamp(14px, 1.8vw, 16px);
+            font-size: 15px;
             height: 100%;
+            overscroll-behavior: none;
+            touch-action: manipulation;
+        }
+
+        @media (min-width: 640px) {
+            html { font-size: clamp(14.5px, 1.2vw, 16px); }
+        }
+        @media (min-width: 1280px) {
+            html { font-size: clamp(15.5px, 1.08vw, 17px); }
+        }
+        @media (min-width: 1680px) {
+            html { font-size: clamp(17px, 0.95vw, 19px); }
         }
 
         body {
@@ -40,11 +56,21 @@
             height: 100dvh;
             width: 100%;
             overflow: hidden;
+            overscroll-behavior: none;
+            touch-action: manipulation;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
             -webkit-tap-highlight-color: transparent;
         }
+
+        button, [role="button"], .cursor-pointer {
+            touch-action: manipulation;
+        }
+
+        .ts-micro { font-size: 0.6875rem; line-height: 1.3; }
+        .ts-caption { font-size: 0.75rem; line-height: 1.35; }
+        .ts-body { font-size: 0.875rem; line-height: 1.45; }
 
         h1, h2, h3, .font-serif-cozy {
             font-family: 'Fraunces', Georgia, serif;
@@ -56,10 +82,10 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* Adaptive Shell: Locked 100dvh across Folded Portrait & Unfolded Two-Pane Duo/Tablet */
+        /* Adaptive Shell: Mobile-First Single-Column (< 640px) & Multi-Tier Two-Pane Studio (>= 640px) */
         #app-shell {
             width: 100%;
-            max-width: 1180px;
+            max-width: 100%;
             height: 100dvh;
             max-height: 100dvh;
             background-color: var(--parchment);
@@ -99,7 +125,50 @@
         }
 
         #diorama-svg-el {
-            height: clamp(108px, 16dvh, 134px);
+            width: 100%;
+            height: auto;
+            aspect-ratio: 420 / 170;
+            display: block;
+        }
+
+        /* Mobile-First (< 640px): Collapsible Site & Scale Drawer + Bottom-Sheet Modals */
+        @media (max-width: 639px) {
+            #hud-scale-panel,
+            #left-diorama-wrap {
+                display: none;
+            }
+            #app-shell.mobile-site-open #hud-scale-panel {
+                display: block;
+                animation: crispFadeUp 0.18s ease-out forwards;
+            }
+            #app-shell.mobile-site-open #left-diorama-wrap,
+            #app-shell.mobile-exec-peek #left-diorama-wrap {
+                display: flex;
+                animation: crispFadeUp 0.2s ease-out forwards;
+            }
+            #diorama-svg-el {
+                max-height: 24dvh;
+            }
+            #tutorial-overlay,
+            #event-modal,
+            #retro-modal,
+            #chapter-intro-modal,
+            #confirm-modal {
+                align-items: flex-end !important;
+                padding: 0 !important;
+            }
+            .modal-sheet-card {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+                border-bottom-left-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+                border-bottom-width: 0 !important;
+                max-height: 92dvh !important;
+                padding-bottom: env(safe-area-inset-bottom, 0px);
+                animation: sheetSlideUp 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+            }
         }
 
         /* Narrow Folded Cover Screen (< 360px) Compact Safeguards */
@@ -112,29 +181,28 @@
                 font-size: 10px !important;
             }
             .artisan-card-item {
-                padding: 0.375rem !important;
+                padding: 0.35rem !important;
             }
             .artisan-card-name {
                 font-size: 10px !important;
             }
-            .artisan-rest-btn {
-                padding-left: 0.3rem !important;
-                padding-right: 0.3rem !important;
-                font-size: 8.5px !important;
-            }
         }
 
-        /* Unfolded iPhone Duo / Wide Inner Screen / Tablet (>= 600px) Two-Pane Studio */
-        @media (min-width: 600px) {
+        /* Tablet / Foldable Two-Pane Studio (>= 640px) */
+        @media (min-width: 640px) {
             body {
                 padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
             }
             #app-shell {
-                grid-template-columns: 44% 56%;
+                grid-template-columns: 42% 58%;
                 grid-template-rows: 1fr;
+                max-width: 1280px;
                 border-left: 1px solid #4A321C;
                 border-right: 1px solid #4A321C;
                 box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+            }
+            #hud-scale-panel {
+                display: block;
             }
             #left-stage {
                 border-right: 2px solid #7A5434;
@@ -143,14 +211,38 @@
                 padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
             }
             #left-diorama-wrap {
+                display: flex;
                 flex: 1;
                 justify-content: space-between;
             }
-            #diorama-svg-el {
-                height: clamp(192px, 31dvh, 268px);
-            }
             #right-stage {
                 padding-top: max(0.25rem, env(safe-area-inset-top, 0px));
+            }
+        }
+
+        /* Laptop Studio (>= 1024px) */
+        @media (min-width: 1024px) {
+            #app-shell {
+                grid-template-columns: 43% 57%;
+                max-width: 1360px;
+            }
+        }
+
+        /* High-Res / 1440p / 4K Framed Floating Studio Board (>= 1440px) */
+        @media (min-width: 1440px) {
+            body {
+                align-items: center;
+                padding: clamp(14px, 2.2vh, 32px) clamp(16px, 2.5vw, 40px);
+                background-image: radial-gradient(circle at 50% 18%, #47301F 0%, #2A1B11 55%, #19100A 100%);
+            }
+            #app-shell {
+                max-width: 1460px;
+                height: min(94dvh, 1020px);
+                max-height: min(94dvh, 1020px);
+                border-radius: 20px;
+                border: 2px solid #7A5434;
+                box-shadow: 0 28px 72px rgba(0, 0, 0, 0.58), 0 0 0 1px rgba(197, 143, 42, 0.28);
+                grid-template-columns: 44% 56%;
             }
         }
 
@@ -173,7 +265,13 @@
             border-bottom: 2px solid #3D2412;
             box-shadow: inset 0 -1px 0 rgba(197, 143, 42, 0.35);
             color: #FDF9F0;
-            padding-top: calc(0.65rem + env(safe-area-inset-top, 0px));
+            padding-top: calc(0.45rem + env(safe-area-inset-top, 0px));
+        }
+
+        @media (min-width: 640px) {
+            .teak-panel {
+                padding-top: calc(0.65rem + env(safe-area-inset-top, 0px));
+            }
         }
 
         .sarawak-trim {
@@ -233,6 +331,14 @@
         }
         .animate-crisp-in {
             animation: crispFadeUp 0.22s ease-out forwards;
+        }
+
+        @keyframes sheetSlideUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-sheet-up {
+            animation: sheetSlideUp 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
         @keyframes gentleShake {
@@ -331,6 +437,20 @@
             animation: fatiguePulse 1.8s ease-in-out infinite;
         }
 
+        @media (prefers-reduced-motion: reduce) {
+            .animate-rain,
+            .animate-rain-delay,
+            .animate-lantern-sway,
+            .artisan-working-bob,
+            .animate-fatigue-pulse,
+            .diorama-steam,
+            .diorama-steam-delay,
+            .diorama-sparkle,
+            .diorama-active-blueprint {
+                animation: none !important;
+            }
+        }
+
         /* Guaranteed High-Z-Index Welcome & Tutorial Overlay */
         #tutorial-overlay {
             position: fixed;
@@ -374,140 +494,158 @@
 
 <div id="app-shell">
     <!-- Toast Notification Banner -->
-    <div id="toast-container" class="pointer-events-none fixed bottom-16 left-1/2 -translate-x-1/2 min-[600px]:top-auto min-[600px]:bottom-4 min-[600px]:left-auto min-[600px]:right-4 min-[600px]:translate-x-0 z-50 w-[90%] max-w-[340px] flex flex-col items-center min-[600px]:items-end gap-1.5"></div>
+    <div id="toast-container" class="pointer-events-none fixed bottom-[132px] left-1/2 -translate-x-1/2 sm:top-auto sm:bottom-4 sm:left-auto sm:right-4 sm:translate-x-0 z-50 w-[90%] max-w-[340px] flex flex-col items-center sm:items-end gap-1.5"></div>
 
-    <!-- LEFT STAGE: Header HUD, Iron Triangle & Permanently Visible Live Diorama -->
+    <!-- LEFT STAGE: Header HUD, Iron Triangle & Live Diorama (Drawer on Mobile, Persistent Studio Pane on >= 640px) -->
     <div id="left-stage">
-        <!-- TOP HEADER: Prominent "Oh my PM!" Title, Minimal "by RekaSantai" Pill & Iron Triangle HUD -->
-        <header class="teak-panel px-3.5 pb-2.5 z-30 shrink-0">
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2.5 min-w-0">
+        <!-- TOP HEADER: Compact Mobile HUD + Full Two-Pane Studio Header -->
+        <header class="teak-panel px-3 pb-2 sm:px-3.5 sm:pb-2.5 z-30 shrink-0">
+            <div class="flex items-center justify-between gap-2 mb-1.5 sm:mb-2">
+                <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
                     <!-- Game Icon -->
                     <div id="game-title-icon" class="shrink-0"></div>
                     <div class="min-w-0">
                         <div class="flex items-center gap-1.5 flex-wrap">
-                            <h1 class="text-[18px] font-extrabold tracking-tight text-[#FFFDF8] leading-none">Oh my PM!</h1>
-                            <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-[#3D2412] border border-[#8C5E35] text-[9px] font-semibold text-[#DECBA8]">
+                            <h1 class="text-[17px] sm:text-[1.15rem] font-extrabold tracking-tight text-[#FFFDF8] leading-none">Oh my PM!</h1>
+                            <span class="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded bg-[#3D2412] border border-[#8C5E35] ts-micro font-semibold text-[#DECBA8]">
                                 by RekaSantai
                             </span>
                         </div>
-                        <p id="header-commission-subtitle" class="text-[11px] font-medium text-[#EBD9BC] mt-1 truncate">Level 1 • Main Bazaar Coffee Cart (RM 500 • 3 Days)</p>
+                        <p id="header-commission-subtitle" class="hidden sm:block ts-micro font-medium text-[#EBD9BC] mt-1 truncate">Level 1 • Main Bazaar Coffee Cart (RM 500 • 3 Days)</p>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-1.5 shrink-0">
-                    <button id="btn-tutorial" type="button" onclick="openTutorialModal(0)" aria-label="Open Guide" class="btn-tactile min-h-[36px] px-2.5 py-1.5 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] text-[#FAF0DC] text-xs font-bold border border-[#C58F2A] flex items-center gap-1 transition cursor-pointer">
-                        <svg viewBox="0 0 16 16" class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.2 6.2a1.9 1.9 0 0 1 3.6.7c0 1.3-1.8 1.6-1.8 2.8"/><circle cx="8" cy="12" r="0.6" fill="currentColor" stroke="none"/></svg>
-                        <span>Guide</span>
+                    <!-- Mobile Site & Scale Drawer Toggle Pill -->
+                    <button id="btn-mobile-site" type="button" onclick="toggleMobileSiteDrawer()" aria-expanded="false" aria-label="Toggle Live Site & Scale Drawer" class="sm:hidden btn-tactile min-h-[40px] px-2.5 py-1.5 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] border border-[#C58F2A] text-[#FAF0DC] text-xs font-bold flex items-center gap-1.5 transition cursor-pointer">
+                        <span id="mobile-scale-dot" class="w-2.5 h-2.5 rounded-full bg-[#34D399] border border-[#241B15] shrink-0"></span>
+                        <span id="mobile-site-label">Site</span>
+                        <svg id="mobile-site-chevron" viewBox="0 0 16 16" class="w-3.5 h-3.5 transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
                     </button>
-                    <button id="btn-mute" type="button" onclick="toggleMute()" aria-label="Toggle Sound" class="btn-tactile w-9 h-9 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] text-[#FAF0DC] flex items-center justify-center border border-[#9E6E43] transition cursor-pointer">
+
+                    <button id="btn-tutorial" type="button" onclick="openTutorialModal(0)" aria-label="Open Guide" class="btn-tactile min-w-[40px] min-h-[40px] sm:min-w-0 sm:min-h-[36px] px-2.5 py-1.5 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] text-[#FAF0DC] text-xs font-bold border border-[#C58F2A] flex items-center justify-center gap-1 transition cursor-pointer">
+                        <svg viewBox="0 0 16 16" class="w-4 h-4 sm:w-3.5 sm:h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.2 6.2a1.9 1.9 0 0 1 3.6.7c0 1.3-1.8 1.6-1.8 2.8"/><circle cx="8" cy="12" r="0.6" fill="currentColor" stroke="none"/></svg>
+                        <span class="hidden sm:inline">Guide</span>
+                    </button>
+                    <button id="btn-mute" type="button" onclick="toggleMute()" aria-label="Toggle Sound" class="btn-tactile w-10 h-10 sm:w-9 sm:h-9 rounded-lg bg-[#3D2412] hover:bg-[#2B180B] text-[#FAF0DC] flex items-center justify-center border border-[#9E6E43] transition cursor-pointer">
                         <svg viewBox="0 0 16 16" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6v4h3l3.5 3V3L5.5 6h-3z"/><path d="M11.5 5.3a3.8 3.8 0 0 1 0 5.4"/><path d="M13.5 3.5a6.5 6.5 0 0 1 0 9"/></svg>
                     </button>
                 </div>
             </div>
 
             <!-- Sequential Lifecycle Level Switcher Tabs with 3-Star Mastery Badges -->
-            <nav aria-label="Project Lifecycle Levels" class="grid grid-cols-3 gap-1.5 mb-2 bg-[#3D2412] p-1 rounded-xl border border-[#8C5E35]">
-                <button id="tab-lvl-1" type="button" onclick="requestLevelSwitch(1)" class="btn-tactile min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+            <nav aria-label="Project Lifecycle Levels" class="grid grid-cols-3 gap-1.5 mb-1.5 sm:mb-2 bg-[#3D2412] p-1 rounded-xl border border-[#8C5E35]">
+                <button id="tab-lvl-1" type="button" onclick="requestLevelSwitch(1)" class="btn-tactile min-h-[38px] sm:min-h-[40px] py-1 px-1 rounded-lg ts-caption font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
                     <span class="flex items-center gap-1">
                         <svg viewBox="0 0 16 16" class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2.5h7a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 11 14H3.5A1.5 1.5 0 0 1 2 12.5V4.5A2 2 0 0 1 4 2.5z"/><path d="M5.5 6h4.5M5.5 8.5h4.5M5.5 11h3"/></svg>
                         <span>L1: Charter</span>
                     </span>
-                    <span id="tab-stars-1" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
+                    <span id="tab-stars-1" class="text-[10px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
-                <button id="tab-lvl-2" type="button" onclick="requestLevelSwitch(2)" class="btn-tactile min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                <button id="tab-lvl-2" type="button" onclick="requestLevelSwitch(2)" class="btn-tactile min-h-[38px] sm:min-h-[40px] py-1 px-1 rounded-lg ts-caption font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
                     <span class="flex items-center gap-1">
                         <svg viewBox="0 0 16 16" class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.8L13.5 5v6L8 14.2 2.5 11V5L8 1.8z"/><path d="M2.5 5L8 8.2 13.5 5M8 8.2v6"/></svg>
                         <span>L2: WBS</span>
                     </span>
-                    <span id="tab-stars-2" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
+                    <span id="tab-stars-2" class="text-[10px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
-                <button id="tab-lvl-3" type="button" onclick="requestLevelSwitch(3)" class="btn-tactile min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                <button id="tab-lvl-3" type="button" onclick="requestLevelSwitch(3)" class="btn-tactile min-h-[38px] sm:min-h-[40px] py-1 px-1 rounded-lg ts-caption font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
                     <span class="flex items-center gap-1">
                         <svg viewBox="0 0 16 16" class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="11" rx="2"/><path d="M5 1.5v3M11 1.5v3M2 6.5h12M5.5 9.5h2v2h-2z"/></svg>
                         <span>L3: Control</span>
                     </span>
-                    <span id="tab-stars-3" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
+                    <span id="tab-stars-3" class="text-[10px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
             </nav>
 
-            <!-- Iron Triangle HUD & Interactive SVG Balance Scale -->
-            <div class="bg-[#3D2412] rounded-xl p-2 border border-[#C58F2A]/90 shadow-inner">
-                <div class="flex items-center justify-between text-[10px] px-1 mb-0.5">
-                    <span class="font-bold uppercase tracking-wider text-[#F6D365] flex items-center gap-1">
-                        <svg viewBox="0 0 16 16" class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 2v11M3 5h10M4.5 13h7"/><path d="M3 5l-1.5 4h3zM13 5l-1.5 4h3z"/></svg>
-                        <span>Iron Triangle Balance</span>
-                    </span>
-                    <span id="scale-status-text" class="font-semibold text-[#A7F3D0]">Balanced &amp; Steady</span>
+            <!-- Iron Triangle HUD: Compact KPI Strip Always Visible + Expandable Brass Scale on Mobile -->
+            <div class="bg-[#3D2412] rounded-xl p-1.5 sm:p-2 border border-[#C58F2A]/90 shadow-inner">
+                <div id="hud-scale-panel">
+                    <div class="flex items-center justify-between ts-micro px-1 mb-0.5">
+                        <span class="font-bold uppercase tracking-wider text-[#F6D365] flex items-center gap-1">
+                            <svg viewBox="0 0 16 16" class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 2v11M3 5h10M4.5 13h7"/><path d="M3 5l-1.5 4h3zM13 5l-1.5 4h3z"/></svg>
+                            <span>Iron Triangle Balance</span>
+                        </span>
+                        <span id="scale-status-text" class="font-semibold text-[#A7F3D0]">Balanced &amp; Steady</span>
+                    </div>
+
+                    <svg viewBox="0 0 260 66" shape-rendering="geometricPrecision" class="w-full h-12 overflow-visible block mb-1.5">
+                        <defs>
+                            <linearGradient id="hud-brass" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#FDE68A"/>
+                                <stop offset="50%" stop-color="#C58F2A"/>
+                                <stop offset="100%" stop-color="#7A5404"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Brass Suspension Arch & Pedestal Finial -->
+                        <path d="M130 3 L130 17 M121 9 Q130 0 139 9" stroke="url(#hud-brass)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                        <polygon points="130,10 127,16 133,16" fill="#F6D365" stroke="#241B15" stroke-width="0.8"/>
+
+                        <g id="balance-beam">
+                            <!-- Sculpted Brass Beam -->
+                            <path d="M24 22 Q130 18 236 22 L236 24 Q130 21 24 24 Z" fill="url(#hud-brass)" stroke="#241B15" stroke-width="0.9"/>
+                            <circle cx="42" cy="22" r="2.6" fill="#FDE68A" stroke="#241B15" stroke-width="0.9"/>
+                            <circle cx="218" cy="22" r="2.6" fill="#FDE68A" stroke="#241B15" stroke-width="0.9"/>
+
+                            <!-- Center Brass Fulcrum Collar -->
+                            <rect x="123" y="17" width="14" height="10" rx="2.5" fill="#C85A32" stroke="#FFFDF8" stroke-width="1"/>
+
+                            <!-- Left Hanging Pan (Counter-Rotated so it stays level) -->
+                            <g id="scale-pan-left">
+                                <line x1="42" y1="22" x2="27" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                                <line x1="42" y1="22" x2="57" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                                <path d="M22 38 Q42 46 62 38 Z" fill="url(#hud-brass)" stroke="#241B15" stroke-width="1"/>
+                                <text x="42" y="54" text-anchor="middle" fill="#FDE68A" font-size="7" font-weight="700" letter-spacing="0.35">BUDGET &amp; TIME</text>
+                            </g>
+
+                            <!-- Right Hanging Pan (Counter-Rotated so it stays level) -->
+                            <g id="scale-pan-right">
+                                <line x1="218" y1="22" x2="203" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                                <line x1="218" y1="22" x2="233" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
+                                <path d="M198 38 Q218 46 238 38 Z" fill="#C85A32" stroke="#241B15" stroke-width="1"/>
+                                <text x="218" y="54" text-anchor="middle" fill="#FECACA" font-size="7" font-weight="700" letter-spacing="0.35">SCOPE</text>
+                            </g>
+                        </g>
+
+                        <!-- Dynamic Fulcrum Status Jewel -->
+                        <circle id="scale-jewel" cx="130" cy="22" r="4.5" fill="#34D399" stroke="#241B15" stroke-width="1.3"/>
+                    </svg>
                 </div>
 
-                <svg viewBox="0 0 260 66" shape-rendering="geometricPrecision" class="w-full h-12 overflow-visible block mb-1.5">
-                    <defs>
-                        <linearGradient id="hud-brass" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#FDE68A"/>
-                            <stop offset="50%" stop-color="#C58F2A"/>
-                            <stop offset="100%" stop-color="#7A5404"/>
-                        </linearGradient>
-                    </defs>
-                    <!-- Brass Suspension Arch & Pedestal Finial -->
-                    <path d="M130 3 L130 17 M121 9 Q130 0 139 9" stroke="url(#hud-brass)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-                    <polygon points="130,10 127,16 133,16" fill="#F6D365" stroke="#241B15" stroke-width="0.8"/>
-
-                    <g id="balance-beam">
-                        <!-- Sculpted Brass Beam -->
-                        <path d="M24 22 Q130 18 236 22 L236 24 Q130 21 24 24 Z" fill="url(#hud-brass)" stroke="#241B15" stroke-width="0.9"/>
-                        <circle cx="42" cy="22" r="2.6" fill="#FDE68A" stroke="#241B15" stroke-width="0.9"/>
-                        <circle cx="218" cy="22" r="2.6" fill="#FDE68A" stroke="#241B15" stroke-width="0.9"/>
-
-                        <!-- Center Brass Fulcrum Collar -->
-                        <rect x="123" y="17" width="14" height="10" rx="2.5" fill="#C85A32" stroke="#FFFDF8" stroke-width="1"/>
-
-                        <!-- Left Hanging Pan (Counter-Rotated so it stays level) -->
-                        <g id="scale-pan-left">
-                            <line x1="42" y1="22" x2="27" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
-                            <line x1="42" y1="22" x2="57" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
-                            <path d="M22 38 Q42 46 62 38 Z" fill="url(#hud-brass)" stroke="#241B15" stroke-width="1"/>
-                            <text x="42" y="54" text-anchor="middle" fill="#FDE68A" font-size="7" font-weight="700" letter-spacing="0.35">BUDGET &amp; TIME</text>
-                        </g>
-
-                        <!-- Right Hanging Pan (Counter-Rotated so it stays level) -->
-                        <g id="scale-pan-right">
-                            <line x1="218" y1="22" x2="203" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
-                            <line x1="218" y1="22" x2="233" y2="38" stroke="#EBD9BC" stroke-width="1.2"/>
-                            <path d="M198 38 Q218 46 238 38 Z" fill="#C85A32" stroke="#241B15" stroke-width="1"/>
-                            <text x="218" y="54" text-anchor="middle" fill="#FECACA" font-size="7" font-weight="700" letter-spacing="0.35">SCOPE</text>
-                        </g>
-                    </g>
-
-                    <!-- Dynamic Fulcrum Status Jewel -->
-                    <circle id="scale-jewel" cx="130" cy="22" r="4.5" fill="#34D399" stroke="#241B15" stroke-width="1.3"/>
-                </svg>
-
                 <!-- 3 Core Iron Triangle Pill Meters with Micro Progress Bars -->
-                <div class="grid grid-cols-3 gap-1.5 mt-1">
+                <div class="grid grid-cols-3 gap-1.5 sm:mt-1">
                     <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
-                        <div class="text-[10px] font-medium text-[#DECBA8] flex items-center justify-center gap-1">
+                        <div class="hidden sm:flex ts-micro font-medium text-[#DECBA8] items-center justify-center gap-1">
                             <svg viewBox="0 0 16 16" class="w-3 h-3 text-[#F6D365]" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="5.8"/><path d="M8 4.8v6.4M9.6 6.2c0-.7-.7-1.1-1.6-1.1s-1.6.4-1.6 1.1.7 1 1.6 1.2 1.6.5 1.6 1.3-.7 1.1-1.6 1.1-1.6-.4-1.6-1.1" stroke-linecap="round"/></svg>
                             <span>Budget</span>
                         </div>
-                        <div id="hud-budget" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#F6D365] truncate">RM 500</div>
-                        <div class="mt-1 h-1 w-full rounded-full bg-[#1C0F07] overflow-hidden"><div id="hud-budget-bar" class="h-full rounded-full bg-[#F6D365] transition-all duration-300" style="width:100%"></div></div>
+                        <div class="flex items-center justify-center gap-1 sm:block">
+                            <svg viewBox="0 0 16 16" class="w-3 h-3 text-[#F6D365] sm:hidden shrink-0" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="5.8"/><path d="M8 4.8v6.4M9.6 6.2c0-.7-.7-1.1-1.6-1.1s-1.6.4-1.6 1.1.7 1 1.6 1.2 1.6.5 1.6 1.3-.7 1.1-1.6 1.1-1.6-.4-1.6-1.1" stroke-linecap="round"/></svg>
+                            <div id="hud-budget" class="hud-metric-val ts-caption font-bold font-mono-crisp text-[#F6D365] truncate">RM 500</div>
+                        </div>
+                        <div class="mt-0.5 sm:mt-1 h-1 w-full rounded-full bg-[#1C0F07] overflow-hidden"><div id="hud-budget-bar" class="h-full rounded-full bg-[#F6D365] transition-all duration-300" style="width:100%"></div></div>
                     </div>
                     <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
-                        <div class="text-[10px] font-medium text-[#DECBA8] flex items-center justify-center gap-1">
+                        <div class="hidden sm:flex ts-micro font-medium text-[#DECBA8] items-center justify-center gap-1">
                             <svg viewBox="0 0 16 16" class="w-3 h-3 text-[#FFFDF8]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8" cy="8.5" r="5.5"/><path d="M8 5.5v3l2 1.2M6 1.8h4"/></svg>
                             <span>Schedule</span>
                         </div>
-                        <div id="hud-day" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#FFFDF8] truncate">3 Days Left</div>
-                        <div class="mt-1 h-1 w-full rounded-full bg-[#1C0F07] overflow-hidden"><div id="hud-day-bar" class="h-full rounded-full bg-[#FFFDF8] transition-all duration-300" style="width:100%"></div></div>
+                        <div class="flex items-center justify-center gap-1 sm:block">
+                            <svg viewBox="0 0 16 16" class="w-3 h-3 text-[#FFFDF8] sm:hidden shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8" cy="8.5" r="5.5"/><path d="M8 5.5v3l2 1.2M6 1.8h4"/></svg>
+                            <div id="hud-day" class="hud-metric-val ts-caption font-bold font-mono-crisp text-[#FFFDF8] truncate">3 Days Left</div>
+                        </div>
+                        <div class="mt-0.5 sm:mt-1 h-1 w-full rounded-full bg-[#1C0F07] overflow-hidden"><div id="hud-day-bar" class="h-full rounded-full bg-[#FFFDF8] transition-all duration-300" style="width:100%"></div></div>
                     </div>
                     <div class="hud-metric-pill bg-[#29170B] rounded-lg px-2 py-1 text-center border border-[#7A5434]">
-                        <div class="text-[10px] font-medium text-[#DECBA8] flex items-center justify-center gap-1">
+                        <div class="hidden sm:flex ts-micro font-medium text-[#DECBA8] items-center justify-center gap-1">
                             <svg viewBox="0 0 16 16" class="w-3 h-3 text-[#A7F3D0]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13V3l10 10H3z"/><path d="M5.5 10.5V8l2.5 2.5H5.5z"/></svg>
                             <span>Scope</span>
                         </div>
-                        <div id="hud-scope" class="hud-metric-val text-[11px] font-bold font-mono-crisp text-[#A7F3D0] truncate">0/8 Charter</div>
-                        <div class="mt-1 h-1 w-full rounded-full bg-[#1C0F07] overflow-hidden"><div id="hud-scope-bar" class="h-full rounded-full bg-[#34D399] transition-all duration-300" style="width:0%"></div></div>
+                        <div class="flex items-center justify-center gap-1 sm:block">
+                            <svg viewBox="0 0 16 16" class="w-3 h-3 text-[#A7F3D0] sm:hidden shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13V3l10 10H3z"/><path d="M5.5 10.5V8l2.5 2.5H5.5z"/></svg>
+                            <div id="hud-scope" class="hud-metric-val ts-caption font-bold font-mono-crisp text-[#A7F3D0] truncate">0/8 Charter</div>
+                        </div>
+                        <div class="mt-0.5 sm:mt-1 h-1 w-full rounded-full bg-[#1C0F07] overflow-hidden"><div id="hud-scope-bar" class="h-full rounded-full bg-[#34D399] transition-all duration-300" style="width:0%"></div></div>
                     </div>
                 </div>
             </div>
@@ -521,17 +659,17 @@
             </section>
 
             <!-- Wide / Unfolded Duo Project Brief & PM Concept Reference Card -->
-            <div id="wide-brief-card" class="hidden min-[600px]:block mt-2.5 paper-card rounded-xl p-3 bg-[#FFFDF9]"></div>
+            <div id="wide-brief-card" class="hidden sm:block mt-2.5 paper-card rounded-xl p-3 bg-[#FFFDF9]"></div>
         </div>
     </div>
 
     <!-- RIGHT STAGE: Guidance, Scrollable Charter/WBS Tree Board & Sticky Bottom Team Dock -->
     <div id="right-stage">
         <!-- CONTEXTUAL LEVEL BANNER (Collapsible 1-Line Charter/Reserve Bar) -->
-        <div id="context-banner" class="hidden mx-3 mt-1.5 min-[600px]:mt-2.5 px-3 py-1.5 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] shrink-0"></div>
+        <div id="context-banner" class="hidden mx-3 mt-1.5 sm:mt-2.5 px-3 py-1.5 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] shrink-0"></div>
 
         <!-- ADVISOR GUIDANCE BANNER -->
-        <div id="guidance-strip" class="mx-3 mt-1.5 min-[600px]:mt-2 px-3 py-2 rounded-xl bg-[#FFFDF9] border-[1.5px] border-[#C58F2A] text-xs text-[#241B15] flex items-center gap-2 shrink-0">
+        <div id="guidance-strip" class="mx-3 mt-1.5 sm:mt-2 px-3 py-1.5 sm:py-2 rounded-xl bg-[#FFFDF9] border-[1.5px] border-[#C58F2A] ts-caption text-[#241B15] flex items-center gap-2 shrink-0">
             <span class="w-5 h-5 rounded-md bg-[#C58F2A]/15 text-[#8C6106] flex items-center justify-center shrink-0">
                 <svg viewBox="0 0 16 16" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5.5 11.5h5M6.2 13.5h3.6M8 2a4 4 0 0 0-2.5 7.1c.5.4.8 1 .9 1.6h3.2c.1-.6.4-1.2.9-1.6A4 4 0 0 0 8 2z"/></svg>
             </span>
@@ -548,46 +686,46 @@
         </main>
 
         <!-- BOTTOM DOCK: Team Roster, Primary CTA & Subtle RekaSantai Footer Credit -->
-        <footer id="bottom-dock" class="teak-dock px-3 pt-2 z-30 shrink-0">
+        <footer id="bottom-dock" class="teak-dock px-3 pt-1.5 sm:pt-2 z-30 shrink-0">
             <div id="artisan-dock-wrapper">
-                <div class="flex items-center justify-between mb-1.5 px-0.5">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#3D2412] flex items-center gap-1.5">
+                <div class="hidden sm:flex items-center justify-between mb-1.5 px-0.5">
+                    <span class="ts-micro font-bold uppercase tracking-wider text-[#3D2412] flex items-center gap-1.5">
                         <svg viewBox="0 0 16 16" class="w-3.5 h-3.5 text-[#5C3A21]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13c0-2.2 2-3.8 4.5-3.8s4.5 1.6 4.5 3.8"/><circle cx="11.5" cy="6" r="2"/><path d="M11 9.5c1.9.2 3.5 1.5 3.5 3.5"/></svg>
                         <span>Project Team Roster</span>
                     </span>
-                    <span id="selected-artisan-pill" class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35 truncate max-w-[185px]">
+                    <span id="selected-artisan-pill" class="ts-micro font-bold px-2 py-0.5 rounded-md bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35 truncate max-w-[185px]">
                         Tap Assign on any Task
                     </span>
                 </div>
 
-                <div id="artisans-dock" class="grid grid-cols-3 gap-1.5 sm:gap-2 mb-2"></div>
+                <div id="artisans-dock" class="grid grid-cols-3 gap-1.5 sm:gap-2 mb-1.5 sm:mb-2"></div>
             </div>
 
-            <button id="btn-primary-action" type="button" onclick="handlePrimaryCTA()" class="btn-tactile w-full min-h-[44px] py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer">
+            <button id="btn-primary-action" type="button" onclick="handlePrimaryCTA()" class="btn-tactile w-full min-h-[46px] sm:min-h-[44px] py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer">
                 <span>Start Workday</span>
             </button>
 
-            <!-- Subtle studio credit -->
-            <div class="mt-1.5 pt-1 border-t border-[#8C6A4A]/30 flex items-center justify-center gap-1.5 text-[10px] font-medium text-[#5C3A21]/80">
+            <!-- Subtle studio credit (Desktop/Tablet) -->
+            <div class="hidden sm:flex mt-1.5 pt-1 border-t border-[#8C6A4A]/30 items-center justify-center gap-1.5 ts-micro font-medium text-[#5C3A21]/80">
                 <span>Oh my PM! • A RekaSantai Game</span>
             </div>
         </footer>
 
         <!-- EXECUTION OVERLAY (Scoped to #right-stage so live diorama stays uncovered!) -->
-        <div id="execution-overlay" class="hidden absolute inset-0 z-40 bg-[#241B15]/70 backdrop-blur-[2px] flex items-center justify-center p-4">
-            <div class="paper-card w-full max-w-[400px] rounded-2xl p-5 text-center animate-crisp-in border-2 border-[#5C3A21]">
-                <div id="exec-icon" class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#F1E7D3] text-3xl mb-2 border-[1.5px] border-[#8C6A4A]">
+        <div id="execution-overlay" class="hidden absolute inset-0 z-40 bg-[#241B15]/70 backdrop-blur-[2px] flex items-center justify-center p-3 sm:p-4">
+            <div class="paper-card w-full max-w-[400px] xl:max-w-[440px] max-h-full overflow-y-auto rounded-2xl p-3.5 sm:p-5 text-center animate-crisp-in border-2 border-[#5C3A21]">
+                <div id="exec-icon" class="inline-flex items-center justify-center w-11 h-11 sm:w-14 sm:h-14 rounded-xl bg-[#F1E7D3] text-2xl sm:text-3xl mb-1.5 sm:mb-2 border-[1.5px] border-[#8C6A4A]">
                     ☕
                 </div>
-                <h3 id="exec-title" class="text-lg font-bold text-[#5C3A21]">Executing Day 1 Workday</h3>
-                <p id="exec-subtitle" class="text-xs font-medium text-[#5A4D41] mt-0.5 mb-4">Your team is building on site in Sarawak...</p>
+                <h3 id="exec-title" class="text-base sm:text-lg font-bold text-[#5C3A21]">Executing Day 1 Workday</h3>
+                <p id="exec-subtitle" class="ts-caption font-medium text-[#5A4D41] mt-0.5 mb-2.5 sm:mb-4">Your team is building on site in Sarawak...</p>
 
-                <div class="w-full h-3.5 bg-[#F1E7D3] rounded-full overflow-hidden p-0.5 border-[1.5px] border-[#8C6A4A] mb-3">
+                <div class="w-full h-3 sm:h-3.5 bg-[#F1E7D3] rounded-full overflow-hidden p-0.5 border-[1.5px] border-[#8C6A4A] mb-2.5 sm:mb-3">
                     <div id="exec-progress-bar" class="h-full bg-[#2E6F40] rounded-full transition-all duration-150" style="width: 0%"></div>
                 </div>
 
-                <div id="exec-logs" class="bg-[#FAF5EB] rounded-xl p-3 text-left space-y-2 min-h-[104px] border-[1.5px] border-[#8C6A4A]/60 text-xs text-[#241B15]"></div>
-                <div id="exec-skip-hint" class="text-[10px] text-[#7A5434] mt-2 font-medium">Tap anywhere to continue faster ⏩</div>
+                <div id="exec-logs" class="bg-[#FAF5EB] rounded-xl p-2.5 sm:p-3 text-left space-y-1.5 sm:space-y-2 min-h-[84px] sm:min-h-[104px] border-[1.5px] border-[#8C6A4A]/60 ts-caption text-[#241B15]"></div>
+                <div id="exec-skip-hint" class="ts-micro text-[#7A5434] mt-2 font-medium">Tap anywhere to continue faster ⏩</div>
             </div>
         </div>
     </div>
@@ -595,17 +733,18 @@
 
 <!-- 3-STEP INTERACTIVE WELCOME & TUTORIAL MODAL (Open by Default on Launch, z-index: 9999) -->
 <div id="tutorial-overlay" role="dialog" aria-modal="true" aria-labelledby="tut-modal-title">
-    <div class="paper-card w-full max-w-[440px] max-h-[90dvh] rounded-2xl p-5 animate-crisp-in border-2 border-[#5C3A21] flex flex-col overflow-hidden shadow-2xl">
+    <div class="modal-sheet-card paper-card w-full sm:max-w-[464px] xl:max-w-[520px] max-h-[90dvh] rounded-2xl p-4 sm:p-5 animate-crisp-in border-2 border-[#5C3A21] flex flex-col overflow-hidden shadow-2xl">
+        <div class="w-10 h-1 rounded-full bg-[#8C6A4A]/45 mx-auto mb-2 sm:hidden shrink-0"></div>
         <!-- Modal Header -->
         <div class="flex items-center justify-between pb-3 mb-3 border-b-[1.5px] border-[#8C6A4A]/40 shrink-0">
             <div class="flex items-center gap-2.5">
                 <div id="tutorial-game-icon" class="shrink-0"></div>
                 <div>
                     <div class="text-base font-extrabold font-serif-cozy text-[#5C3A21] leading-none">Oh my PM!</div>
-                    <div class="text-[10px] font-semibold text-[#7A5434] mt-1">A RekaSantai Game • Field Guide</div>
+                    <div class="ts-micro font-semibold text-[#7A5434] mt-1">A RekaSantai Game • Field Guide</div>
                 </div>
             </div>
-            <button type="button" onclick="closeTutorialModal()" class="min-h-[36px] px-3 py-1 rounded-lg bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A] text-xs font-bold text-[#3D2412] transition cursor-pointer">
+            <button type="button" onclick="closeTutorialModal()" class="min-h-[40px] sm:min-h-[36px] px-3 py-1 rounded-lg bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A] text-xs font-bold text-[#3D2412] transition cursor-pointer">
                 Skip ✕
             </button>
         </div>
@@ -615,39 +754,40 @@
 
         <!-- Footer Controls: Back, Clickable Step Indicator Dots (1, 2, 3), Next / Start Level 1 -->
         <div class="mt-4 pt-3 border-t-[1.5px] border-[#8C6A4A]/40 flex items-center justify-between gap-2 shrink-0">
-            <button id="tut-btn-back" type="button" onclick="changeTutorialStep(-1)" class="min-h-[42px] px-3.5 py-2 rounded-xl bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[1.5px] border-[#8C6A4A] text-xs font-bold text-[#3D2412] transition cursor-pointer">
+            <button id="tut-btn-back" type="button" onclick="changeTutorialStep(-1)" class="min-h-[44px] sm:min-h-[42px] px-3.5 py-2 rounded-xl bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[1.5px] border-[#8C6A4A] text-xs font-bold text-[#3D2412] transition cursor-pointer">
                 ← Back
             </button>
 
             <div id="tutorial-dots" class="flex items-center gap-2"></div>
 
-            <button id="tut-btn-next" type="button" onclick="changeTutorialStep(1)" class="min-h-[42px] px-4 py-2 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white text-xs font-bold border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
+            <button id="tut-btn-next" type="button" onclick="changeTutorialStep(1)" class="min-h-[44px] sm:min-h-[42px] px-4 py-2 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white text-xs font-bold border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
                 Next →
             </button>
         </div>
         <div class="text-center mt-2 shrink-0">
-            <button type="button" onclick="confirmResetProgress()" class="text-[10px] font-semibold text-[#7A5434] underline cursor-pointer">Reset saved stars &amp; progress</button>
+            <button type="button" onclick="confirmResetProgress()" class="ts-micro font-semibold text-[#7A5434] underline cursor-pointer">Reset saved stars &amp; progress</button>
         </div>
     </div>
 </div>
 
-<!-- MODAL: Mid-Project Event (Community Clipboard Memo) -->
+<!-- MODAL: Mid-Project Event (Community Clipboard Memo / Mobile Sheet) -->
 <div id="event-modal" class="hidden fixed inset-0 z-50 bg-[#241B15]/85 backdrop-blur-[2px] flex items-center justify-center p-4">
-    <div class="paper-card max-w-[404px] w-full rounded-2xl animate-crisp-in border-2 border-[#5C3A21] relative overflow-visible">
-        <!-- Wooden Clipboard Brass Clip Ornament -->
-        <div class="mx-auto -mt-3 w-20 h-4 rounded-t-lg bg-gradient-to-b from-[#FDE68A] via-[#C58F2A] to-[#8C6106] border-[1.5px] border-[#241B15] shadow-sm flex items-center justify-center">
+    <div class="modal-sheet-card paper-card sm:max-w-[420px] xl:max-w-[468px] w-full max-h-[92dvh] flex flex-col overflow-hidden sm:overflow-visible rounded-2xl animate-crisp-in border-2 border-[#5C3A21] relative">
+        <div class="w-10 h-1 rounded-full bg-[#8C6A4A]/45 mx-auto mt-2.5 mb-1 sm:hidden shrink-0"></div>
+        <!-- Wooden Clipboard Brass Clip Ornament (Desktop/Tablet) -->
+        <div class="hidden sm:flex mx-auto -mt-3 w-20 h-4 rounded-t-lg bg-gradient-to-b from-[#FDE68A] via-[#C58F2A] to-[#8C6106] border-[1.5px] border-[#241B15] shadow-sm items-center justify-center shrink-0">
             <span class="w-8 h-1 rounded-full bg-[#3D2412]/70"></span>
         </div>
-        <div class="sarawak-trim mt-1.5"></div>
-        <div class="p-5 pt-3.5">
+        <div class="sarawak-trim mt-1 sm:mt-1.5 shrink-0"></div>
+        <div class="p-4 pt-3 sm:p-5 sm:pt-3.5 flex-1 min-h-0 overflow-y-auto">
             <div class="flex items-center gap-3 mb-3">
                 <div id="modal-emoji" class="w-12 h-12 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] flex items-center justify-center shrink-0 overflow-hidden"></div>
                 <div class="min-w-0">
-                    <span id="modal-tag" class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#C85A32]/15 text-[#9E3514] border border-[#C85A32]/30">Change Control</span>
+                    <span id="modal-tag" class="inline-block ts-micro font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#C85A32]/15 text-[#9E3514] border border-[#C85A32]/30">Change Control</span>
                     <h3 id="modal-title" class="text-base font-bold text-[#241B15] mt-1 leading-snug">Stakeholder Change Request</h3>
                 </div>
             </div>
-            <div id="modal-body" class="text-xs text-[#241B15] leading-relaxed bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-4"></div>
+            <div id="modal-body" class="ts-caption text-[#241B15] leading-relaxed bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-4"></div>
             <div id="modal-actions" class="space-y-2"></div>
         </div>
     </div>
@@ -655,27 +795,28 @@
 
 <!-- MODAL: Level Completion & Project Retrospective (Heritage Guild Certificate) -->
 <div id="retro-modal" class="hidden fixed inset-0 z-50 bg-[#241B15]/85 backdrop-blur-[2px] flex items-center justify-center p-3">
-    <div class="paper-card max-w-[464px] w-full max-h-[92dvh] flex flex-col overflow-hidden rounded-2xl animate-crisp-in border-2 border-[#C58F2A] my-auto shadow-2xl">
+    <div class="modal-sheet-card paper-card sm:max-w-[464px] xl:max-w-[520px] w-full max-h-[92dvh] flex flex-col overflow-hidden rounded-2xl animate-crisp-in border-2 border-[#C58F2A] my-auto shadow-2xl">
+        <div class="w-10 h-1 rounded-full bg-[#8C6A4A]/45 mx-auto mt-2 mb-1 sm:hidden shrink-0"></div>
         <div class="sarawak-trim shrink-0"></div>
         <div class="flex-1 min-h-0 overflow-y-auto p-3.5 border-[1.5px] border-[#C58F2A]/35 m-1.5 mb-0 rounded-t-xl bg-[#FFFDF9]">
             <div class="text-center mb-2">
-                <span id="retro-phase-tag" class="inline-block px-3 py-0.5 rounded-full bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40 text-[10px] font-bold mb-1">Phase 1 Complete • Initiating</span>
+                <span id="retro-phase-tag" class="inline-block px-3 py-0.5 rounded-full bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40 ts-micro font-bold mb-1">Phase 1 Complete • Initiating</span>
                 <h2 id="retro-headline" class="text-lg font-bold text-[#5C3A21] leading-snug">Project Complete!</h2>
-                <p id="retro-sub" class="text-[11px] font-medium text-[#5A4D41] mt-0.5">Review your Iron Triangle performance and capture lessons learned.</p>
+                <p id="retro-sub" class="ts-caption font-medium text-[#5A4D41] mt-0.5">Review your Iron Triangle performance and capture lessons learned.</p>
             </div>
 
             <!-- Iron Triangle Final Scorecard -->
             <div class="grid grid-cols-3 gap-2 bg-[#FAF5EB] p-2 rounded-xl border-[1.5px] border-[#8C6A4A] mb-2 text-center">
                 <div>
-                    <div class="text-[10px] font-semibold text-[#5A4D41]">Budget Saved</div>
+                    <div class="ts-micro font-semibold text-[#5A4D41]">Budget Saved</div>
                     <div id="retro-budget" class="text-sm font-bold font-mono-crisp text-[#2E6F40]">RM 120</div>
                 </div>
                 <div>
-                    <div id="retro-time-label" class="text-[10px] font-semibold text-[#5A4D41]">Days Remaining</div>
+                    <div id="retro-time-label" class="ts-micro font-semibold text-[#5A4D41]">Days Remaining</div>
                     <div id="retro-days" class="text-sm font-bold font-mono-crisp text-[#5C3A21]">1 Day</div>
                 </div>
                 <div>
-                    <div class="text-[10px] font-semibold text-[#5A4D41]">Scope &amp; Quality</div>
+                    <div class="ts-micro font-semibold text-[#5A4D41]">Scope &amp; Quality</div>
                     <div id="retro-quality" class="text-sm font-bold text-[#C58F2A]">100% ✅</div>
                 </div>
             </div>
@@ -683,11 +824,11 @@
             <!-- 3-Star Iron Triangle Mastery Breakdown -->
             <div id="retro-stars-box" class="bg-[#FFFDF9] p-2 rounded-xl border-[1.5px] border-[#C58F2A] mb-2">
                 <div class="flex items-center justify-between mb-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#7A5404]">Iron Triangle Mastery Rating</span>
+                    <span class="ts-micro font-bold uppercase tracking-wider text-[#7A5404]">Iron Triangle Mastery Rating</span>
                     <span id="retro-stars-display" class="text-sm tracking-wide flex items-center gap-0.5">⭐⭐⭐</span>
                 </div>
-                <div id="retro-stars-criteria" class="space-y-0.5 text-[11px] text-[#241B15]"></div>
-                <div id="retro-scope-feedback" class="hidden mt-1.5 pt-1.5 border-t border-[#C58F2A]/40 text-[11px] leading-snug"></div>
+                <div id="retro-stars-criteria" class="space-y-0.5 ts-caption text-[#241B15]"></div>
+                <div id="retro-scope-feedback" class="hidden mt-1.5 pt-1.5 border-t border-[#C58F2A]/40 ts-caption leading-snug"></div>
             </div>
 
             <!-- Project Retrospective Selection (Populated dynamically per chapter) -->
@@ -698,11 +839,11 @@
                 <div class="flex items-center gap-2 mb-0.5">
                     <span id="badge-icon" class="text-lg">🏅</span>
                     <div>
-                        <div class="text-[9.5px] font-bold uppercase tracking-wider text-[#8C6106]">PM Principle Badge Unlocked</div>
+                        <div class="ts-micro font-bold uppercase tracking-wider text-[#8C6106]">PM Principle Badge Unlocked</div>
                         <div id="badge-title" class="text-xs font-bold text-[#241B15]">Project Charter Architect</div>
                     </div>
                 </div>
-                <p id="badge-desc" class="text-[11px] text-[#241B15] leading-snug">
+                <p id="badge-desc" class="ts-caption text-[#241B15] leading-snug">
                     A clear Project Charter defines Objective, Constraints, Success Criteria, and Out-of-Scope boundaries before execution begins.
                 </p>
             </div>
@@ -715,13 +856,14 @@
 
 <!-- MODAL: Chapter Story Intro (shown after the level-complete pop-up, before the next level starts) -->
 <div id="chapter-intro-modal" class="hidden fixed inset-0 flex items-center justify-center p-3" style="z-index:60; background-color:rgba(36,27,21,0.90); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);" role="dialog" aria-modal="true" aria-labelledby="intro-title">
-    <div class="paper-card max-w-[464px] w-full max-h-[92dvh] flex flex-col overflow-hidden rounded-2xl animate-crisp-in border-2 border-[#5C3A21] my-auto">
-        <div id="intro-scene-banner" class="hidden h-16 shrink-0 relative overflow-hidden border-b-2 border-[#7A5434]"></div>
+    <div class="modal-sheet-card paper-card sm:max-w-[464px] xl:max-w-[520px] w-full max-h-[92dvh] flex flex-col overflow-hidden rounded-2xl animate-crisp-in border-2 border-[#5C3A21] my-auto">
+        <div class="w-10 h-1 rounded-full bg-[#8C6A4A]/45 mx-auto mt-2 mb-1 sm:hidden shrink-0"></div>
+        <div id="intro-scene-banner" class="hidden h-16 sm:h-20 shrink-0 relative overflow-hidden border-b-2 border-[#7A5434]"></div>
         <div class="flex-1 min-h-0 overflow-y-auto px-4 pt-2.5 pb-2">
             <div id="intro-progress" class="flex items-center justify-center gap-1.5 mb-1.5" aria-label="Chapter progress"></div>
 
             <div class="text-center mb-2">
-                <span id="intro-tag" class="inline-block px-2.5 py-0.5 rounded-full bg-[#C85A32]/15 text-[#9E3514] border border-[#C85A32]/35 text-[10px] font-bold mb-1"></span>
+                <span id="intro-tag" class="inline-block px-2.5 py-0.5 rounded-full bg-[#C85A32]/15 text-[#9E3514] border border-[#C85A32]/35 ts-micro font-bold mb-1"></span>
                 <div class="flex items-center justify-center gap-1.5">
                     <span id="intro-emoji" class="text-xl leading-none"></span>
                     <h2 id="intro-title" class="text-lg font-bold text-[#5C3A21] leading-snug"></h2>
@@ -729,35 +871,44 @@
                 <p id="intro-place" class="sr-only"></p>
             </div>
 
-            <div id="intro-story" class="text-[11px] text-[#241B15] leading-snug bg-[#FAF5EB] p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-2 space-y-1.5"></div>
+            <div id="intro-story" class="ts-caption text-[#241B15] leading-snug bg-[#FAF5EB] p-2.5 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-2 space-y-1.5"></div>
 
             <div id="intro-stats" class="grid grid-cols-3 gap-2 text-center mb-2"></div>
 
-            <div id="intro-carry" class="hidden text-[10.5px] text-[#3D2412] bg-[#F1E7D3] p-2 rounded-xl border border-[#8C6A4A]/60 mb-2 leading-snug"></div>
+            <div id="intro-carry" class="hidden ts-caption text-[#3D2412] bg-[#F1E7D3] p-2 rounded-xl border border-[#8C6A4A]/60 mb-2 leading-snug"></div>
 
             <div class="bg-[#FFF9E6] p-2 rounded-xl border-[1.5px] border-[#C58F2A]">
-                <div id="intro-skill-label" class="text-[10px] font-bold uppercase tracking-wider text-[#8C6106] mb-1"></div>
-                <div id="intro-skills" class="text-[11px] text-[#3D2412] space-y-0.5 leading-snug"></div>
+                <div id="intro-skill-label" class="ts-micro font-bold uppercase tracking-wider text-[#8C6106] mb-1"></div>
+                <div id="intro-skills" class="ts-caption text-[#3D2412] space-y-0.5 leading-snug"></div>
             </div>
         </div>
         <div class="shrink-0 px-4 py-2.5 border-t border-[#8C6A4A]/30 bg-[#FFFDF9]">
-            <button id="intro-start-btn" type="button" onclick="startChapterFromIntro()" class="btn-tactile w-full min-h-[42px] py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 transition cursor-pointer"></button>
+            <button id="intro-start-btn" type="button" onclick="startChapterFromIntro()" class="btn-tactile w-full min-h-[44px] py-2.5 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 transition cursor-pointer"></button>
         </div>
     </div>
 </div>
 
 <!-- MODAL: Generic confirm (tab switch, reset saved progress) -->
 <div id="confirm-modal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:10001; background-color:rgba(36,27,21,0.88);" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
-    <div class="paper-card max-w-[360px] w-full rounded-2xl p-5 animate-crisp-in border-2 border-[#5C3A21]">
+    <div class="modal-sheet-card paper-card sm:max-w-[380px] xl:max-w-[420px] w-full rounded-2xl p-5 animate-crisp-in border-2 border-[#5C3A21]">
+        <div class="w-10 h-1 rounded-full bg-[#8C6A4A]/45 mx-auto -mt-1 mb-3 sm:hidden shrink-0"></div>
         <div class="flex items-center gap-2.5 mb-2.5">
             <span id="confirm-emoji" class="text-3xl">⚠️</span>
             <h3 id="confirm-title" class="text-base font-bold text-[#241B15] leading-snug"></h3>
         </div>
-        <p id="confirm-body" class="text-xs text-[#241B15] leading-relaxed bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-4"></p>
+        <p id="confirm-body" class="ts-caption text-[#241B15] leading-relaxed bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-4"></p>
         <div class="space-y-2">
             <button id="confirm-cancel-btn" type="button" onclick="closeConfirm(false)" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer"></button>
-            <button id="confirm-ok-btn" type="button" onclick="closeConfirm(true)" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs transition cursor-pointer"></button>
+            <button id="confirm-ok-btn" type="button" onclick="closeConfirm(true)" class="w-full min-h-[44px] py-2 rounded-xl bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs transition cursor-pointer"></button>
         </div>
+    </div>
+</div>
+
+<!-- MOBILE-ONLY BOTTOM SHEET: Task Artisan Picker & Artisan Rest Quick Sheet -->
+<div id="mobile-action-sheet" onclick="closeMobileSheet()" class="hidden sm:hidden fixed inset-0 bg-[#241B15]/75 backdrop-blur-[2px] flex items-end justify-center" style="z-index: 70;" role="dialog" aria-modal="true">
+    <div onclick="event.stopPropagation()" class="paper-card w-full rounded-t-2xl rounded-b-none border-2 border-b-0 border-[#5C3A21] max-h-[82dvh] flex flex-col overflow-hidden animate-sheet-up shadow-2xl">
+        <div class="w-10 h-1 rounded-full bg-[#8C6A4A]/50 mx-auto mt-2.5 mb-1 shrink-0"></div>
+        <div id="mobile-sheet-content" class="overflow-y-auto p-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom,0px))]"></div>
     </div>
 </div>
 
@@ -1972,7 +2123,7 @@
         }
 
         container.innerHTML = `
-            <svg id="diorama-svg-el" viewBox="0 0 420 170" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision" class="w-full block bg-[#3D2412]">
+            <svg id="diorama-svg-el" viewBox="0 0 420 170" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision" class="w-full block bg-[#3D2412]">
                 <defs>
                     <linearGradient id="diorama-sky" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="${tod.skyTop}"/>
@@ -2018,11 +2169,11 @@
             </svg>
 
             <div class="absolute top-1.5 left-2 right-2 flex items-center justify-between pointer-events-none">
-                <span class="px-2 py-0.5 rounded-md bg-[#241B15]/85 backdrop-blur-[2px] text-[#FFFDF8] text-[10px] font-bold font-mono-crisp border border-[#C58F2A] flex items-center gap-1">
+                <span class="px-2 py-0.5 rounded-md bg-[#241B15]/85 backdrop-blur-[2px] text-[#FFFDF8] ts-micro font-bold font-mono-crisp border border-[#C58F2A] flex items-center gap-1">
                     ${uiIcon('compass', 'w-3 h-3 text-[#F6D365]')}
                     <span>${phaseBadgeText}</span>
                 </span>
-                <span class="px-2 py-0.5 rounded-md bg-[#FFFDF9]/95 backdrop-blur-[2px] text-[#3D2412] text-[10px] font-bold border border-[#8C6A4A] flex items-center gap-1">
+                <span class="px-2 py-0.5 rounded-md bg-[#FFFDF9]/95 backdrop-blur-[2px] text-[#3D2412] ts-micro font-bold border border-[#8C6A4A] flex items-center gap-1">
                     ${uiIcon('clock', 'w-3 h-3 text-[#5C3A21]')}
                     <span>${tod.label}</span>
                 </span>
@@ -2040,11 +2191,11 @@
         const counter = brief.counter(state);
         card.innerHTML = `
             <div class="flex items-center justify-between mb-0.5">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">${brief.tag}</span>
-                <span class="text-[10px] font-bold font-mono-crisp ${counter.cls}">${counter.text}</span>
+                <span class="ts-micro font-bold uppercase tracking-wider text-[#C85A32]">${brief.tag}</span>
+                <span class="ts-micro font-bold font-mono-crisp ${counter.cls}">${counter.text}</span>
             </div>
-            <div class="text-xs font-bold text-[#241B15]">${brief.title}</div>
-            <p class="text-[11px] text-[#5A4D41] mt-0.5 leading-snug">
+            <div class="text-xs sm:text-sm font-bold text-[#241B15]">${brief.title}</div>
+            <p class="ts-caption text-[#5A4D41] mt-0.5 leading-snug">
                 ${brief.text(state)}
             </p>
         `;
@@ -2695,8 +2846,16 @@
     }
 
     document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
         const m = document.getElementById('confirm-modal');
-        if (e.key === 'Escape' && m && !m.classList.contains('hidden')) closeConfirm(false);
+        if (m && !m.classList.contains('hidden')) {
+            closeConfirm(false);
+            return;
+        }
+        const sheet = document.getElementById('mobile-action-sheet');
+        if (sheet && !sheet.classList.contains('hidden')) {
+            closeMobileSheet();
+        }
     });
 
     // ---- Detect unsaved progress in the current level ----
@@ -2758,6 +2917,10 @@
         if (state.isExecuting) return;
         SoundFX.woodClick();
         uiContextExpanded = false;
+        uiMobileSiteExpanded = false;
+        uiMobileExecPeek = false;
+        uiMobileArtisanSheetId = null;
+        syncMobileShellClasses();
         currentLevel = lvl;
         state = createLevelState(lvl);
         levelBaselineSig = stateSignature();
@@ -3105,6 +3268,7 @@
         }
 
         SoundFX.woodClick();
+        uiMobileArtisanSheetId = null;
         state.selectedAssignTaskId = (state.selectedAssignTaskId === taskId) ? null : taskId;
         if (state.selectedAssignTaskId) {
             updateGuidance(`Pick an artisan for <strong>${task.title}</strong> (${task.skill} specialist saves a full ${getTimeUnit(false).toLowerCase()}).`);
@@ -3179,6 +3343,7 @@
         }
 
         SoundFX.woodClick();
+        uiMobileArtisanSheetId = null;
         state.selectedAssignTaskId = (state.selectedAssignTaskId === taskId) ? null : taskId;
         if (state.selectedAssignTaskId) {
             updateGuidance(`Pick an available artisan to replace the current assignment on <strong>${task.title}</strong>.`);
@@ -3284,7 +3449,11 @@
         }
 
         state.selectedAssignTaskId = null;
+        uiMobileArtisanSheetId = null;
         state.isExecuting = true;
+        uiMobileExecPeek = true;
+        syncMobileShellClasses();
+        renderMobileSheet();
         SoundFX.coffeeClink();
 
         const overlay = document.getElementById('execution-overlay');
@@ -3424,6 +3593,8 @@
             }
             overlay.classList.add('hidden');
             state.isExecuting = false;
+            uiMobileExecPeek = false;
+            syncMobileShellClasses();
             finishDay(execSummary);
         }
 
@@ -4156,16 +4327,75 @@
             }
 
             if (isActive) {
-                btn.className = 'min-h-[38px] py-1 px-1.5 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight bg-[#C58F2A] text-[#241B15] border border-[#241B15] cursor-pointer';
+                btn.className = 'btn-tactile min-h-[38px] sm:min-h-[40px] py-1 px-1.5 rounded-lg ts-caption font-bold transition flex flex-col items-center justify-center leading-tight bg-[#C58F2A] text-[#241B15] border border-[#241B15] cursor-pointer';
             } else if (isDone) {
-                btn.className = 'min-h-[38px] py-1 px-1.5 rounded-lg text-[11px] font-semibold transition flex flex-col items-center justify-center leading-tight bg-[#2E6F40] text-[#FFFDF8] border border-[#1B4226] cursor-pointer';
+                btn.className = 'btn-tactile min-h-[38px] sm:min-h-[40px] py-1 px-1.5 rounded-lg ts-caption font-semibold transition flex flex-col items-center justify-center leading-tight bg-[#2E6F40] text-[#FFFDF8] border border-[#1B4226] cursor-pointer';
             } else {
-                btn.className = 'min-h-[38px] py-1 px-1.5 rounded-lg text-[11px] font-semibold transition flex flex-col items-center justify-center leading-tight text-[#DECBA8] hover:bg-[#5C3A21] cursor-pointer';
+                btn.className = 'btn-tactile min-h-[38px] sm:min-h-[40px] py-1 px-1.5 rounded-lg ts-caption font-semibold transition flex flex-col items-center justify-center leading-tight text-[#DECBA8] hover:bg-[#5C3A21] cursor-pointer';
             }
         });
     }
 
     let uiContextExpanded = false;
+    let uiMobileSiteExpanded = false;
+    let uiMobileExecPeek = false;
+    let uiMobileArtisanSheetId = null;
+
+    function isMobileViewport() {
+        return (typeof window !== 'undefined' && typeof window.innerWidth === 'number')
+            ? window.innerWidth < 640
+            : false;
+    }
+
+    function syncMobileShellClasses() {
+        const shell = document.getElementById('app-shell');
+        if (shell) {
+            if (uiMobileSiteExpanded) shell.classList.add('mobile-site-open');
+            else shell.classList.remove('mobile-site-open');
+
+            if (uiMobileExecPeek) shell.classList.add('mobile-exec-peek');
+            else shell.classList.remove('mobile-exec-peek');
+        }
+        const label = document.getElementById('mobile-site-label');
+        if (label) label.textContent = uiMobileSiteExpanded ? 'Hide' : 'Site';
+        const btn = document.getElementById('btn-mobile-site');
+        if (btn && typeof btn.setAttribute === 'function') {
+            btn.setAttribute('aria-expanded', uiMobileSiteExpanded ? 'true' : 'false');
+        }
+        const chev = document.getElementById('mobile-site-chevron');
+        if (chev) {
+            if (uiMobileSiteExpanded) chev.classList.add('rotate-180');
+            else chev.classList.remove('rotate-180');
+        }
+    }
+
+    function toggleMobileSiteDrawer() {
+        SoundFX.woodClick();
+        uiMobileSiteExpanded = !uiMobileSiteExpanded;
+        syncMobileShellClasses();
+    }
+
+    function handleArtisanCardTap(artisanId, event) {
+        if (!isMobileViewport()) return;
+        openMobileArtisanSheet(artisanId, event);
+    }
+
+    function openMobileArtisanSheet(artisanId, event) {
+        if (event) event.stopPropagation();
+        if (state.isExecuting) return;
+        SoundFX.woodClick();
+        state.selectedAssignTaskId = null;
+        uiMobileArtisanSheetId = artisanId;
+        renderMobileSheet();
+    }
+
+    function closeMobileSheet() {
+        const hadSheet = Boolean(state.selectedAssignTaskId || uiMobileArtisanSheetId);
+        state.selectedAssignTaskId = null;
+        uiMobileArtisanSheetId = null;
+        renderMobileSheet();
+        if (hadSheet && state.phase === 'execution') renderInlineWBSTree();
+    }
 
     function toggleContextBanner() {
         SoundFX.woodClick();
@@ -4258,6 +4488,8 @@
             jewelColor = '#34D399';
         }
         if (jewelEl) jewelEl.setAttribute('fill', jewelColor);
+        const mobileDotEl = document.getElementById('mobile-scale-dot');
+        if (mobileDotEl) mobileDotEl.style.backgroundColor = jewelColor;
 
         const ctxBanner = document.getElementById('context-banner');
         const chevronCls = `w-3.5 h-3.5 text-[#5C3A21] transition-transform duration-200 ${uiContextExpanded ? 'rotate-180' : ''}`;
@@ -4265,17 +4497,17 @@
             ctxBanner.classList.remove('hidden');
             ctxBanner.innerHTML = `
                 <button type="button" onclick="toggleContextBanner()" class="w-full flex items-center justify-between gap-2 text-left cursor-pointer">
-                    <span class="flex items-center gap-1.5 min-w-0 text-[11px] font-bold text-[#5C3A21] truncate">
+                    <span class="flex items-center gap-1.5 min-w-0 ts-caption font-bold text-[#5C3A21] truncate">
                         ${uiIcon('scroll', 'w-3.5 h-3.5 text-[#C85A32] shrink-0')}
                         <span class="truncate">Approved Charter · ${state.signedCharterSummary.constraints}</span>
                     </span>
-                    <span class="shrink-0 flex items-center gap-1 text-[10px] font-bold text-[#7A5434]">
+                    <span class="shrink-0 flex items-center gap-1 ts-micro font-bold text-[#7A5434]">
                         <span>${uiContextExpanded ? 'Hide' : 'View'}</span>
                         ${uiIcon('chevronDown', chevronCls)}
                     </span>
                 </button>
                 ${uiContextExpanded ? `
-                    <div class="mt-1.5 pt-1.5 border-t border-[#8C6A4A]/35 text-[11px] leading-snug space-y-0.5 animate-crisp-in">
+                    <div class="mt-1.5 pt-1.5 border-t border-[#8C6A4A]/35 ts-caption leading-snug space-y-0.5 animate-crisp-in">
                         <div class="text-[#241B15]"><strong>Objective:</strong> ${state.signedCharterSummary.objective}</div>
                         <div class="text-[#5A4D41]"><strong>Out of Scope:</strong> ${state.signedCharterSummary.outOfScope}</div>
                     </div>
@@ -4285,19 +4517,19 @@
             ctxBanner.classList.remove('hidden');
             ctxBanner.innerHTML = `
                 <button type="button" onclick="toggleContextBanner()" class="w-full flex items-center justify-between gap-2 text-left cursor-pointer">
-                    <span class="flex items-center gap-1.5 min-w-0 text-[11px] font-bold text-[#5C3A21] truncate">
+                    <span class="flex items-center gap-1.5 min-w-0 ts-caption font-bold text-[#5C3A21] truncate">
                         ${uiIcon('shield', 'w-3.5 h-3.5 text-[#2E6F40] shrink-0')}
                         <span class="truncate">Reserve: RM ${state.contingencyReserve.toLocaleString()} · Approved Charter</span>
                     </span>
                     <span class="shrink-0 flex items-center gap-1.5">
-                        <span class="px-1.5 py-0.5 rounded ${state.tarpBought ? 'bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40' : 'bg-[#C58F2A]/15 text-[#7A5404] border border-[#C58F2A]/40'} text-[9px] font-bold">
+                        <span class="px-1.5 py-0.5 rounded ${state.tarpBought ? 'bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40' : 'bg-[#C58F2A]/15 text-[#7A5404] border border-[#C58F2A]/40'} ts-micro font-bold">
                             ${state.tarpBought ? '✓ Mitigated' : 'Active'}
                         </span>
                         ${uiIcon('chevronDown', chevronCls)}
                     </span>
                 </button>
                 ${uiContextExpanded ? `
-                    <div class="mt-1.5 pt-1.5 border-t border-[#8C6A4A]/35 text-[10px] text-[#3D2412] leading-snug space-y-0.5 animate-crisp-in">
+                    <div class="mt-1.5 pt-1.5 border-t border-[#8C6A4A]/35 ts-micro text-[#3D2412] leading-snug space-y-0.5 animate-crisp-in">
                         <div>${state.tarpBought ? 'Heavy-duty tarps deployed — outdoor work sheltered from rain.' : 'Dedicated Contingency Reserve for unforeseen site risks & weather mitigation.'}</div>
                         <div><strong>Approved Charter:</strong> ${state.signedCharterSummary.objective}</div>
                         <div><strong>Out of Scope:</strong> ${state.signedCharterSummary.outOfScope}</div>
@@ -4321,20 +4553,20 @@
                         <div class="flex items-center gap-2.5">
                             ${getArtisanPortraitSVG('auntie-mei', 36)}
                             <div>
-                                <div class="text-xs font-bold text-[#5C3A21]">Auntie Mei’s Statement Cards</div>
-                                <div class="text-[11px] text-[#5A4D41]">Tap a card, then tap its matching Project Charter slot below</div>
+                                <div class="ts-caption font-bold text-[#5C3A21]">Auntie Mei’s Statement Cards</div>
+                                <div class="ts-micro text-[#5A4D41]">Tap a card, then tap its matching Project Charter slot below</div>
                             </div>
                         </div>
-                        <span class="text-[10px] font-bold font-mono-crisp px-2 py-0.5 rounded bg-[#F1E7D3] text-[#5C3A21]">${remainingStatements.length} left</span>
+                        <span class="ts-micro font-bold font-mono-crisp px-2 py-0.5 rounded bg-[#F1E7D3] text-[#5C3A21] shrink-0">${remainingStatements.length} left</span>
                     </div>
                     <div class="grid grid-cols-1 gap-1.5">
                         ${remainingStatements.map(s => {
                             const isSelected = state.selectedStatementId === s.id;
                             const isBounced = state.bouncedStatementId === s.id;
                             return `
-                                <div onclick="selectStatement('${s.id}')" class="min-h-[44px] p-2.5 rounded-xl border-[1.5px] transition cursor-pointer flex items-center justify-between gap-2 ${isBounced ? 'animate-bounce-back border-[#B91C1C] bg-[#FEE2E2]' : isSelected ? 'bg-[#FFF5D6] border-[#C85A32] ring-2 ring-[#C85A32]/25' : 'bg-[#FFFDF5] border-[#C58F2A] hover:bg-[#FFF9E6]'}">
-                                    <div class="text-xs font-medium text-[#241B15] leading-snug">${s.text}</div>
-                                    <span class="shrink-0 px-2 py-1 rounded-lg ${isSelected ? 'bg-[#C85A32] text-white' : 'bg-[#F1E7D3] text-[#3D2412] border border-[#8C6A4A]/60'} text-[10px] font-bold">
+                                <div onclick="selectStatement('${s.id}')" class="min-h-[46px] p-2.5 rounded-xl border-[1.5px] transition cursor-pointer flex items-center justify-between gap-2 ${isBounced ? 'animate-bounce-back border-[#B91C1C] bg-[#FEE2E2]' : isSelected ? 'bg-[#FFF5D6] border-[#C85A32] ring-2 ring-[#C85A32]/25' : 'bg-[#FFFDF5] border-[#C58F2A] hover:bg-[#FFF9E6]'}">
+                                    <div class="ts-caption sm:ts-body font-medium text-[#241B15] leading-snug">${s.text}</div>
+                                    <span class="shrink-0 px-2.5 py-1.5 rounded-lg ${isSelected ? 'bg-[#C85A32] text-white' : 'bg-[#F1E7D3] text-[#3D2412] border border-[#8C6A4A]/60'} ts-micro font-bold">
                                         ${isSelected ? 'Selected' : 'Select'}
                                     </span>
                                 </div>
@@ -4351,16 +4583,16 @@
             const awaitingTarget = Boolean(state.selectedStatementId) && !isComplete;
             return `
                 <div onclick="handleCharterBucketClick('${key}')" class="min-h-[48px] p-2.5 rounded-xl border-[1.5px] transition cursor-pointer ${isComplete ? 'bg-[#EFF6F1] border-[#2E6F40]' : awaitingTarget ? 'bg-[#FFFDF5] border-dashed border-[#C85A32] hover:bg-[#FFF5D6]' : 'bg-[#FAF5EB] border-dashed border-[#8C6A4A] hover:bg-[#F1E7D3]'}">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-[#5C3A21]">${bucket.icon} ${bucket.label}</span>
-                        <span class="text-[10px] font-bold ${isComplete ? 'text-[#2E6F40]' : awaitingTarget ? 'text-[#C85A32]' : 'text-[#7A5434]'}">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="ts-caption font-bold text-[#5C3A21]">${bucket.icon} ${bucket.label}</span>
+                        <span class="ts-micro font-bold shrink-0 ${isComplete ? 'text-[#2E6F40]' : awaitingTarget ? 'text-[#C85A32]' : 'text-[#7A5434]'}">
                             ${isComplete ? `✓ Filled (${filledStmts.length}/${bucket.maxItems})` : awaitingTarget ? `Tap to Place (${filledStmts.length}/${bucket.maxItems})` : `${bucket.hint} (${filledStmts.length}/${bucket.maxItems})`}
                         </span>
                     </div>
                     ${filledStmts.length > 0 ? `
                         <div class="mt-1.5 space-y-1">
                             ${filledStmts.map(fs => `
-                                <div class="text-[11px] font-bold text-[#241B15] bg-white/80 px-2 py-1 rounded border border-[#8C6A4A]/40">
+                                <div class="ts-caption font-bold text-[#241B15] bg-white/80 px-2 py-1 rounded border border-[#8C6A4A]/40">
                                     • ${fs.shortLabel}
                                 </div>
                             `).join('')}
@@ -4373,13 +4605,13 @@
         container.innerHTML = `
             ${statementsHtml}
 
-            <div class="paper-card rounded-2xl p-4 bg-[#FFFDF8] border-2 border-[#7A5434] relative overflow-hidden">
+            <div class="paper-card rounded-2xl p-3.5 sm:p-4 bg-[#FFFDF8] border-2 border-[#7A5434] relative overflow-hidden">
                 <div class="flex items-center justify-between pb-2 mb-2.5 border-b-[1.5px] border-[#8C6A4A]/50">
                     <div>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-[#C85A32]">Initiating Phase Document</span>
+                        <span class="ts-micro font-bold uppercase tracking-widest text-[#C85A32]">Initiating Phase Document</span>
                         <h3 class="text-base font-bold text-[#5C3A21]">📜 Project Charter • Main Bazaar Cart</h3>
                     </div>
-                    <span class="text-[11px] font-bold font-mono-crisp px-2 py-0.5 rounded-md bg-[#5C3A21]/10 text-[#5C3A21] border border-[#5C3A21]/30">
+                    <span class="ts-caption font-bold font-mono-crisp px-2 py-0.5 rounded-md bg-[#5C3A21]/10 text-[#5C3A21] border border-[#5C3A21]/30 shrink-0">
                         ${placedIds.length} / ${state.statements.length}
                     </span>
                 </div>
@@ -4414,7 +4646,7 @@
 
         // Visual Step Progress Banner (Only shown while Work Packages remain un-decomposed)
         const stepBannerHtml = (totalWPs > 1 && !allDecomposed) ? `
-            <div class="rounded-xl p-2.5 bg-[#FFFDF9] border-[1.5px] border-[#8C6A4A] flex items-center justify-between gap-2 text-[11px]">
+            <div class="rounded-xl p-2.5 bg-[#FFFDF9] border-[1.5px] border-[#8C6A4A] flex items-center justify-between gap-2 ts-caption">
                 <div class="flex items-center gap-1.5 font-bold text-[#C85A32]">
                     <span>1️⃣</span>
                     <span>Step 1: Decompose WBS (${decomposedCount}/${totalWPs})</span>
@@ -4433,17 +4665,17 @@
 
             if (!wp.decomposed) {
                 return `
-                    <div class="paper-card rounded-2xl p-3.5 border-2 border-dashed border-[#5C3A21] bg-[#FFF9EC] animate-crisp-in">
+                    <div class="paper-card rounded-2xl p-3 sm:p-3.5 border-2 border-dashed border-[#5C3A21] bg-[#FFF9EC] animate-crisp-in">
                         <div class="flex items-center justify-between gap-2.5">
                             <div class="flex items-center gap-2.5 min-w-0">
                                 <span class="w-10 h-10 rounded-xl bg-[#F1E7D3] flex items-center justify-center text-xl border-[1.5px] border-[#8C6A4A] shrink-0">${wp.icon}</span>
                                 <div class="min-w-0">
-                                    <div class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">WBS 1.${wpIdx + 1} • Deliverable Work Package</div>
-                                    <div class="text-xs sm:text-sm font-bold text-[#241B15] truncate">${wp.title}</div>
-                                    <div class="text-[11px] font-medium text-[#5A4D41]">${wp.subtitle} — cannot assign until decomposed</div>
+                                    <div class="ts-micro font-bold uppercase tracking-wider text-[#C85A32]">WBS 1.${wpIdx + 1} • Deliverable Work Package</div>
+                                    <div class="ts-body font-bold text-[#241B15] leading-snug sm:truncate">${wp.title}</div>
+                                    <div class="ts-caption font-medium text-[#5A4D41]">${wp.subtitle} — cannot assign until decomposed</div>
                                 </div>
                             </div>
-                            <button type="button" onclick="decomposeWorkPackage('${wp.id}')" class="shrink-0 min-h-[40px] px-3 py-2 rounded-xl bg-[#5C3A21] hover:bg-[#3D2412] text-[#FFFDF8] text-xs font-bold border border-[#241B15] shadow-sm transition cursor-pointer">
+                            <button type="button" onclick="decomposeWorkPackage('${wp.id}')" class="shrink-0 min-h-[44px] sm:min-h-[40px] px-3 py-2 rounded-xl bg-[#5C3A21] hover:bg-[#3D2412] text-[#FFFDF8] ts-caption font-bold border border-[#241B15] shadow-sm transition cursor-pointer">
                                 Decompose ▾
                             </button>
                         </div>
@@ -4459,7 +4691,7 @@
                 const unmetNames = getUnmetDependencies(task);
                 const wbsCode = `1.${wpIdx + 1}.${tIdx + 1}`;
 
-                let cardStyle = 'rounded-xl p-2.5 border-[1.5px] border-l-4 transition relative';
+                let cardStyle = 'rounded-xl p-2.5 sm:p-3 border-[1.5px] border-l-4 transition relative';
                 if (isDone) {
                     cardStyle += ' bg-[#EFF6F1] border-[#2E6F40] border-l-[#2E6F40]';
                 } else if (!unlocked) {
@@ -4475,10 +4707,10 @@
                 const isPickerOpen = state.selectedAssignTaskId === task.id && unlocked && !isDone;
                 const unitShort = state.level === 3 ? 'w' : 'd';
                 const pickerHtml = isPickerOpen ? `
-                    <div onclick="event.stopPropagation()" class="mt-2.5 pt-2 border-t border-[#8C6A4A]/40">
+                    <div onclick="event.stopPropagation()" class="hidden sm:block mt-2.5 pt-2 border-t border-[#8C6A4A]/40">
                         <div class="flex items-center justify-between mb-1.5">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#5C3A21]">Pick Artisan (${task.skill} Task)</span>
-                            <button type="button" onclick="openTaskAssignPicker('${task.id}', event)" class="text-[10px] font-bold text-[#7A5434] hover:text-[#241B15] cursor-pointer">Close ✕</button>
+                            <span class="ts-micro font-bold uppercase tracking-wider text-[#5C3A21]">Pick Artisan (${task.skill} Task)</span>
+                            <button type="button" onclick="openTaskAssignPicker('${task.id}', event)" class="ts-micro font-bold text-[#7A5434] hover:text-[#241B15] cursor-pointer">Close ✕</button>
                         </div>
                         <div class="grid grid-cols-3 gap-1.5">
                             ${state.artisans.map(a => {
@@ -4493,10 +4725,10 @@
                                         <button type="button" disabled class="p-1.5 rounded-lg border border-[#8C6A4A]/45 bg-[#EFE6D4] opacity-60 cursor-not-allowed text-left min-w-0">
                                             <div class="flex items-center justify-between gap-1">
                                                 ${getArtisanPortraitSVG(a.id, 18)}
-                                                <span class="text-[9px] font-bold font-mono-crisp ${isLow ? 'text-[#B91C1C]' : 'text-[#5A4D41]'}">${a.stamina}%</span>
+                                                <span class="ts-micro font-bold font-mono-crisp ${isLow ? 'text-[#B91C1C]' : 'text-[#5A4D41]'}">${a.stamina}%</span>
                                             </div>
-                                            <div class="text-[10px] font-bold text-[#3D2412] mt-1 truncate">${a.name}</div>
-                                            <div class="text-[9px] font-semibold text-[#7A5434] truncate">${reason}</div>
+                                            <div class="ts-micro font-bold text-[#3D2412] mt-1 truncate">${a.name}</div>
+                                            <div class="ts-micro font-semibold text-[#7A5434] truncate">${reason}</div>
                                         </button>
                                     `;
                                 }
@@ -4504,12 +4736,12 @@
                                     <button type="button" onclick="assignArtisanToTask('${task.id}', '${a.id}', event)" class="p-1.5 rounded-lg border-[1.5px] border-[#8C6A4A] bg-[#FFFDF5] hover:bg-[#F1E7D3] transition cursor-pointer text-left min-w-0">
                                         <div class="flex items-center justify-between gap-1">
                                             ${getArtisanPortraitSVG(a.id, 18)}
-                                            <span class="text-[9px] font-bold font-mono-crisp ${isLow ? 'text-[#B91C1C]' : 'text-[#5C3A21]'}">${isLow ? '⚠️' : ''}${a.stamina}%</span>
+                                            <span class="ts-micro font-bold font-mono-crisp ${isLow ? 'text-[#B91C1C]' : 'text-[#5C3A21]'}">${isLow ? '⚠️' : ''}${a.stamina}%</span>
                                         </div>
-                                        <div class="text-[10px] font-bold text-[#241B15] mt-1 truncate">${a.name}</div>
+                                        <div class="ts-micro font-bold text-[#241B15] mt-1 truncate">${a.name}</div>
                                         <div class="flex items-center justify-between gap-1 mt-0.5">
-                                            <span class="text-[9px] font-medium text-[#5A4D41] truncate">${a.skill}</span>
-                                            <span class="text-[9px] font-bold font-mono-crisp text-[#3D2412] shrink-0">~${turns}${unitShort}</span>
+                                            <span class="ts-micro font-medium text-[#5A4D41] truncate">${a.skill}</span>
+                                            <span class="ts-micro font-bold font-mono-crisp text-[#3D2412] shrink-0">~${turns}${unitShort}</span>
                                         </div>
                                     </button>
                                 `;
@@ -4518,24 +4750,37 @@
                     </div>
                 ` : '';
 
+                const mobileActionBar = assignedArtisan && !isDone ? `
+                    <div onclick="event.stopPropagation()" class="flex sm:hidden items-center gap-2 mt-2.5 pt-2 border-t border-[#8C6A4A]/25">
+                        <button type="button" onclick="swapTaskArtisan('${task.id}', event)" class="btn-tactile flex-1 min-h-[42px] px-2.5 py-1.5 rounded-lg bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A]/70 text-xs font-bold text-[#3D2412] flex items-center justify-center gap-1 cursor-pointer">
+                            🔄 Swap
+                        </button>
+                        ${getLevelCfg().crashEnabled ? `
+                            <button type="button" onclick="toggleTaskCrash('${task.id}', event)" class="btn-tactile flex-1 min-h-[42px] px-2.5 py-1.5 rounded-lg border text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer ${task.crashed ? 'bg-[#9E3514] text-white border-[#5C1A06]' : 'bg-[#FFF9E6] hover:bg-[#F5E6BC] text-[#7A5404] border-[#C58F2A]'}">
+                                ${task.crashed ? '⚡ Crashed' : `⚡ Crash +RM ${CRASH_COST}`}
+                            </button>
+                        ` : ''}
+                    </div>
+                ` : '';
+
                 return `
-                    <div class="relative pl-4">
+                    <div class="relative pl-2.5 sm:pl-4">
                         <!-- Visual WBS Tree Elbow Connector -->
-                        <div class="absolute left-0 top-0 bottom-1/2 w-3 border-l-2 border-b-2 border-[#8C6A4A]/65 rounded-bl-md pointer-events-none"></div>
+                        <div class="absolute left-0 top-0 bottom-1/2 w-2 sm:w-3 border-l-2 border-b-2 border-[#8C6A4A]/65 rounded-bl-md pointer-events-none"></div>
                         ${tIdx < wpTasks.length - 1 ? `<div class="absolute left-0 top-1/2 bottom-0 border-l-2 border-[#8C6A4A]/65 pointer-events-none"></div>` : ''}
 
                         <div id="card-${task.id}" onclick="openTaskAssignPicker('${task.id}', event)" class="${cardStyle} cursor-pointer">
                             <div class="flex items-start justify-between gap-2">
                                 <div class="flex-1 min-w-0">
                                     <!-- Row 1: Status + Title + Craft Skill Badge -->
-                                    <div class="flex items-center gap-1.5 min-w-0">
-                                        <span class="shrink-0 flex items-center ${isDone ? 'text-[#2E6F40]' : !unlocked ? 'text-[#7A5434]' : task.critical ? 'text-[#C85A32]' : 'text-[#5C3A21]'}">
+                                    <div class="flex items-start sm:items-center flex-wrap sm:flex-nowrap gap-1.5 min-w-0">
+                                        <span class="shrink-0 flex items-center mt-0.5 sm:mt-0 ${isDone ? 'text-[#2E6F40]' : !unlocked ? 'text-[#7A5434]' : task.critical ? 'text-[#C85A32]' : 'text-[#5C3A21]'}">
                                             ${isDone ? uiIcon('check', 'w-3.5 h-3.5') : !unlocked ? uiIcon('lock', 'w-3.5 h-3.5') : uiIcon('compass', 'w-3.5 h-3.5')}
                                         </span>
-                                        <h4 class="text-xs font-bold text-[#241B15] truncate ${isDone ? 'line-through text-[#2E6F40]' : ''}">
+                                        <h4 class="ts-body sm:ts-caption font-bold text-[#241B15] leading-snug sm:truncate ${isDone ? 'line-through text-[#2E6F40]' : ''}">
                                             ${task.title}
                                         </h4>
-                                        <span class="shrink-0 inline-flex items-center gap-0.5 text-[9.5px] font-bold px-1.5 py-0.5 rounded-md border ${getSkillBadgeColor(task.skill)}">
+                                        <span class="shrink-0 inline-flex items-center gap-0.5 ts-micro font-bold px-1.5 py-0.5 rounded-md border ${getSkillBadgeColor(task.skill)}">
                                             ${uiIcon(getSkillIconName(task.skill), 'w-2.5 h-2.5')}
                                             <span>${task.skill}</span>
                                         </span>
@@ -4543,22 +4788,22 @@
 
                                     <!-- Row 2: Crisp Metadata + Contextual Flags -->
                                     <div class="flex flex-wrap items-center gap-1.5 mt-1">
-                                        <span class="text-[10px] font-semibold font-mono-crisp text-[#5A4D41]">
+                                        <span class="ts-micro font-semibold font-mono-crisp text-[#5A4D41]">
                                             ${wbsCode} · ${task.paid ? '✓ Paid' : `RM ${task.cost.toLocaleString()}`} · ${task.effort || 1} ${getLevelCfg().time.effort[(task.effort || 1) === 1 ? 0 : 1]}
                                         </span>
-                                        ${task.critical ? `<span class="inline-flex items-center gap-0.5 text-[9.5px] px-1.5 py-0.5 rounded bg-[#C85A32]/15 text-[#943011] border border-[#C85A32]/30 font-bold">${uiIcon('flame', 'w-2.5 h-2.5')} Critical</span>` : ''}
-                                        ${task.outdoor ? `<span class="inline-flex items-center gap-0.5 text-[9.5px] px-1.5 py-0.5 rounded bg-[#2B5783]/12 text-[#1E4063] border border-[#2B5783]/25 font-semibold">${uiIcon('sunCloud', 'w-2.5 h-2.5')} Outdoor</span>` : ''}
-                                        ${task.persisted && assignedArtisan ? `<span class="text-[9.5px] px-1.5 py-0.5 rounded bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35 font-bold">↻ Continuing</span>` : ''}
-                                        ${task.crashed ? `<span class="inline-flex items-center gap-0.5 text-[9.5px] px-1.5 py-0.5 rounded bg-[#9E3514] text-white font-bold">${uiIcon('bolt', 'w-2.5 h-2.5')} Crashed +50%</span>` : ''}
+                                        ${task.critical ? `<span class="inline-flex items-center gap-0.5 ts-micro px-1.5 py-0.5 rounded bg-[#C85A32]/15 text-[#943011] border border-[#C85A32]/30 font-bold">${uiIcon('flame', 'w-2.5 h-2.5')} Critical</span>` : ''}
+                                        ${task.outdoor ? `<span class="inline-flex items-center gap-0.5 ts-micro px-1.5 py-0.5 rounded bg-[#2B5783]/12 text-[#1E4063] border border-[#2B5783]/25 font-semibold">${uiIcon('sunCloud', 'w-2.5 h-2.5')} Outdoor</span>` : ''}
+                                        ${task.persisted && assignedArtisan ? `<span class="ts-micro px-1.5 py-0.5 rounded bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35 font-bold">↻ Continuing</span>` : ''}
+                                        ${task.crashed ? `<span class="inline-flex items-center gap-0.5 ts-micro px-1.5 py-0.5 rounded bg-[#9E3514] text-white font-bold">${uiIcon('bolt', 'w-2.5 h-2.5')} Crashed +50%</span>` : ''}
                                     </div>
 
                                     ${!unlocked ? `
-                                        <p class="text-[10px] text-[#943011] font-semibold mt-1">
+                                        <p class="ts-micro text-[#943011] font-semibold mt-1">
                                             Requires: ${unmetNames.join(' &amp; ')}
                                         </p>
                                     ` : task.progress > 0 && !isDone ? `
                                         <div class="mt-1.5">
-                                            <div class="flex justify-between text-[10px] font-bold font-mono-crisp text-[#5C3A21] mb-0.5">
+                                            <div class="flex justify-between ts-micro font-bold font-mono-crisp text-[#5C3A21] mb-0.5">
                                                 <span>Progress</span>
                                                 <span>${task.progress}%</span>
                                             </div>
@@ -4572,34 +4817,35 @@
                                 <!-- Inline Picker Trigger / Assigned Pill -->
                                 <div class="shrink-0 flex flex-col items-end justify-center gap-1">
                                     ${isDone ? `
-                                        <span class="px-2 py-1 rounded-lg bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40 text-[10px] font-bold">Complete</span>
+                                        <span class="px-2 py-1 rounded-lg bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/40 ts-micro font-bold">Complete</span>
                                     ` : !unlocked ? `
-                                        <span class="px-2 py-1 rounded-lg bg-[#5C3A21]/10 text-[#3D2412] text-[10px] font-semibold">Locked</span>
+                                        <span class="px-2 py-1 rounded-lg bg-[#5C3A21]/10 text-[#3D2412] ts-micro font-semibold">Locked</span>
                                     ` : assignedArtisan ? `
-                                        <div class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#C85A32] text-white border border-[#7A2A10]" title="Tap to unassign">
-                                            ${getArtisanPortraitSVG(assignedArtisan.id, 20)}
+                                        <div class="flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-[#C85A32] text-white border border-[#7A2A10]" title="Tap card to unassign">
+                                            ${getArtisanPortraitSVG(assignedArtisan.id, 22)}
                                             <div class="text-left leading-none">
-                                                <div class="text-[10px] font-bold">${assignedArtisan.name.split(' ')[0]}</div>
-                                                <div class="text-[9px] font-medium">${assignedArtisan.skill === task.skill ? 'Specialist' : 'Off-skill'}</div>
+                                                <div class="ts-micro font-bold">${assignedArtisan.name.split(' ')[0]}</div>
+                                                <div class="text-[9.5px] font-medium">${assignedArtisan.skill === task.skill ? 'Specialist' : 'Off-skill'}</div>
                                             </div>
                                         </div>
-                                        <div class="flex items-center gap-1">
-                                            <button type="button" onclick="swapTaskArtisan('${task.id}', event)" class="px-2 py-0.5 rounded bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A]/60 text-[9px] font-bold text-[#3D2412] cursor-pointer">
+                                        <div class="hidden sm:flex items-center gap-1">
+                                            <button type="button" onclick="swapTaskArtisan('${task.id}', event)" class="px-2 py-1 rounded bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A]/60 ts-micro font-bold text-[#3D2412] cursor-pointer">
                                                 🔄 Swap
                                             </button>
                                             ${getLevelCfg().crashEnabled ? `
-                                                <button type="button" onclick="toggleTaskCrash('${task.id}', event)" title="Schedule Crashing: +50% Speed for +RM ${CRASH_COST} & -${CRASH_EXTRA_STAMINA}% extra stamina" class="px-2 py-0.5 rounded border text-[9px] font-bold transition cursor-pointer ${task.crashed ? 'bg-[#9E3514] text-white border-[#5C1A06]' : 'bg-[#FFF9E6] hover:bg-[#F5E6BC] text-[#7A5404] border-[#C58F2A]'}">
+                                                <button type="button" onclick="toggleTaskCrash('${task.id}', event)" title="Schedule Crashing: +50% Speed for +RM ${CRASH_COST} & -${CRASH_EXTRA_STAMINA}% extra stamina" class="px-2 py-1 rounded border ts-micro font-bold transition cursor-pointer ${task.crashed ? 'bg-[#9E3514] text-white border-[#5C1A06]' : 'bg-[#FFF9E6] hover:bg-[#F5E6BC] text-[#7A5404] border-[#C58F2A]'}">
                                                     ${task.crashed ? '⚡ Crashed' : `⚡ Crash +RM ${CRASH_COST}`}
                                                 </button>
                                             ` : ''}
                                         </div>
                                     ` : `
-                                        <button type="button" onclick="openTaskAssignPicker('${task.id}', event)" class="min-h-[34px] px-2.5 py-1.5 rounded-lg ${isPickerOpen ? 'bg-[#C85A32] border-[#7A2A10]' : 'bg-[#2E6F40] hover:bg-[#235732] border-[#1B4226]'} text-white text-[10px] font-bold border shadow-sm cursor-pointer">
+                                        <button type="button" onclick="openTaskAssignPicker('${task.id}', event)" class="btn-tactile min-h-[44px] sm:min-h-[36px] px-3 py-2 sm:py-1.5 rounded-lg ${isPickerOpen ? 'bg-[#C85A32] border-[#7A2A10]' : 'bg-[#2E6F40] hover:bg-[#235732] border-[#1B4226]'} text-white ts-caption font-bold border shadow-sm cursor-pointer">
                                             ${isPickerOpen ? 'Pick ↓' : '⚡ Assign'}
                                         </button>
                                     `}
                                 </div>
                             </div>
+                            ${mobileActionBar}
                             ${pickerHtml}
                         </div>
                     </div>
@@ -4607,17 +4853,17 @@
             }).join('');
 
             return `
-                <div class="paper-card rounded-2xl p-3 bg-[#FAF5EB] border-[1.5px] border-[#7A5434] animate-crisp-in">
+                <div class="paper-card rounded-2xl p-2.5 sm:p-3 bg-[#FAF5EB] border-[1.5px] border-[#7A5434] animate-crisp-in">
                     <!-- Parent Work Package Header -->
                     <div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-[#8C6A4A]/40">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="text-base">${wp.icon}</span>
                             <div class="min-w-0">
-                                <div class="text-[10px] font-bold uppercase tracking-wider text-[#2E6F40]">WBS 1.${wpIdx + 1} • Decomposed Work Package</div>
-                                <div class="text-xs font-bold text-[#241B15] truncate">${wp.title}</div>
+                                <div class="ts-micro font-bold uppercase tracking-wider text-[#2E6F40]">WBS 1.${wpIdx + 1} • Decomposed Work Package</div>
+                                <div class="ts-caption font-bold text-[#241B15] truncate">${wp.title}</div>
                             </div>
                         </div>
-                        <span class="shrink-0 text-[10px] font-bold font-mono-crisp px-2 py-0.5 rounded bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/30">
+                        <span class="shrink-0 ts-micro font-bold font-mono-crisp px-2 py-0.5 rounded bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/30">
                             ${wpDoneCount}/${wpTasks.length} Done
                         </span>
                     </div>
@@ -4645,23 +4891,23 @@
                         <div class="flex items-center gap-2">
                             <span class="text-xl">📋</span>
                             <div>
-                                <div class="text-xs font-bold text-[#5C3A21]">Scope Deliverable Cards</div>
-                                <div class="text-[11px] text-[#5A4D41]">Decompose each task into its WBS Work Package (or Out of Scope)</div>
+                                <div class="ts-caption font-bold text-[#5C3A21]">Scope Deliverable Cards</div>
+                                <div class="ts-micro text-[#5A4D41]">Decompose each task into its WBS Work Package (or Out of Scope)</div>
                             </div>
                         </div>
-                        <span class="text-[10px] font-bold font-mono-crisp px-2 py-0.5 rounded bg-[#F1E7D3] text-[#5C3A21]">${remainingCards.length} left</span>
+                        <span class="ts-micro font-bold font-mono-crisp px-2 py-0.5 rounded bg-[#F1E7D3] text-[#5C3A21] shrink-0">${remainingCards.length} left</span>
                     </div>
                     <div class="grid grid-cols-1 gap-1.5">
                         ${remainingCards.map(c => {
                             const isSelected = state.selectedWbsCardId === c.id;
                             const isBounced = state.bouncedWbsCardId === c.id;
                             return `
-                                <div onclick="selectWbsCard('${c.id}')" class="min-h-[44px] p-2.5 rounded-xl border-[1.5px] transition cursor-pointer flex items-center justify-between gap-2 ${isBounced ? 'animate-bounce-back border-[#B91C1C] bg-[#FEE2E2]' : isSelected ? 'bg-[#FFF5D6] border-[#C85A32] ring-2 ring-[#C85A32]/25' : 'bg-[#FFFDF5] border-[#C58F2A] hover:bg-[#FFF9E6]'}">
+                                <div onclick="selectWbsCard('${c.id}')" class="min-h-[46px] p-2.5 rounded-xl border-[1.5px] transition cursor-pointer flex items-center justify-between gap-2 ${isBounced ? 'animate-bounce-back border-[#B91C1C] bg-[#FEE2E2]' : isSelected ? 'bg-[#FFF5D6] border-[#C85A32] ring-2 ring-[#C85A32]/25' : 'bg-[#FFFDF5] border-[#C58F2A] hover:bg-[#FFF9E6]'}">
                                     <div class="min-w-0">
-                                        <div class="text-xs font-bold text-[#241B15]">${c.title}</div>
-                                        <div class="text-[11px] text-[#5A4D41] leading-snug">${c.desc}</div>
+                                        <div class="ts-caption sm:ts-body font-bold text-[#241B15]">${c.title}</div>
+                                        <div class="ts-micro text-[#5A4D41] leading-snug">${c.desc}</div>
                                     </div>
-                                    <span class="shrink-0 px-2 py-1 rounded-lg ${isSelected ? 'bg-[#C85A32] text-white' : 'bg-[#F1E7D3] text-[#3D2412] border border-[#8C6A4A]/60'} text-[10px] font-bold">
+                                    <span class="shrink-0 px-2.5 py-1.5 rounded-lg ${isSelected ? 'bg-[#C85A32] text-white' : 'bg-[#F1E7D3] text-[#3D2412] border border-[#8C6A4A]/60'} ts-micro font-bold">
                                         ${isSelected ? 'Selected' : 'Select'}
                                     </span>
                                 </div>
@@ -4681,19 +4927,19 @@
                 <div onclick="handleWbsBucketClick('${key}')" class="min-h-[48px] p-2.5 rounded-xl border-[1.5px] transition cursor-pointer ${isComplete ? (isOutBucket ? 'bg-[#FEF2F2] border-[#B91C1C]' : 'bg-[#EFF6F1] border-[#2E6F40]') : awaitingTarget ? 'bg-[#FFFDF5] border-dashed border-[#C85A32] hover:bg-[#FFF5D6]' : 'bg-[#FAF5EB] border-dashed border-[#8C6A4A] hover:bg-[#F1E7D3]'}">
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-1.5 min-w-0">
-                            <span class="text-[9px] font-bold font-mono-crisp px-1.5 py-0.5 rounded ${isOutBucket ? 'bg-[#B91C1C]/15 text-[#991B1B]' : 'bg-[#5C3A21]/10 text-[#5C3A21]'}">${bucket.code}</span>
-                            <span class="text-xs font-bold text-[#5C3A21] truncate">${bucket.icon} ${bucket.label}</span>
+                            <span class="ts-micro font-bold font-mono-crisp px-1.5 py-0.5 rounded ${isOutBucket ? 'bg-[#B91C1C]/15 text-[#991B1B]' : 'bg-[#5C3A21]/10 text-[#5C3A21]'} shrink-0">${bucket.code}</span>
+                            <span class="ts-caption font-bold text-[#5C3A21] truncate">${bucket.icon} ${bucket.label}</span>
                         </div>
-                        <span class="shrink-0 text-[10px] font-bold ${isComplete ? (isOutBucket ? 'text-[#991B1B]' : 'text-[#2E6F40]') : awaitingTarget ? 'text-[#C85A32]' : 'text-[#7A5434]'}">
+                        <span class="shrink-0 ts-micro font-bold ${isComplete ? (isOutBucket ? 'text-[#991B1B]' : 'text-[#2E6F40]') : awaitingTarget ? 'text-[#C85A32]' : 'text-[#7A5434]'}">
                             ${isComplete ? `✓ Ready (${filledCards.length}/${bucket.maxItems})` : awaitingTarget ? `Tap to Place (${filledCards.length}/${bucket.maxItems})` : `${filledCards.length}/${bucket.maxItems}`}
                         </span>
                     </div>
                     ${filledCards.length > 0 ? `
                         <div class="mt-1.5 space-y-1 pl-3 border-l-2 ${isOutBucket ? 'border-[#B91C1C]/40' : 'border-[#2E6F40]/40'}">
                             ${filledCards.map((fc, idx) => `
-                                <div class="text-[11px] font-bold text-[#241B15] bg-white/85 px-2 py-1 rounded border border-[#8C6A4A]/40 flex items-center justify-between gap-2">
+                                <div class="ts-caption font-bold text-[#241B15] bg-white/85 px-2 py-1 rounded border border-[#8C6A4A]/40 flex items-center justify-between gap-2">
                                     <span>${isOutBucket ? '🚫' : `${bucket.code}.${idx + 1}`} ${fc.title}</span>
-                                    <span class="text-[9px] font-mono-crisp text-[#5A4D41] shrink-0">${fc.meta}</span>
+                                    <span class="ts-micro font-mono-crisp text-[#5A4D41] shrink-0">${fc.meta}</span>
                                 </div>
                             `).join('')}
                         </div>
@@ -4705,13 +4951,13 @@
         container.innerHTML = `
             ${cardsHtml}
 
-            <div class="paper-card rounded-2xl p-4 bg-[#FFFDF8] border-2 border-[#7A5434] relative overflow-hidden">
+            <div class="paper-card rounded-2xl p-3.5 sm:p-4 bg-[#FFFDF8] border-2 border-[#7A5434] relative overflow-hidden">
                 <div class="flex items-center justify-between pb-2 mb-2.5 border-b-[1.5px] border-[#8C6A4A]/50">
                     <div>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-[#C85A32]">Step 1 • WBS 100% Rule Decomposition</span>
+                        <span class="ts-micro font-bold uppercase tracking-widest text-[#C85A32]">Step 1 • WBS 100% Rule Decomposition</span>
                         <h3 class="text-base font-bold text-[#5C3A21]">📦 Work Breakdown Structure (1.0 Stall)</h3>
                     </div>
-                    <span class="text-[11px] font-bold font-mono-crisp px-2 py-0.5 rounded-md bg-[#5C3A21]/10 text-[#5C3A21] border border-[#5C3A21]/30">
+                    <span class="ts-caption font-bold font-mono-crisp px-2 py-0.5 rounded-md bg-[#5C3A21]/10 text-[#5C3A21] border border-[#5C3A21]/30 shrink-0">
                         ${placedIds.length} / ${state.wbsCards.length}
                     </span>
                 </div>
@@ -4778,7 +5024,7 @@
         }
 
         const dock = document.getElementById('artisans-dock');
-        dock.className = `grid grid-cols-${state.artisans.length} gap-1.5 sm:gap-2 mb-2`;
+        dock.className = `grid grid-cols-${state.artisans.length} gap-1.5 sm:gap-2 mb-1.5 sm:mb-2`;
 
         const readyCount = state.artisans.filter(a => !a.assignedTaskId && !a.resting).length;
         document.getElementById('selected-artisan-pill').textContent = `${readyCount} of ${state.artisans.length} Ready`;
@@ -4786,49 +5032,203 @@
         dock.innerHTML = state.artisans.map(a => {
             const isBurnedOut = a.stamina < 35;
             const barColor = a.stamina >= 60 ? '#2E6F40' : a.stamina >= 35 ? '#C58F2A' : '#B91C1C';
+            const shortName = a.name.startsWith('Uncle ') ? a.name.slice(6) : a.name.startsWith('Kak ') ? a.name.slice(4) : a.name;
 
-            let statusTag = `<span class="text-[9px] font-bold text-[#2E6F40]">Ready</span>`;
+            let statusTag = `<span class="ts-micro font-bold text-[#2E6F40]">Ready</span>`;
             if (a.resting) {
-                statusTag = `<span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-[#8C6106]">${uiIcon('coffee', 'w-2.5 h-2.5')} Resting</span>`;
+                statusTag = `<span class="inline-flex items-center gap-0.5 ts-micro font-bold text-[#8C6106]">${uiIcon('coffee', 'w-2.5 h-2.5')} Resting</span>`;
             } else if (a.assignedTaskId) {
-                statusTag = `<span class="text-[9px] font-bold text-[#C85A32]">Assigned</span>`;
+                statusTag = `<span class="ts-micro font-bold text-[#C85A32]">Assigned</span>`;
             } else if (isBurnedOut) {
-                statusTag = `<span class="text-[9px] font-bold text-[#B91C1C]">Fatigued</span>`;
+                statusTag = `<span class="ts-micro font-bold text-[#B91C1C]">Fatigued</span>`;
             }
 
             const pulseCls = (!a.resting && !a.assignedTaskId && isBurnedOut) ? 'animate-fatigue-pulse border-[#B91C1C]' : (a.assignedTaskId ? 'border-[#C85A32]' : 'border-[#8C6A4A]');
 
             return `
-                <div class="artisan-card-item rounded-xl p-2 bg-[#FFFDF9] border-[1.5px] ${pulseCls} flex flex-col justify-between min-w-0">
-                    <div>
-                        <div class="flex items-center justify-between gap-1.5">
-                            ${getArtisanPortraitSVG(a.id, 34, { fatigued: isBurnedOut, resting: a.resting, working: Boolean(a.assignedTaskId) })}
-                            <div class="text-right min-w-0">
-                                <span class="text-[10px] font-bold font-mono-crisp ${isBurnedOut ? 'text-[#B91C1C]' : 'text-[#2E6F40]'}">
-                                    ${a.stamina}%
-                                </span>
-                                <div class="text-[8.5px] font-semibold text-[#7A5434] truncate">${a.skill}</div>
-                            </div>
+                <div onclick="handleArtisanCardTap('${a.id}', event)" class="artisan-card-item rounded-xl p-1.5 sm:p-2 bg-[#FFFDF9] border-[1.5px] ${pulseCls} flex flex-col justify-between min-w-0 cursor-pointer sm:cursor-default">
+                    <!-- Mobile Compact 1-Row Team Chip (< 640px) -->
+                    <div class="flex sm:hidden items-center gap-1.5 min-h-[44px] min-w-0">
+                        <div class="shrink-0">
+                            ${getArtisanPortraitSVG(a.id, 30, { fatigued: isBurnedOut, resting: a.resting, working: Boolean(a.assignedTaskId) })}
                         </div>
-                        <div class="artisan-card-name text-[11px] font-bold text-[#241B15] mt-1 truncate">${a.name}</div>
-                        <div class="mt-1 h-1.5 w-full rounded-full bg-[#E6D9C2] relative overflow-hidden" title="Stamina ${a.stamina}% (35% burnout line)">
-                            <div class="h-full rounded-full transition-all duration-300" style="width:${a.stamina}%; background:${barColor};"></div>
-                            <span class="absolute top-0 bottom-0 w-[1.5px] bg-[#241B15]/60" style="left:35%;"></span>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-1">
+                                <span class="artisan-card-name text-[11px] font-bold text-[#241B15] truncate">${shortName}</span>
+                                <span class="text-[10px] font-bold font-mono-crisp shrink-0 ${isBurnedOut ? 'text-[#B91C1C]' : 'text-[#2E6F40]'}">${a.stamina}%</span>
+                            </div>
+                            <div class="mt-1 h-1.5 w-full rounded-full bg-[#E6D9C2] relative overflow-hidden" title="Stamina ${a.stamina}% (35% burnout line)">
+                                <div class="h-full rounded-full transition-all duration-300" style="width:${a.stamina}%; background:${barColor};"></div>
+                                <span class="absolute top-0 bottom-0 w-[1.5px] bg-[#241B15]/60" style="left:35%;"></span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mt-1.5 pt-1 border-t border-[#8C6A4A]/30 flex items-center justify-between gap-1">
-                        ${statusTag}
-                        <button type="button" onclick="toggleRestBreak('${a.id}', event)" title="Rest Break (+45% Stamina)" class="btn-tactile artisan-rest-btn min-h-[26px] px-1.5 py-0.5 rounded border text-[9px] font-bold shrink-0 cursor-pointer flex items-center gap-0.5 ${!a.resting && !a.assignedTaskId && isBurnedOut ? 'bg-[#FEE2E2] hover:bg-[#FECACA] border-[#B91C1C] text-[#991B1B]' : 'bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[#8C6A4A]/60 text-[#3D2412]'}">
-                            ${a.resting ? 'Cancel' : `${uiIcon('coffee', 'w-2.5 h-2.5')}<span>${!a.assignedTaskId && isBurnedOut ? 'Rest!' : 'Rest'}</span>`}
-                        </button>
+                    <!-- Desktop Full Roster Card (>= 640px) -->
+                    <div class="hidden sm:flex sm:flex-col sm:justify-between h-full">
+                        <div>
+                            <div class="flex items-center justify-between gap-1.5">
+                                ${getArtisanPortraitSVG(a.id, 34, { fatigued: isBurnedOut, resting: a.resting, working: Boolean(a.assignedTaskId) })}
+                                <div class="text-right min-w-0">
+                                    <span class="ts-micro font-bold font-mono-crisp ${isBurnedOut ? 'text-[#B91C1C]' : 'text-[#2E6F40]'}">
+                                        ${a.stamina}%
+                                    </span>
+                                    <div class="ts-micro font-semibold text-[#7A5434] truncate">${a.skill}</div>
+                                </div>
+                            </div>
+                            <div class="artisan-card-name ts-caption font-bold text-[#241B15] mt-1 truncate">${a.name}</div>
+                            <div class="mt-1 h-1.5 w-full rounded-full bg-[#E6D9C2] relative overflow-hidden" title="Stamina ${a.stamina}% (35% burnout line)">
+                                <div class="h-full rounded-full transition-all duration-300" style="width:${a.stamina}%; background:${barColor};"></div>
+                                <span class="absolute top-0 bottom-0 w-[1.5px] bg-[#241B15]/60" style="left:35%;"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-1.5 pt-1 border-t border-[#8C6A4A]/30 flex items-center justify-between gap-1">
+                            ${statusTag}
+                            <button type="button" onclick="toggleRestBreak('${a.id}', event)" title="Rest Break (+45% Stamina)" class="btn-tactile artisan-rest-btn min-h-[28px] px-1.5 py-0.5 rounded border ts-micro font-bold shrink-0 cursor-pointer flex items-center gap-0.5 ${!a.resting && !a.assignedTaskId && isBurnedOut ? 'bg-[#FEE2E2] hover:bg-[#FECACA] border-[#B91C1C] text-[#991B1B]' : 'bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[#8C6A4A]/60 text-[#3D2412]'}">
+                                ${a.resting ? 'Cancel' : `${uiIcon('coffee', 'w-2.5 h-2.5')}<span>${!a.assignedTaskId && isBurnedOut ? 'Rest!' : 'Rest'}</span>`}
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
         }).join('');
     }
 
+    function renderMobileSheet() {
+        const sheet = document.getElementById('mobile-action-sheet');
+        const content = document.getElementById('mobile-sheet-content');
+        if (!sheet || !content) return;
+
+        if (!isMobileViewport() || state.isExecuting) {
+            sheet.classList.add('hidden');
+            return;
+        }
+
+        const pickTask = state.selectedAssignTaskId
+            ? state.tasks.find(t => t.id === state.selectedAssignTaskId && t.progress < 100 && isTaskUnlocked(t))
+            : null;
+
+        if (pickTask) {
+            const unitShort = state.level === 3 ? 'w' : 'd';
+            content.innerHTML = `
+                <div class="flex items-start justify-between gap-2 pb-2.5 mb-3 border-b border-[#8C6A4A]/35">
+                    <div class="min-w-0">
+                        <div class="ts-micro font-bold uppercase tracking-wider text-[#C85A32]">Assign ${pickTask.skill} Task</div>
+                        <h3 class="text-base font-bold text-[#241B15] leading-snug">${pickTask.title}</h3>
+                    </div>
+                    <button type="button" onclick="closeMobileSheet()" aria-label="Close Assign Sheet" class="min-w-[44px] min-h-[44px] rounded-xl bg-[#F1E7D3] border border-[#8C6A4A] text-sm font-bold text-[#3D2412] flex items-center justify-center shrink-0 cursor-pointer">
+                        ✕
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    ${state.artisans.map(a => {
+                        const isCurrent = pickTask.assignedArtisanId === a.id;
+                        const isBusy = Boolean(a.assignedTaskId && a.assignedTaskId !== pickTask.id);
+                        const isAvailable = !a.resting && !isBusy && !isCurrent;
+                        const isMatch = a.skill === pickTask.skill;
+                        const turns = computeRemainingTurns(pickTask, a, pickTask.crashed);
+                        const isLow = a.stamina < 35;
+                        const barColor = a.stamina >= 60 ? '#2E6F40' : a.stamina >= 35 ? '#C58F2A' : '#B91C1C';
+
+                        if (!isAvailable) {
+                            const reason = isCurrent ? 'Currently assigned here' : a.resting ? '☕ Scheduled for Rest Break' : 'Assigned to another task';
+                            return `
+                                <button type="button" disabled class="w-full min-h-[60px] p-2.5 rounded-xl border border-[#8C6A4A]/45 bg-[#EFE6D4] opacity-65 cursor-not-allowed flex items-center justify-between gap-3 text-left">
+                                    <div class="flex items-center gap-2.5 min-w-0">
+                                        ${getArtisanPortraitSVG(a.id, 40, { fatigued: isLow, resting: a.resting, working: Boolean(a.assignedTaskId) })}
+                                        <div class="min-w-0">
+                                            <div class="text-sm font-bold text-[#3D2412] truncate">${a.name} · <span class="font-medium">${a.skill}</span></div>
+                                            <div class="ts-caption font-semibold text-[#7A5434] truncate">${reason}</div>
+                                        </div>
+                                    </div>
+                                    <span class="ts-caption font-bold font-mono-crisp shrink-0 ${isLow ? 'text-[#B91C1C]' : 'text-[#5A4D41]'}">${a.stamina}%</span>
+                                </button>
+                            `;
+                        }
+
+                        return `
+                            <button type="button" onclick="assignArtisanToTask('${pickTask.id}', '${a.id}', event)" class="btn-tactile w-full min-h-[62px] p-2.5 rounded-xl border-[1.5px] ${isMatch ? 'border-[#2E6F40] bg-[#EFF6F1]' : 'border-[#8C6A4A] bg-[#FFFDF5]'} hover:bg-[#F1E7D3] transition cursor-pointer flex items-center justify-between gap-3 text-left">
+                                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                                    ${getArtisanPortraitSVG(a.id, 40, { fatigued: isLow })}
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-1.5 flex-wrap">
+                                            <span class="text-sm font-bold text-[#241B15]">${a.name}</span>
+                                            <span class="ts-micro font-bold px-1.5 py-0.5 rounded ${isMatch ? 'bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35' : 'bg-[#F1E7D3] text-[#5A4D41] border border-[#8C6A4A]/40'}">${isMatch ? '★ Specialist' : `${a.skill} (Off-skill)`}</span>
+                                        </div>
+                                        <div class="mt-1.5 flex items-center gap-2">
+                                            <div class="flex-1 h-1.5 rounded-full bg-[#E6D9C2] relative overflow-hidden">
+                                                <div class="h-full rounded-full" style="width:${a.stamina}%; background:${barColor};"></div>
+                                                <span class="absolute top-0 bottom-0 w-[1.5px] bg-[#241B15]/60" style="left:35%;"></span>
+                                            </div>
+                                            <span class="ts-micro font-bold font-mono-crisp shrink-0 ${isLow ? 'text-[#B91C1C]' : 'text-[#5C3A21]'}">${isLow ? '⚠️ ' : ''}${a.stamina}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="shrink-0 px-2.5 py-1.5 rounded-lg bg-[#2E6F40] text-white ts-caption font-bold font-mono-crisp">~${turns}${unitShort} →</span>
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            sheet.classList.remove('hidden');
+            return;
+        }
+
+        const artisan = uiMobileArtisanSheetId
+            ? state.artisans.find(a => a.id === uiMobileArtisanSheetId)
+            : null;
+
+        if (artisan) {
+            const isBurnedOut = artisan.stamina < 35;
+            const barColor = artisan.stamina >= 60 ? '#2E6F40' : artisan.stamina >= 35 ? '#C58F2A' : '#B91C1C';
+            const assignedTask = artisan.assignedTaskId ? state.tasks.find(t => t.id === artisan.assignedTaskId) : null;
+            content.innerHTML = `
+                <div class="flex items-start justify-between gap-2 pb-3 mb-3 border-b border-[#8C6A4A]/35">
+                    <div class="flex items-center gap-3 min-w-0">
+                        ${getArtisanPortraitSVG(artisan.id, 52, { fatigued: isBurnedOut, resting: artisan.resting, working: Boolean(artisan.assignedTaskId) })}
+                        <div class="min-w-0">
+                            <div class="ts-micro font-bold uppercase tracking-wider text-[#C85A32]">${artisan.skill} Specialist</div>
+                            <h3 class="text-lg font-bold text-[#241B15] leading-snug">${artisan.name}</h3>
+                            <div class="ts-caption font-semibold text-[#5A4D41]">${artisan.resting ? '☕ Scheduled for Rest Break' : assignedTask ? `🔨 Assigned: ${assignedTask.title}` : isBurnedOut ? '⚠️ Fatigued (< 35% stamina = -50% speed)' : '✅ Ready for assignment'}</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeMobileSheet()" aria-label="Close Artisan Sheet" class="min-w-[44px] min-h-[44px] rounded-xl bg-[#F1E7D3] border border-[#8C6A4A] text-sm font-bold text-[#3D2412] flex items-center justify-center shrink-0 cursor-pointer">
+                        ✕
+                    </button>
+                </div>
+
+                <div class="bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-3">
+                    <div class="flex items-center justify-between ts-caption font-bold mb-1.5">
+                        <span class="text-[#5C3A21]">Stamina (${isBurnedOut ? 'Burnout Risk!' : '35% Burnout Line'})</span>
+                        <span class="font-mono-crisp ${isBurnedOut ? 'text-[#B91C1C]' : 'text-[#2E6F40]'}">${artisan.stamina}%</span>
+                    </div>
+                    <div class="h-2.5 w-full rounded-full bg-[#E6D9C2] relative overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-300" style="width:${artisan.stamina}%; background:${barColor};"></div>
+                        <span class="absolute top-0 bottom-0 w-[2px] bg-[#241B15]/70" style="left:35%;"></span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <button type="button" onclick="toggleRestBreak('${artisan.id}', event); closeMobileSheet();" class="btn-tactile w-full min-h-[48px] py-3 rounded-xl font-bold text-sm border-2 flex items-center justify-center gap-2 transition cursor-pointer ${artisan.resting ? 'bg-[#F1E7D3] text-[#3D2412] border-[#8C6A4A]' : isBurnedOut ? 'bg-[#B91C1C] text-white border-[#7F1D1D] border-b-4' : 'bg-[#2E6F40] text-white border-[#1B4226] border-b-4'}">
+                        ${artisan.resting ? 'Cancel Rest Break' : '☕ Schedule Rest Break (+45% Stamina)'}
+                    </button>
+                    ${assignedTask ? `
+                        <button type="button" onclick="closeMobileSheet(); openTaskAssignPicker('${assignedTask.id}', event);" class="btn-tactile w-full min-h-[46px] py-2.5 rounded-xl bg-[#FAF5EB] border-[1.5px] border-[#8C6A4A] text-xs font-bold text-[#3D2412] cursor-pointer">
+                            Unassign from ${assignedTask.title}
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+            sheet.classList.remove('hidden');
+            return;
+        }
+
+        sheet.classList.add('hidden');
+    }
+
     function renderAll() {
+        syncMobileShellClasses();
         renderLevelTabs();
         renderHUD();
         renderDiorama();
@@ -4851,10 +5251,13 @@
         }
 
         renderDock();
+        renderMobileSheet();
     }
 
     function handleViewportChange() {
         RetinaConfetti.resizeCanvas();
+        syncMobileShellClasses();
+        renderMobileSheet();
     }
 
     // ==========================================
