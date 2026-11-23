@@ -331,15 +331,15 @@
 
             <!-- Sequential Lifecycle Level Switcher Tabs with 3-Star Mastery Badges -->
             <nav aria-label="Project Lifecycle Levels" class="grid grid-cols-3 gap-1.5 mb-2 bg-[#3D2412] p-1 rounded-xl border border-[#8C5E35]">
-                <button id="tab-lvl-1" type="button" onclick="switchLevel(1)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                <button id="tab-lvl-1" type="button" onclick="requestLevelSwitch(1)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
                     <span class="flex items-center gap-1"><span>📜</span> <span>L1: Charter</span></span>
                     <span id="tab-stars-1" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
-                <button id="tab-lvl-2" type="button" onclick="switchLevel(2)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                <button id="tab-lvl-2" type="button" onclick="requestLevelSwitch(2)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
                     <span class="flex items-center gap-1"><span>📦</span> <span>L2: WBS</span></span>
                     <span id="tab-stars-2" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
-                <button id="tab-lvl-3" type="button" onclick="switchLevel(3)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
+                <button id="tab-lvl-3" type="button" onclick="requestLevelSwitch(3)" class="min-h-[38px] py-1 px-1 rounded-lg text-[11px] font-bold transition flex flex-col items-center justify-center leading-tight cursor-pointer">
                     <span class="flex items-center gap-1"><span>🗓️</span> <span>L3: Control</span></span>
                     <span id="tab-stars-3" class="text-[9px] tracking-tighter opacity-90">☆☆☆</span>
                 </button>
@@ -498,6 +498,9 @@
                 Next →
             </button>
         </div>
+        <div class="text-center mt-2 shrink-0">
+            <button type="button" onclick="confirmResetProgress()" class="text-[10px] font-semibold text-[#7A5434] underline cursor-pointer">Reset saved stars &amp; progress</button>
+        </div>
     </div>
 </div>
 
@@ -567,11 +570,289 @@
             </p>
         </div>
 
+        <div id="retro-hints" class="hidden bg-[#FFF9E6] p-3 rounded-xl border-[1.5px] border-[#C58F2A] mb-3"></div>
+
         <div id="retro-footer-actions" class="space-y-2"></div>
     </div>
 </div>
 
+<!-- MODAL: Chapter Story Intro (shown after the level-complete pop-up, before the next level starts) -->
+<div id="chapter-intro-modal" class="hidden fixed inset-0 flex items-center justify-center p-3 overflow-y-auto" style="z-index:60; background-color:rgba(36,27,21,0.90); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+    <div class="paper-card max-w-[410px] w-full rounded-2xl p-5 animate-crisp-in border-2 border-[#5C3A21] my-auto">
+        <div id="intro-progress" class="flex items-center justify-center gap-1.5 mb-3" aria-label="Chapter progress"></div>
+
+        <div class="text-center mb-3">
+            <span id="intro-tag" class="inline-block px-3 py-1 rounded-full bg-[#C85A32]/15 text-[#9E3514] border border-[#C85A32]/35 text-[11px] font-bold mb-1.5"></span>
+            <div id="intro-emoji" class="text-4xl leading-none my-1.5"></div>
+            <h2 id="intro-title" class="text-xl font-bold text-[#5C3A21] leading-snug"></h2>
+            <p id="intro-place" class="text-[11px] font-semibold text-[#7A5434] mt-0.5"></p>
+        </div>
+
+        <div id="intro-story" class="text-xs text-[#241B15] leading-relaxed bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-2.5 space-y-2"></div>
+
+        <div id="intro-stats" class="grid grid-cols-3 gap-2 text-center mb-2.5"></div>
+
+        <div id="intro-carry" class="hidden text-[11px] text-[#3D2412] bg-[#F1E7D3] p-2.5 rounded-xl border border-[#8C6A4A]/60 mb-2.5"></div>
+
+        <div class="bg-[#FFF9E6] p-2.5 rounded-xl border-[1.5px] border-[#C58F2A] mb-3.5">
+            <div id="intro-skill-label" class="text-[10px] font-bold uppercase tracking-wider text-[#8C6106] mb-1"></div>
+            <div id="intro-skills" class="text-[11px] text-[#3D2412] space-y-1"></div>
+        </div>
+
+        <button id="intro-start-btn" type="button" onclick="startChapterFromIntro()" class="w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 transition cursor-pointer"></button>
+    </div>
+</div>
+
+<!-- MODAL: Generic confirm (tab switch, reset saved progress) -->
+<div id="confirm-modal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:10001; background-color:rgba(36,27,21,0.88);" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="paper-card max-w-[360px] w-full rounded-2xl p-5 animate-crisp-in border-2 border-[#5C3A21]">
+        <div class="flex items-center gap-2.5 mb-2.5">
+            <span id="confirm-emoji" class="text-3xl">⚠️</span>
+            <h3 id="confirm-title" class="text-base font-bold text-[#241B15] leading-snug"></h3>
+        </div>
+        <p id="confirm-body" class="text-xs text-[#241B15] leading-relaxed bg-[#FAF5EB] p-3 rounded-xl border-[1.5px] border-[#8C6A4A]/60 mb-4"></p>
+        <div class="space-y-2">
+            <button id="confirm-cancel-btn" type="button" onclick="closeConfirm(false)" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer"></button>
+            <button id="confirm-ok-btn" type="button" onclick="closeConfirm(true)" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] hover:bg-[#E4D4B5] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs transition cursor-pointer"></button>
+        </div>
+    </div>
+</div>
+
 <script>
+    // ==========================================
+    // 0. LEVEL CONFIG: one place for each chapter's story, labels, timing and retro text.
+    //    To add or edit a chapter, change its entry here rather than hunting through the code.
+    // ==========================================
+    const RETRO_BTN = {
+        primary: 'w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer',
+        secondary: 'w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer',
+        retry: 'w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 cursor-pointer'
+    };
+
+    const LEVELS = {
+        1: {
+            subtitle: 'Level 1 • Main Bazaar Coffee Cart (RM 500 • 3 Days)',
+            time: { unit: 'Day', units: 'Days', effort: ['Day', 'Days'], turn: 'Workday', turnIcon: '☀️', previous: 'yesterday' },
+            lowBudgetThreshold: 400,
+            crashEnabled: false,
+            diorama: () => buildLevel1DioramaSVG(),
+            exec: { icon: '☕', subtitle: 'Your crew is building at Siniawan Night Market...' },
+            startGuidance: 'Tap a statement from Auntie Mei, then tap its matching <strong>Project Charter</strong> slot.',
+            tutorial: {
+                chapterLine: '📜 <strong>Ch 1 • Main Bazaar Cart (RM 500 • 3 Days):</strong> Draft a <strong>Project Charter</strong>',
+                lifecycleLine: '1️⃣ <strong>Level 1 • Project Charter:</strong> Lock down Objective, Constraints, Success Criteria &amp; Out of Scope.'
+            },
+            brief: {
+                tag: 'Chapter 1 • Starter Commission (RM 500 • 3 Days)',
+                title: 'Main Bazaar Five-Foot Way Coffee Cart',
+                text: () => 'Freshly certified in Kuching, you take on Auntie Mei’s compact coffee cart. Lock down a clear <strong>Project Charter</strong> to prove your discipline and win larger referrals.',
+                counter: (st) => {
+                    const sorted = Object.values(st.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+                    return { text: `Charter: ${sorted}/${st.statements.length}`, cls: 'text-[#5C3A21]' };
+                }
+            },
+            retro: {
+                phaseTag: () => '📜 Chapter 1 Complete • Starter Commission',
+                headline: () => 'Main Bazaar Charter Authorized! ☕',
+                sub: () => 'Auntie Mei is impressed by your scope discipline—she’s recommending you to the Siniawan Heritage Committee for a RM 2,500 festival build!',
+                badge: () => ({ icon: '📜', title: 'Project Charter Architect', desc: 'Defining Objective, Constraints, Success Criteria, and Out-of-Scope boundaries up front authorizes the project and earns stakeholder trust.' }),
+                actions: () => [
+                    { label: 'Next Chapter: Siniawan Stall (RM 2,500 • WBS) →', onclick: 'advanceToNextLevel(2)', style: 'primary' },
+                    { label: '🔄 Replay Level 1', onclick: 'replayCurrentLevel()', style: 'secondary' }
+                ]
+            },
+            retroPrompts: {
+                well: [
+                    '📜 Locking down Auntie Mei’s Objective, Constraints, and Out-of-Scope items in the Project Charter prevented scope confusion.',
+                    '✅ Defining measurable Success Criteria (taste & safety checks) clarified the Definition of Done before building.'
+                ],
+                improve: [
+                    '🎯 Distinguishing Constraints (RM 500 & 3 Days) from Success Criteria on the first pass speeds up Charter sign-off.',
+                    '🚧 Calling out excluded items (Laksa kitchen & neon signage) early keeps small projects lean and on budget.'
+                ]
+            },
+            intro: {
+            tag: 'Chapter 1 • Starter Commission',
+            emoji: '☕',
+            title: 'Main Bazaar Coffee Cart',
+            place: 'Kuching • Main Bazaar Five-Foot Way',
+            story: [
+                'Freshly certified in Kuching, you open your heritage-restoration practice with a small but important job: <strong>Auntie Mei’s compact coffee cart</strong> on the Main Bazaar five-foot way.',
+                'Auntie Mei has plenty of ideas and very little on paper. Before anyone picks up a saw, you need everyone to agree on <strong>what</strong> is being built, <strong>how much</strong> it can cost, and <strong>what is not included</strong>.'
+            ],
+            stats: [['💰', 'Budget', 'RM 500'], ['📅', 'Time', '3 Days'], ['👥', 'Crew', 'Just you']],
+            skillLabel: 'New skill this chapter',
+            skills: ['📜 <strong>Project Charter:</strong> sort Auntie Mei’s statements into Objective, Constraints, Success Criteria &amp; Out of Scope.'],
+            cta: 'Begin Chapter 1 ☕'
+        }
+        },
+
+        2: {
+            subtitle: 'Level 2 • Siniawan Night Market (RM 2,500 • 10 Days)',
+            time: { unit: 'Day', units: 'Days', effort: ['Day', 'Days'], turn: 'Workday', turnIcon: '☀️', previous: 'yesterday' },
+            lowBudgetThreshold: 400,
+            crashEnabled: false,
+            diorama: () => buildLevel2DioramaSVG(),
+            exec: { icon: '🏮', subtitle: 'Your crew is building at Siniawan Night Market...' },
+            startGuidance: '<strong>Step 1 (WBS 100% Rule):</strong> Tap a deliverable card, then tap its matching <strong>WBS Work Package</strong> (or Out of Scope).',
+            tutorial: {
+                chapterLine: '📦 <strong>Ch 2 • Siniawan Stall (RM 2,500 • 10 Days):</strong> Build via <strong>WBS 100% Rule</strong>',
+                lifecycleLine: '2️⃣ <strong>Level 2 • Work Breakdown Structure (WBS):</strong> Decompose Work Packages &amp; multi-day Tasks (100% Rule).'
+            },
+            brief: {
+                tag: 'Chapter 2 • Community Expansion (RM 2,500 • 10 Days)',
+                title: 'Siniawan Night Market Heritage Stall',
+                text: () => 'Impressed by your Main Bazaar Charter, Auntie Mei refers you to the Siniawan Heritage Committee! Scale up 5× using the <strong>WBS 100% Rule</strong> across multi-day tasks.',
+                counter: (st) => {
+                    const placed = Object.values(st.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
+                    return { text: `WBS: ${placed}/${st.wbsCards.length} Mapped`, cls: 'text-[#2E6F40]' };
+                }
+            },
+            retro: {
+                phaseTag: (win) => win ? '📦 Chapter 2 Complete • Community Expansion' : '📦 Chapter 2 Review • Scope Planning',
+                headline: (win, pct) => win ? 'Siniawan Night Market Stall Complete! 🏮' : `Market Stall Incomplete (${pct}%)`,
+                sub: (win) => win
+                    ? 'Your WBS-driven pavilion drew crowds across Bau! The Carpenter Street Heritage Guild just offered a RM 15,000, 6-week shophouse restoration.'
+                    : 'Match team skills (+25% speed) and manage stamina to finish all 6 decomposed Tasks within 10 days.',
+                badge: () => ({ icon: '📦', title: 'WBS 100% Rule Specialist', desc: 'Decomposing high-level Work Packages into granular, multi-day Tasks eliminates ambiguity and scales your crew to bigger projects.' }),
+                actions: (win) => win
+                    ? [
+                        { label: 'Next Chapter: Carpenter St. Kopitiam (RM 15,000 • Weekly) →', onclick: 'advanceToNextLevel(3)', style: 'primary' },
+                        { label: '🔄 Replay Level 2', onclick: 'replayCurrentLevel()', style: 'secondary' }
+                    ]
+                    : [
+                        { label: '🔄 Retry Level 2', onclick: 'replayCurrentLevel()', style: 'retry' }
+                    ]
+            },
+            retroPrompts: {
+                well: [
+                    '📦 Applying the WBS 100% Rule decomposed the Siniawan stall cleanly and kept excluded wok equipment out of scope.',
+                    '⚡ Pairing Uncle Lim, Kak Salmah, and Danny to matching skills (+25% speed) with Rest breaks prevented Burnout.'
+                ],
+                improve: [
+                    '🔗 Starting prerequisite tasks early (Timber Frame & Display Counter) avoids idle days on dependent tasks.',
+                    '☕ Scheduling Rest breaks before stamina drops below 35% protects multi-day execution velocity.'
+                ]
+            },
+            intro: {
+            tag: 'Chapter 2 • Community Expansion',
+            emoji: '🏮',
+            title: 'Siniawan Night Market Stall',
+            place: 'Siniawan, Bau • Heritage Night Market',
+            story: [
+                'Word travels fast in Kuching. Auntie Mei’s regulars can’t stop talking about her cart, and the <strong>Siniawan Heritage Committee</strong> has taken notice.',
+                'They want a multi-bay <strong>Kek Lapis &amp; Teh Tarik pavilion</strong> for the night market: five times the budget and far too much to keep in your head. Uncle Lim, Kak Salmah and Danny are on board, but a one-page charter won’t be enough anymore.',
+                'Before work begins, you must break the whole job down so that <strong>nothing is missed and nothing extra sneaks in</strong>.'
+            ],
+            stats: [['💰', 'Budget', 'RM 2,500'], ['📅', 'Time', '10 Days'], ['👥', 'Crew', '3 Artisans']],
+            skillLabel: 'New skills this chapter',
+            skills: [
+                '📦 <strong>Work Breakdown Structure (WBS):</strong> map every deliverable into Work Packages using the <strong>100% Rule</strong>.',
+                '⚡ <strong>Assign &amp; Stamina:</strong> match specialists to Tasks (+25% speed) and rest them before burnout.',
+                '🚫 <strong>Out of Scope:</strong> some deliverables don’t belong, so keep them out of the WBS.'
+            ],
+            carryTitle: '📜 Carried over from your signed Charter',
+            carryFrom: function () {
+                const c = (state && state.signedCharterSummary) || null;
+                if (!c) return '';
+                return `<div><strong>Objective:</strong> ${c.objective}</div><div><strong>Constraints:</strong> ${c.constraints}</div><div><strong>Out of scope:</strong> ${c.outOfScope}</div>`;
+            },
+            cta: 'Begin Chapter 2 🏮'
+        }
+        },
+
+        3: {
+            subtitle: 'Level 3 • Carpenter St. Kopitiam (RM 15,000 • 6 Wks)',
+            time: { unit: 'Week', units: 'Weeks', effort: ['Wk', 'Wks'], turn: 'Workweek', turnIcon: '🗓️', previous: 'last week' },
+            lowBudgetThreshold: 2500,
+            crashEnabled: true,
+            diorama: () => buildLevel3DioramaSVG(),
+            exec: { icon: '🏛️', subtitle: 'Your crew is restoring the Carpenter Street shophouse...' },
+            startGuidance: 'Decompose remaining <strong>Work Packages</strong>, tap <strong>Assign</strong> on ready Tasks, and watch <strong>Critical Path</strong> Dependencies.',
+            tutorial: {
+                chapterLine: '🗓️ <strong>Ch 3 • Carpenter St. Kopitiam (RM 15,000 • 6 Weeks):</strong> Lead weekly <strong>Critical Path &amp; Control</strong>',
+                lifecycleLine: '3️⃣ <strong>Level 3 • Weekly Schedule &amp; Control:</strong> Manage Dependencies, Critical Path, Monsoon Risk &amp; Change Requests.'
+            },
+            brief: {
+                tag: 'Chapter 3 • Flagship Restoration (RM 15,000 • 6 Weeks)',
+                title: 'Carpenter Street Pre-War Kopitiam',
+                text: (st) => `Your Siniawan pavilion went viral! Now the Heritage Guild awards a 6-week commercial restoration. Lead weekly <strong>Critical Path</strong> work, guard your <strong>RM ${st.contingencyReserve.toLocaleString()} Reserve</strong>, and curb <strong>Scope Creep</strong>.`,
+                counter: (st) => ({ text: `Week ${st.day}/${st.maxDays}`, cls: 'text-[#5C3A21]' })
+            },
+            retro: {
+                phaseTag: () => '🏆 Chapter 3 Complete • Flagship Restoration',
+                headline: (win, pct) => win ? 'Carpenter St. Kopitiam Restored! 🎉' : `6-Week Schedule Ended (${pct}% Scope Done)`,
+                sub: (win) => win
+                    ? 'From a RM 500 coffee cart to a RM 15,000 heritage kopitiam—you mastered weekly Critical Path, Risk Mitigation, and Change Control!'
+                    : 'Review Critical Path Dependencies, weekly stamina, and Schedule Crashing in your Project Retrospective below.',
+                badge: (win) => ({
+                    icon: '🏅',
+                    title: win ? 'Certified Project Management Master' : 'Critical Path & Control Practitioner',
+                    desc: win
+                        ? 'Mastered the end-to-end Project Management lifecycle: Project Charter, WBS, weekly Critical Path, Risk Mitigation, Change Control, and Project Retrospective.'
+                        : 'Prioritizing Critical Path prerequisites first unlocks downstream Dependencies before the final week.'
+                }),
+                actions: () => [
+                    { label: '🔄 Replay Level 3', onclick: 'replayCurrentLevel()', style: 'primary' },
+                    { label: '📜 Restart Career from Level 1', onclick: 'advanceToNextLevel(1)', style: 'secondary' }
+                ]
+            },
+            retroPrompts: {
+                well: [
+                    '🔥 Prioritizing Critical Path tasks first kept the Carpenter St. Kopitiam restoration on track across all 6 weeks.',
+                    '🛡️ Guarding the Contingency Reserve and using Change Control / Phase 2 Backlog prevented unbudgeted Scope Creep.'
+                ],
+                improve: [
+                    '🌧️ Deploying Contingency Reserve tarps before heavy monsoon weeks protects outdoor carpentry from delays.',
+                    '⚡ Using Schedule Crashing selectively on Critical Path bottlenecks recovers time without exhausting the crew.'
+                ]
+            },
+            intro: {
+            tag: 'Chapter 3 • Flagship Restoration',
+            emoji: '🏛️',
+            title: 'Carpenter Street Kopitiam',
+            place: 'Kuching • Carpenter Street Pre-War Shophouse',
+            story: [
+                'Your Siniawan pavilion went viral. The <strong>Carpenter Street Heritage Guild</strong> now trusts you with its biggest job yet: restoring a pre-war shophouse kopitiam.',
+                'This time the work runs in <strong>weeks, not days</strong>, and Tasks depend on each other. Some can’t start until others finish. Stakeholders will have opinions, and monsoon season is on its way.',
+                'You’re no longer just planning the project. You’re <strong>steering it</strong>.'
+            ],
+            stats: [['💰', 'Budget', 'RM 15,000'], ['📅', 'Time', '6 Weeks'], ['🛟', 'Reserve', 'RM 2,000']],
+            skillLabel: 'New skills this chapter',
+            skills: [
+                '🔗 <strong>Dependencies &amp; Critical Path:</strong> start the Tasks that unlock everything else first.',
+                '🛟 <strong>Contingency Reserve:</strong> a dedicated RM 2,000 cushion. Spend it wisely.',
+                '🌧️ <strong>Risk &amp; Change Control:</strong> expect surprises, and decide what to accept, mitigate or refuse.',
+                '⏩ <strong>Schedule Crashing:</strong> pay extra and tire your crew to speed up a Task.'
+            ],
+            carryTitle: '',
+            cta: 'Begin Chapter 3 🏛️'
+        }
+        }
+    };
+
+    // Current level's config (falls back to Level 1 before the first level is loaded).
+    function getLevelCfg() {
+        return LEVELS[state.level] || LEVELS[1];
+    }
+
+    function getTimeUnit(plural = false) {
+        const t = getLevelCfg().time;
+        return plural ? t.units : t.unit;
+    }
+
+    function getWorkTurnLabel() {
+        return getLevelCfg().time.turn;
+    }
+
+    function renderRetroActions(actions) {
+        return actions.map(a => `
+            <button type="button" onclick="${a.onclick}" class="${RETRO_BTN[a.style] || RETRO_BTN.secondary}">
+                ${a.label}
+            </button>
+        `).join('');
+    }
+
     // ==========================================
     // 1. GAME EMBLEM INJECTION
     // ==========================================
@@ -657,9 +938,7 @@
                     Grow your Sarawakian heritage restoration reputation across <strong>three progressively bigger commissions</strong>—each unlocking higher stakes and real <strong>Project Management</strong> tools:
                 </p>
                 <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
-                    <div>📜 <strong>Ch 1 • Main Bazaar Cart (RM 500 • 3 Days):</strong> Draft a <strong>Project Charter</strong></div>
-                    <div>📦 <strong>Ch 2 • Siniawan Stall (RM 2,500 • 10 Days):</strong> Build via <strong>WBS 100% Rule</strong></div>
-                    <div>🗓️ <strong>Ch 3 • Carpenter St. Kopitiam (RM 15,000 • 6 Weeks):</strong> Lead weekly <strong>Critical Path &amp; Control</strong></div>
+                    ${[1, 2, 3].map(n => `<div>${LEVELS[n].tutorial.chapterLine}</div>`).join('')}
                 </div>
             `
         },
@@ -685,9 +964,7 @@
                     Every project balances <strong>Scope</strong>, <strong>Schedule</strong>, and <strong>Budget</strong>. Earn client referrals by mastering each stage:
                 </p>
                 <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
-                    <div>1️⃣ <strong>Level 1 • Project Charter:</strong> Lock down Objective, Constraints, Success Criteria &amp; Out of Scope.</div>
-                    <div>2️⃣ <strong>Level 2 • Work Breakdown Structure (WBS):</strong> Decompose Work Packages &amp; multi-day Tasks (100% Rule).</div>
-                    <div>3️⃣ <strong>Level 3 • Weekly Schedule &amp; Control:</strong> Manage Dependencies, Critical Path, Monsoon Risk &amp; Change Requests.</div>
+                    ${[1, 2, 3].map(n => `<div>${LEVELS[n].tutorial.lifecycleLine}</div>`).join('')}
                 </div>
             `
         },
@@ -1370,14 +1647,7 @@
         const totalCount = Math.max(1, state.tasks.length);
         const pct = Math.round((doneCount / totalCount) * 100);
 
-        let scene;
-        if (state.level === 1) {
-            scene = buildLevel1DioramaSVG();
-        } else if (state.level === 2) {
-            scene = buildLevel2DioramaSVG();
-        } else {
-            scene = buildLevel3DioramaSVG();
-        }
+        const scene = getLevelCfg().diorama();
 
         let artisansMarkup = '';
         state.artisans.forEach((art, idx) => {
@@ -1436,42 +1706,18 @@
         const card = document.getElementById('wide-brief-card');
         if (!card) return;
 
-        if (state.level === 1) {
-            const totalSorted = Object.values(state.charterBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
-            card.innerHTML = `
-                <div class="flex items-center justify-between mb-0.5">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 1 • Starter Commission (RM 500 • 3 Days)</span>
-                    <span class="text-[10px] font-bold font-mono-crisp text-[#5C3A21]">Charter: ${totalSorted}/${state.statements.length}</span>
-                </div>
-                <div class="text-xs font-bold text-[#241B15]">Main Bazaar Five-Foot Way Coffee Cart</div>
-                <p class="text-[11px] text-[#5A4D41] mt-0.5 leading-snug">
-                    Freshly certified in Kuching, you take on Auntie Mei’s compact coffee cart. Lock down a clear <strong>Project Charter</strong> to prove your discipline and win larger referrals.
-                </p>
-            `;
-        } else if (state.level === 2) {
-            const totalPlaced = Object.values(state.wbsBuckets).reduce((sum, b) => sum + b.filledIds.length, 0);
-            card.innerHTML = `
-                <div class="flex items-center justify-between mb-0.5">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 2 • Community Expansion (RM 2,500 • 10 Days)</span>
-                    <span class="text-[10px] font-bold font-mono-crisp text-[#2E6F40]">WBS: ${totalPlaced}/${state.wbsCards.length} Mapped</span>
-                </div>
-                <div class="text-xs font-bold text-[#241B15]">Siniawan Night Market Heritage Stall</div>
-                <p class="text-[11px] text-[#5A4D41] mt-0.5 leading-snug">
-                    Impressed by your Main Bazaar Charter, Auntie Mei refers you to the Siniawan Heritage Committee! Scale up 5× using the <strong>WBS 100% Rule</strong> across multi-day tasks.
-                </p>
-            `;
-        } else {
-            card.innerHTML = `
-                <div class="flex items-center justify-between mb-0.5">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">Chapter 3 • Flagship Restoration (RM 15,000 • 6 Weeks)</span>
-                    <span class="text-[10px] font-bold font-mono-crisp text-[#5C3A21]">Week ${state.day}/${state.maxDays}</span>
-                </div>
-                <div class="text-xs font-bold text-[#241B15]">Carpenter Street Pre-War Kopitiam</div>
-                <p class="text-[11px] text-[#5A4D41] mt-0.5 leading-snug">
-                    Your Siniawan pavilion went viral! Now the Heritage Guild awards a 6-week commercial restoration. Lead weekly <strong>Critical Path</strong> work, guard your <strong>RM ${state.contingencyReserve.toLocaleString()} Reserve</strong>, and curb <strong>Scope Creep</strong>.
-                </p>
-            `;
-        }
+        const brief = getLevelCfg().brief;
+        const counter = brief.counter(state);
+        card.innerHTML = `
+            <div class="flex items-center justify-between mb-0.5">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-[#C85A32]">${brief.tag}</span>
+                <span class="text-[10px] font-bold font-mono-crisp ${counter.cls}">${counter.text}</span>
+            </div>
+            <div class="text-xs font-bold text-[#241B15]">${brief.title}</div>
+            <p class="text-[11px] text-[#5A4D41] mt-0.5 leading-snug">
+                ${brief.text(state)}
+            </p>
+        `;
     }
 
     // ==========================================
@@ -1571,19 +1817,45 @@
     let currentLevel = 1;
     let completedLevels = { 1: false, 2: false, 3: false };
     let levelStars = { 1: 0, 2: 0, 3: 0 };
+
+    // ---- Saved progress (stars & completed chapters), kept in this browser via localStorage ----
+    const SAVE_KEY = 'ohMyPM.progress.v1';
+
+    function loadProgress() {
+        try {
+            const raw = window.localStorage.getItem(SAVE_KEY);
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            if (!data || typeof data !== 'object') return;
+            [1, 2, 3].forEach(n => {
+                const stars = Number(data.levelStars && data.levelStars[n]);
+                if (Number.isInteger(stars) && stars >= 0 && stars <= 3) levelStars[n] = stars;
+                if (data.completedLevels && data.completedLevels[n] === true) completedLevels[n] = true;
+            });
+        } catch (err) {
+            // Storage unavailable or corrupted: start fresh without breaking the game.
+        }
+    }
+
+    function saveProgress() {
+        try {
+            window.localStorage.setItem(SAVE_KEY, JSON.stringify({ v: 1, completedLevels, levelStars }));
+        } catch (err) {
+            // Storage unavailable (private mode, blocked, full): the game still works, just unsaved.
+        }
+    }
+
+    function clearSavedProgress() {
+        try { window.localStorage.removeItem(SAVE_KEY); } catch (err) { /* ignore */ }
+        completedLevels = { 1: false, 2: false, 3: false };
+        levelStars = { 1: 0, 2: 0, 3: 0 };
+    }
+
+    loadProgress();
     const CRASH_COST = 500;
     const CRASH_SPEED_BONUS = 50;
     const CRASH_EXTRA_STAMINA = 15;
     let state = {};
-
-    function getTimeUnit(plural = false) {
-        if (state.level === 3) return plural ? 'Weeks' : 'Week';
-        return plural ? 'Days' : 'Day';
-    }
-
-    function getWorkTurnLabel() {
-        return state.level === 3 ? 'Workweek' : 'Workday';
-    }
 
     function createLevelState(lvl) {
         if (lvl === 1) {
@@ -1640,7 +1912,7 @@
 
             return {
                 level: 1,
-                subtitle: 'Level 1 • Main Bazaar Coffee Cart (RM 500 • 3 Days)',
+                subtitle: LEVELS[1].subtitle,
                 phase: 'charter', // Pure Project Charter exercise
                 day: 1,
                 maxDays: 3,
@@ -1733,7 +2005,7 @@
 
             return {
                 level: 2,
-                subtitle: 'Level 2 • Siniawan Night Market (RM 2,500 • 10 Days)',
+                subtitle: LEVELS[2].subtitle,
                 phase: 'wbs_build', // 'wbs_build' -> 'execution'
                 day: 1,
                 maxDays: 10,
@@ -1890,7 +2162,7 @@
         // Level 3: Schedule, Dependencies, Critical Path & Control (Carpenter Street Kopitiam — Weekly Cadence)
         return {
             level: 3,
-            subtitle: 'Level 3 • Carpenter St. Kopitiam (RM 15,000 • 6 Wks)',
+            subtitle: LEVELS[3].subtitle,
             phase: 'execution',
             day: 1, // Represents current Week (1..maxDays)
             maxDays: 6, // 6 Weeks total schedule
@@ -2040,19 +2312,96 @@
         };
     }
 
+    // ---- Generic confirm dialog ----
+    let confirmOnOk = null;
+
+    function showConfirm({ emoji = '⚠️', title, body, cancelLabel, okLabel, onOk }) {
+        confirmOnOk = onOk || null;
+        document.getElementById('confirm-emoji').textContent = emoji;
+        document.getElementById('confirm-title').textContent = title;
+        document.getElementById('confirm-body').textContent = body;
+        document.getElementById('confirm-cancel-btn').textContent = cancelLabel;
+        document.getElementById('confirm-ok-btn').textContent = okLabel;
+        document.getElementById('confirm-modal').classList.remove('hidden');
+        SoundFX.alertPop();
+    }
+
+    function closeConfirm(accepted) {
+        const action = accepted ? confirmOnOk : null;
+        confirmOnOk = null;
+        document.getElementById('confirm-modal').classList.add('hidden');
+        if (accepted) SoundFX.woodClick();
+        if (action) action();
+    }
+
+    document.addEventListener('keydown', (e) => {
+        const m = document.getElementById('confirm-modal');
+        if (e.key === 'Escape' && m && !m.classList.contains('hidden')) closeConfirm(false);
+    });
+
+    // ---- Detect unsaved progress in the current level ----
+    let levelBaselineSig = '';
+
+    function stateSignature() {
+        try {
+            // Ignore transient UI selections so merely tapping a card doesn't count as progress.
+            return JSON.stringify(state, (k, v) => (/^(selected|bounced)/.test(k) ? undefined : v));
+        } catch (err) {
+            return 'unreadable:' + Math.random();
+        }
+    }
+
+    function isLevelFinished() {
+        if (state.level === 1) return Boolean(state.charterAuthorized);
+        return Array.isArray(state.tasks) && state.tasks.length > 0 && state.tasks.every(t => t.progress >= 100);
+    }
+
+    function hasUnsavedProgress() {
+        return !isLevelFinished() && stateSignature() !== levelBaselineSig;
+    }
+
+    function requestLevelSwitch(lvl) {
+        if (state.isExecuting) return;
+        if (!hasUnsavedProgress()) {
+            switchLevel(lvl);
+            return;
+        }
+        const same = lvl === currentLevel;
+        showConfirm({
+            emoji: same ? '🔄' : '🧭',
+            title: same ? `Restart Level ${lvl}?` : `Leave Level ${currentLevel}?`,
+            body: same
+                ? 'Your progress in this level will be lost and it will start again from the beginning. Stars you have already earned are kept.'
+                : `Your progress in Level ${currentLevel} will be lost. Stars you have already earned are kept.`,
+            cancelLabel: 'Keep Playing',
+            okLabel: same ? `Restart Level ${lvl}` : `Switch to Level ${lvl}`,
+            onOk: () => switchLevel(lvl)
+        });
+    }
+
+    function confirmResetProgress() {
+        showConfirm({
+            emoji: '🗑️',
+            title: 'Reset saved progress?',
+            body: 'This clears all earned stars and completed chapters saved in this browser. The level you are playing now is not affected.',
+            cancelLabel: 'Keep My Stars',
+            okLabel: 'Reset Saved Progress',
+            onOk: () => {
+                clearSavedProgress();
+                renderLevelTabs();
+                showToast('Saved progress cleared.', 'success');
+            }
+        });
+    }
+
     function switchLevel(lvl) {
         if (state.isExecuting) return;
         SoundFX.woodClick();
         currentLevel = lvl;
         state = createLevelState(lvl);
+        levelBaselineSig = stateSignature();
 
-        if (lvl === 1) {
-            updateGuidance('Tap a statement from Auntie Mei, then tap its matching <strong>Project Charter</strong> slot.');
-        } else if (lvl === 2) {
-            updateGuidance('<strong>Step 1 (WBS 100% Rule):</strong> Tap a deliverable card, then tap its matching <strong>WBS Work Package</strong> (or Out of Scope).');
-        } else {
-            updateGuidance('Decompose remaining <strong>Work Packages</strong>, tap <strong>Assign</strong> on ready Tasks, and watch <strong>Critical Path</strong> Dependencies.');
-        }
+        updateGuidance(LEVELS[lvl].startGuidance);
         renderAll();
     }
 
@@ -2152,6 +2501,7 @@
 
         state.charterAuthorized = true;
         completedLevels[1] = true;
+        saveProgress();
         SoundFX.authorizeSeal();
         showToast('📜 Project Charter Approved! Phase 1 Complete!', 'success');
         updateGuidance('📜 <strong>Project Charter Approved!</strong> Initiating Phase complete — opening Project Retrospective...');
@@ -2419,7 +2769,7 @@
     // Level 3 Schedule Crashing Lever: Spend +RM 45 & +15% extra stamina for +50% task speed
     function toggleTaskCrash(taskId, event) {
         if (event) event.stopPropagation();
-        if (state.isExecuting || state.level !== 3) return;
+        if (state.isExecuting || !getLevelCfg().crashEnabled) return;
 
         const task = state.tasks.find(t => t.id === taskId);
         if (!task || !task.assignedArtisanId || task.progress >= 100) return;
@@ -2515,14 +2865,12 @@
         const logsContainer = document.getElementById('exec-logs');
         const execIcon = document.getElementById('exec-icon');
         if (execIcon) {
-            execIcon.textContent = state.level === 2 ? '🏮' : state.level === 3 ? '🏛️' : '☕';
+            execIcon.textContent = getLevelCfg().exec.icon;
         }
         document.getElementById('exec-title').textContent = `Executing ${getTimeUnit(false)} ${state.day} ${getWorkTurnLabel()}`;
         const execSub = document.getElementById('exec-subtitle');
         if (execSub) {
-            execSub.textContent = state.level === 3
-                ? 'Your crew is restoring the Carpenter Street shophouse...'
-                : 'Your crew is building at Siniawan Night Market...';
+            execSub.textContent = getLevelCfg().exec.subtitle;
         }
         logsContainer.innerHTML = '';
         progressBar.style.width = '0%';
@@ -2531,6 +2879,12 @@
         const isRainDay = (state.hasWeatherRisk && state.day === 3);
         const rainLostOutdoorDay = (isRainDay && !state.tarpBought && Math.random() < 0.5);
         const logLines = [];
+
+        // Ready = unfinished, unassigned Tasks whose prerequisites are done (used to spot idle crew).
+        let readyLeft = state.tasks.filter(t =>
+            t.progress < 100 && !t.assignedArtisanId &&
+            (t.deps || []).every(d => { const dt = state.tasks.find(x => x.id === d); return dt && dt.progress >= 100; })
+        ).length;
 
         state.artisans.forEach(artisan => {
             if (artisan.resting) {
@@ -2541,6 +2895,10 @@
             }
 
             if (!artisan.assignedTaskId) {
+                if (readyLeft > 0) {
+                    state.idleWithWorkCount = (state.idleWithWorkCount || 0) + 1;
+                    readyLeft--;
+                }
                 artisan.stamina = Math.min(100, artisan.stamina + 15);
                 logLines.push(`🌿 <strong>${artisan.name}</strong> assisted with site prep (+15% Stamina).`);
                 return;
@@ -2558,6 +2916,8 @@
             let rawSpeed = 100;
             if (artisan.skill === task.skill) {
                 rawSpeed += 25;
+            } else {
+                state.mismatchCount = (state.mismatchCount || 0) + 1;
             }
 
             let speed = Math.round(rawSpeed / effort);
@@ -2568,7 +2928,7 @@
                 state.burnoutIncidents = (state.burnoutIncidents || 0) + 1;
             }
 
-            const isCrashed = Boolean(task.crashed && state.level === 3 && state.budget >= CRASH_COST);
+            const isCrashed = Boolean(task.crashed && getLevelCfg().crashEnabled && state.budget >= CRASH_COST);
             if (isCrashed) {
                 state.budget -= CRASH_COST;
                 state.crashCount = (state.crashCount || 0) + 1;
@@ -2641,6 +3001,7 @@
 
         if (allTasksDone) {
             completedLevels[state.level] = true;
+            saveProgress();
             renderAll();
             openRetrospective(true);
             return;
@@ -2657,7 +3018,7 @@
 
         // Level 3 Mid-Project Event Modals
         const unitLabel = getTimeUnit(false);
-        const prevUnitWord = state.level === 3 ? 'last week' : 'yesterday';
+        const prevUnitWord = getLevelCfg().time.previous;
         if (state.level === 3 && state.day === 2) {
             triggerScopeCreepModal();
         } else if (state.level === 3 && state.day === 3 && !state.weatherRiskResolved) {
@@ -2837,6 +3198,8 @@
         const mastery = evaluateLevelMastery(isVictory, daysRemaining, totalSaved);
         if (isVictory) {
             levelStars[state.level] = Math.max(levelStars[state.level] || 0, mastery.stars);
+            completedLevels[state.level] = true;
+            saveProgress();
             renderLevelTabs();
         }
 
@@ -2856,39 +3219,7 @@
             </div>
         `).join('');
 
-        const retroPromptsByLevel = {
-            1: {
-                well: [
-                    '📜 Locking down Auntie Mei’s Objective, Constraints, and Out-of-Scope items in the Project Charter prevented scope confusion.',
-                    '✅ Defining measurable Success Criteria (taste & safety checks) clarified the Definition of Done before building.'
-                ],
-                improve: [
-                    '🎯 Distinguishing Constraints (RM 500 & 3 Days) from Success Criteria on the first pass speeds up Charter sign-off.',
-                    '🚧 Calling out excluded items (Laksa kitchen & neon signage) early keeps small projects lean and on budget.'
-                ]
-            },
-            2: {
-                well: [
-                    '📦 Applying the WBS 100% Rule decomposed the Siniawan stall cleanly and kept excluded wok equipment out of scope.',
-                    '⚡ Pairing Uncle Lim, Kak Salmah, and Danny to matching skills (+25% speed) with Rest breaks prevented Burnout.'
-                ],
-                improve: [
-                    '🔗 Starting prerequisite tasks early (Timber Frame & Display Counter) avoids idle days on dependent tasks.',
-                    '☕ Scheduling Rest breaks before stamina drops below 35% protects multi-day execution velocity.'
-                ]
-            },
-            3: {
-                well: [
-                    '🔥 Prioritizing Critical Path tasks first kept the Carpenter St. Kopitiam restoration on track across all 6 weeks.',
-                    '🛡️ Guarding the Contingency Reserve and using Change Control / Phase 2 Backlog prevented unbudgeted Scope Creep.'
-                ],
-                improve: [
-                    '🌧️ Deploying Contingency Reserve tarps before heavy monsoon weeks protects outdoor carpentry from delays.',
-                    '⚡ Using Schedule Crashing selectively on Critical Path bottlenecks recovers time without exhausting the crew.'
-                ]
-            }
-        };
-        const lvlRetro = retroPromptsByLevel[state.level] || retroPromptsByLevel[3];
+        const lvlRetro = getLevelCfg().retroPrompts;
         state.retroChoice = { wentWell: 0, toImprove: 0 };
         const retroSection = document.getElementById('retro-reflection-section');
         if (retroSection) {
@@ -2924,76 +3255,167 @@
         const badgeDesc = document.getElementById('badge-desc');
         const footerActions = document.getElementById('retro-footer-actions');
 
-        if (state.level === 1) {
-            phaseTag.textContent = '📜 Chapter 1 Complete • Starter Commission';
-            headline.textContent = 'Main Bazaar Charter Authorized! ☕';
-            sub.textContent = 'Auntie Mei is impressed by your scope discipline—she’s recommending you to the Siniawan Heritage Committee for a RM 2,500 festival build!';
-            badgeIcon.textContent = '📜';
-            badgeTitle.textContent = 'Project Charter Architect';
-            badgeDesc.textContent = 'Defining Objective, Constraints, Success Criteria, and Out-of-Scope boundaries up front authorizes the project and earns stakeholder trust.';
+        const retroCfg = getLevelCfg().retro;
+        const badge = retroCfg.badge(isVictory);
+        phaseTag.textContent = retroCfg.phaseTag(isVictory);
+        headline.textContent = retroCfg.headline(isVictory, scopePct);
+        sub.textContent = retroCfg.sub(isVictory);
+        badgeIcon.textContent = badge.icon;
+        badgeTitle.textContent = badge.title;
+        badgeDesc.textContent = badge.desc;
+        footerActions.innerHTML = renderRetroActions(retroCfg.actions(isVictory));
 
-            footerActions.innerHTML = `
-                <button type="button" onclick="advanceToNextLevel(2)" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
-                    Next Chapter: Siniawan Stall (RM 2,500 • WBS) →
-                </button>
-                <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer">
-                    🔄 Replay Level 1
-                </button>
-            `;
-        } else if (state.level === 2) {
-            phaseTag.textContent = isVictory ? '📦 Chapter 2 Complete • Community Expansion' : '📦 Chapter 2 Review • Scope Planning';
-            headline.textContent = isVictory ? 'Siniawan Night Market Stall Complete! 🏮' : `Market Stall Incomplete (${scopePct}%)`;
-            sub.textContent = isVictory
-                ? 'Your WBS-driven pavilion drew crowds across Bau! The Carpenter Street Heritage Guild just offered a RM 15,000, 6-week shophouse restoration.'
-                : 'Match team skills (+25% speed) and manage stamina to finish all 6 decomposed Tasks within 10 days.';
-            badgeIcon.textContent = '📦';
-            badgeTitle.textContent = 'WBS 100% Rule Specialist';
-            badgeDesc.textContent = 'Decomposing high-level Work Packages into granular, multi-day Tasks eliminates ambiguity and scales your crew to bigger projects.';
+        renderRetroHints(isVictory);
+        modal.classList.remove('hidden');
+    }
 
-            footerActions.innerHTML = isVictory
-                ? `
-                    <button type="button" onclick="advanceToNextLevel(3)" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
-                        Next Chapter: Carpenter St. Kopitiam (RM 15,000 • Weekly) →
-                    </button>
-                    <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer">
-                        🔄 Replay Level 2
-                    </button>
-                `
-                : `
-                    <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 cursor-pointer">
-                        🔄 Retry Level 2
-                    </button>
-                `;
+    // ==========================================
+    // 12B. CHAPTER STORY INTRO (between level-complete pop-up and next level)
+    // ==========================================
+    function showChapterIntro(lvl) {
+        const data = LEVELS[lvl] && LEVELS[lvl].intro;
+        const modal = document.getElementById('chapter-intro-modal');
+        if (!data || !modal) return;
+
+        // Progress: ✓ done / ● current / ○ upcoming
+        document.getElementById('intro-progress').innerHTML = [1, 2, 3].map(n => {
+            const done = n < lvl, current = n === lvl;
+            const dot = done
+                ? 'bg-[#2E6F40] text-white border-[#1B4226]'
+                : current
+                    ? 'bg-[#C85A32] text-white border-[#7A2A10] scale-110'
+                    : 'bg-[#F1E7D3] text-[#7A5434] border-[#8C6A4A]/60';
+            const line = n < 3 ? `<span class="w-6 h-[2px] ${n < lvl ? 'bg-[#2E6F40]' : 'bg-[#8C6A4A]/40'}"></span>` : '';
+            return `<span class="w-7 h-7 rounded-full border-2 text-[11px] font-bold flex items-center justify-center ${dot}">${done ? '✓' : n}</span>${line}`;
+        }).join('');
+
+        document.getElementById('intro-tag').textContent = data.tag;
+        document.getElementById('intro-emoji').textContent = data.emoji;
+        document.getElementById('intro-title').textContent = data.title;
+        document.getElementById('intro-place').textContent = data.place;
+        document.getElementById('intro-story').innerHTML = data.story.map(t => `<p>${t}</p>`).join('');
+        document.getElementById('intro-stats').innerHTML = data.stats.map(([icon, label, value]) => `
+            <div class="bg-[#FAF5EB] p-2 rounded-xl border-[1.5px] border-[#8C6A4A]">
+                <div class="text-[10px] font-semibold text-[#5A4D41]">${icon} ${label}</div>
+                <div class="text-sm font-bold font-mono-crisp text-[#5C3A21] mt-0.5">${value}</div>
+            </div>`).join('');
+
+        const carryEl = document.getElementById('intro-carry');
+        const carryHtml = data.carryFrom ? data.carryFrom() : '';
+        if (carryHtml) {
+            carryEl.innerHTML = `<div class="font-bold mb-1">${data.carryTitle}</div><div class="space-y-0.5">${carryHtml}</div>`;
+            carryEl.classList.remove('hidden');
         } else {
-            phaseTag.textContent = '🏆 Chapter 3 Complete • Flagship Restoration';
-            headline.textContent = isVictory ? 'Carpenter St. Kopitiam Restored! 🎉' : `6-Week Schedule Ended (${scopePct}% Scope Done)`;
-            sub.textContent = isVictory
-                ? 'From a RM 500 coffee cart to a RM 15,000 heritage kopitiam—you mastered weekly Critical Path, Risk Mitigation, and Change Control!'
-                : 'Review Critical Path Dependencies, weekly stamina, and Schedule Crashing in your Project Retrospective below.';
-            badgeIcon.textContent = '🏅';
-            badgeTitle.textContent = isVictory
-                ? 'Certified Project Management Master'
-                : 'Critical Path & Control Practitioner';
-            badgeDesc.textContent = isVictory
-                ? 'Mastered the end-to-end Project Management lifecycle: Project Charter, WBS, weekly Critical Path, Risk Mitigation, Change Control, and Project Retrospective.'
-                : 'Prioritizing Critical Path prerequisites first unlocks downstream Dependencies before the final week.';
-
-            footerActions.innerHTML = `
-                <button type="button" onclick="replayCurrentLevel()" class="w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 transition cursor-pointer">
-                    🔄 Replay Level 3
-                </button>
-                <button type="button" onclick="advanceToNextLevel(1)" class="w-full min-h-[40px] py-2 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] text-[#3D2412] font-semibold text-xs cursor-pointer">
-                    📜 Restart Career from Level 1
-                </button>
-            `;
+            carryEl.classList.add('hidden');
         }
 
+        document.getElementById('intro-skill-label').textContent = data.skillLabel;
+        document.getElementById('intro-skills').innerHTML = data.skills.map(t => `<div>${t}</div>`).join('');
+        document.getElementById('intro-start-btn').textContent = data.cta;
+
+        modal.scrollTop = 0;
         modal.classList.remove('hidden');
+        SoundFX.authorizeSeal();
+    }
+
+    function startChapterFromIntro() {
+        SoundFX.woodClick();
+        document.getElementById('chapter-intro-modal').classList.add('hidden');
+    }
+
+    // ==========================================
+    // 12C. HINTS AFTER A FAILED LEVEL 2 (points at the specific mistakes)
+    // ==========================================
+    function buildLevel2FailureHints() {
+        const hints = [];
+        const unfinished = state.tasks.filter(t => t.progress < 100);
+        const notStarted = unfinished.filter(t => t.progress === 0);
+
+        if (notStarted.length > 0) {
+            const shown = notStarted.slice(0, 3).map(t => t.title);
+            const names = notStarted.length > 3 ? [...shown, `+${notStarted.length - 3} more`] : shown;
+            const blocked = notStarted.filter(t => (t.deps || []).length > 0);
+            const waiting = blocked.length > 0
+                ? ` Some of these wait on a prerequisite (for example, “${blocked[0].title}” needs “${(state.tasks.find(x => x.id === blocked[0].deps[0]) || {}).title || 'an earlier Task'}” first).`
+                : '';
+            hints.push({
+                icon: '⛓️',
+                title: `${notStarted.length} Task${notStarted.length > 1 ? 's' : ''} never started`,
+                text: `Not started: ${names.join(', ')}.${waiting} Start the first link of each chain on Day 1, because a chain only moves as fast as its first Task.`
+            });
+        }
+
+        if ((state.idleWithWorkCount || 0) > 0) {
+            hints.push({
+                icon: '😴',
+                title: `Crew sat idle ${state.idleWithWorkCount} time${state.idleWithWorkCount > 1 ? 's' : ''} while work was ready`,
+                text: 'Every unassigned artisan-day is lost capacity. If a Task is ready and someone is rested, tap Assign.'
+            });
+        }
+
+        if ((state.burnoutIncidents || 0) > 0) {
+            hints.push({
+                icon: '🔥',
+                title: `Burnout slowed the crew ${state.burnoutIncidents} time${state.burnoutIncidents > 1 ? 's' : ''}`,
+                text: 'Artisans below 35% stamina work at half speed, and each workday costs 35%. Schedule a Rest Break before stamina drops too low, usually after two straight days.'
+            });
+        }
+
+        if ((state.mismatchCount || 0) > 0) {
+            hints.push({
+                icon: '🎯',
+                title: `${state.mismatchCount} assignment${state.mismatchCount > 1 ? 's' : ''} outside the specialist’s skill`,
+                text: 'A matching specialist works +25% faster: Carpentry → Uncle Lim, Culinary → Kak Salmah, Logistics → Danny.'
+            });
+        }
+
+        if ((state.wbsBounceCount || 0) >= 2) {
+            hints.push({
+                icon: '📦',
+                title: `${state.wbsBounceCount} cards were mapped to the wrong WBS slot`,
+                text: 'Under the 100% Rule, every in-scope deliverable belongs in exactly one Work Package, and anything excluded by the Charter (like the gas wok kitchen) stays out.'
+            });
+        }
+
+        if (hints.length === 0) {
+            hints.push({
+                icon: '🧭',
+                title: 'Plan the longest chain first',
+                text: 'Timber Frame → Canopy Roof is the longest chain of Tasks. Start it on Day 1 and keep Uncle Lim rested so it never stalls.'
+            });
+        }
+        return hints.slice(0, 3);
+    }
+
+    function renderRetroHints(isVictory) {
+        const box = document.getElementById('retro-hints');
+        if (!box) return;
+        if (isVictory || state.level !== 2) {
+            box.classList.add('hidden');
+            box.innerHTML = '';
+            return;
+        }
+        const done = state.tasks.filter(t => t.progress >= 100).length;
+        const hints = buildLevel2FailureHints();
+        box.innerHTML = `
+            <div class="text-[10px] font-bold uppercase tracking-wider text-[#8C6106] mb-1.5">💡 What to try next time (${done}/${state.tasks.length} Tasks finished)</div>
+            <div class="space-y-2">
+                ${hints.map(h => `
+                    <div class="flex items-start gap-2 text-[11px] text-[#3D2412] leading-snug">
+                        <span class="text-base shrink-0">${h.icon}</span>
+                        <div><div class="font-bold">${h.title}</div><div>${h.text}</div></div>
+                    </div>`).join('')}
+            </div>
+        `;
+        box.classList.remove('hidden');
     }
 
     function advanceToNextLevel(nextLvl) {
         document.getElementById('retro-modal').classList.add('hidden');
+        // Load the new level behind the story card so the header, tabs and board are ready
+        // the moment the player taps "Begin Chapter".
         switchLevel(nextLvl);
+        showChapterIntro(nextLvl);
     }
 
     function replayCurrentLevel() {
@@ -3071,7 +3493,7 @@
             const remainingTasks = totalCount - doneCount;
             const workloadRatio = remainingTasks / Math.max(1, daysLeft);
             tiltDeg = (workloadRatio - 1.2) * 8;
-            const lowBudgetThreshold = state.level === 3 ? 2500 : 400;
+            const lowBudgetThreshold = getLevelCfg().lowBudgetThreshold;
             if (state.budget < lowBudgetThreshold) tiltDeg += 4;
             tiltDeg = Math.round(Math.max(-14, Math.min(16, tiltDeg)));
         }
@@ -3315,7 +3737,7 @@
                                             ${task.paid ? '✓ Paid' : `RM ${task.cost.toLocaleString()}`}
                                         </span>
                                         <span class="text-[10px] font-semibold font-mono-crisp px-1.5 py-0.5 rounded-md bg-[#5C3A21]/8 text-[#3D2412]">
-                                            ⏱️ ${task.effort || 1} ${state.level === 3 ? ((task.effort || 1) === 1 ? 'Wk' : 'Wks') : ((task.effort || 1) === 1 ? 'Day' : 'Days')}
+                                            ⏱️ ${task.effort || 1} ${getLevelCfg().time.effort[(task.effort || 1) === 1 ? 0 : 1]}
                                         </span>
                                         ${task.critical ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#C85A32]/15 text-[#943011] border border-[#C85A32]/30 font-bold">🔥 Critical Path</span>` : ''}
                                         ${task.outdoor ? `<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-[#2B5783]/12 text-[#1E4063] border border-[#2B5783]/25 font-semibold">🌤️ Outdoor</span>` : ''}
@@ -3364,7 +3786,7 @@
                                             <button type="button" onclick="swapTaskArtisan('${task.id}', event)" class="px-2 py-0.5 rounded bg-[#F1E7D3] hover:bg-[#E4D4B5] border border-[#8C6A4A]/60 text-[9px] font-bold text-[#3D2412] cursor-pointer">
                                                 🔄 Swap
                                             </button>
-                                            ${state.level === 3 ? `
+                                            ${getLevelCfg().crashEnabled ? `
                                                 <button type="button" onclick="toggleTaskCrash('${task.id}', event)" title="Schedule Crashing: +50% Speed for +RM ${CRASH_COST} & -${CRASH_EXTRA_STAMINA}% extra stamina" class="px-2 py-0.5 rounded border text-[9px] font-bold transition cursor-pointer ${task.crashed ? 'bg-[#9E3514] text-white border-[#5C1A06]' : 'bg-[#FFF9E6] hover:bg-[#F5E6BC] text-[#7A5404] border-[#C58F2A]'}">
                                                     ${task.crashed ? '⚡ Crashed' : `⚡ Crash +RM ${CRASH_COST}`}
                                                 </button>
@@ -3548,7 +3970,7 @@
             primaryBtn.className = 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-pointer';
             primaryBtn.innerHTML = '<span>🔒 Step 1: Decompose All Work Packages First</span>';
         } else {
-            const turnIcon = state.level === 3 ? '🗓️' : '☀️';
+            const turnIcon = getLevelCfg().time.turnIcon;
             primaryBtn.className = 'w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
             primaryBtn.innerHTML = `<span>${turnIcon} Start ${getWorkTurnLabel()} (${getTimeUnit(false)} ${state.day} of ${state.maxDays})</span>`;
         }
@@ -3631,6 +4053,7 @@
         injectBrandingElements();
         RetinaConfetti.resizeCanvas();
         state = createLevelState(1);
+        levelBaselineSig = stateSignature();
         renderAll();
         tutorialState.showTutorial = true;
         tutorialState.step = 0;
