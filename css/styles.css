@@ -145,6 +145,17 @@ h1, h2, h3, .font-serif-cozy {
     #diorama-svg-el {
         max-height: 24dvh;
     }
+    .guidance-clamp {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    #guidance-strip.guidance-expanded .guidance-clamp {
+        display: block;
+        -webkit-line-clamp: unset;
+        overflow: visible;
+    }
     #tutorial-overlay,
     #event-modal,
     #retro-modal,
@@ -492,6 +503,13 @@ h1, h2, h3, .font-serif-cozy {
 ::-webkit-scrollbar-thumb {
     background: #B49474;
     border-radius: 4px;
+}
+
+details summary::-webkit-details-marker {
+    display: none;
+}
+details[open] .details-chev {
+    transform: rotate(180deg);
 }
 
 #celebration-canvas {

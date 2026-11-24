@@ -37,7 +37,23 @@ export function clearToasts() {
     if (toastBox) toastBox.innerHTML = '';
 }
 
+export function syncGuidanceClamp() {
+    if (typeof document === 'undefined') return;
+    const strip = document.getElementById('guidance-strip');
+    const chev = document.getElementById('guidance-expand-chevron');
+    if (strip && strip.classList) {
+        if (store.ui.guidanceExpanded) strip.classList.add('guidance-expanded');
+        else strip.classList.remove('guidance-expanded');
+    }
+    if (chev && chev.classList) {
+        if (store.ui.guidanceExpanded) chev.classList.add('rotate-180');
+        else chev.classList.remove('rotate-180');
+    }
+}
+
 export function updateGuidance(msg) {
+    store.ui.guidanceExpanded = false;
+    syncGuidanceClamp();
     if (typeof document === 'undefined') return;
     const el = document.getElementById('guidance-text');
     if (el) el.innerHTML = msg;

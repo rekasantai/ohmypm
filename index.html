@@ -185,11 +185,12 @@
         <div id="context-banner" class="hidden mx-3 mt-1.5 sm:mt-2.5 px-3 py-1.5 rounded-xl bg-[#F1E7D3] border-[1.5px] border-[#8C6A4A] shrink-0"></div>
 
         <!-- ADVISOR GUIDANCE BANNER -->
-        <div id="guidance-strip" class="mx-3 mt-1.5 sm:mt-2 px-3 py-1.5 sm:py-2 rounded-xl bg-[#FFFDF9] border-[1.5px] border-[#C58F2A] ts-caption text-[#241B15] flex items-center gap-2 shrink-0">
+        <div id="guidance-strip" onclick="toggleGuidanceExpand()" class="mx-3 mt-1.5 sm:mt-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-[#FFFDF9] border-[1.5px] border-[#C58F2A] ts-caption text-[#241B15] flex items-center gap-2 shrink-0 cursor-pointer sm:cursor-default">
             <span class="w-5 h-5 rounded-md bg-[#C58F2A]/15 text-[#8C6106] flex items-center justify-center shrink-0">
                 <svg viewBox="0 0 16 16" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5.5 11.5h5M6.2 13.5h3.6M8 2a4 4 0 0 0-2.5 7.1c.5.4.8 1 .9 1.6h3.2c.1-.6.4-1.2.9-1.6A4 4 0 0 0 8 2z"/></svg>
             </span>
-            <span id="guidance-text" aria-live="polite" class="leading-snug">Tap a statement from Auntie Mei, then tap its matching <strong>Project Charter</strong> slot.</span>
+            <span id="guidance-text" aria-live="polite" class="guidance-clamp flex-1 min-w-0 leading-snug">Tap a statement from Auntie Mei, then tap its matching <strong>Project Charter</strong> slot.</span>
+            <svg id="guidance-expand-chevron" viewBox="0 0 16 16" class="w-3.5 h-3.5 text-[#8C6106] sm:hidden shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
         </div>
 
         <!-- MAIN WORKSPACE -->

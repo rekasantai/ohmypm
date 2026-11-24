@@ -89,12 +89,17 @@ export function scrambleStatements(items) {
 export function renderCharterReferenceBox(summary) {
     if (!summary) return '';
     return `
-        <div class="mb-2.5 p-2.5 rounded-lg bg-[#F1E7D3] border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-0.5 leading-snug">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-[#5C3A21]">📜 Approved Charter Baseline</div>
-            <div><strong>Objective:</strong> ${summary.objective}</div>
-            <div><strong>Constraints:</strong> ${summary.constraints}</div>
-            <div><strong>Out of Scope:</strong> ${summary.outOfScope}</div>
-        </div>
+        <details class="mb-2.5 rounded-lg bg-[#F1E7D3] border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] leading-snug">
+            <summary class="flex items-center justify-between gap-2 px-2.5 py-2 font-bold text-[#5C3A21] cursor-pointer list-none">
+                <span>📜 Check Approved Charter Baseline</span>
+                <svg viewBox="0 0 16 16" class="details-chev w-3.5 h-3.5 text-[#7A5434] transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+            </summary>
+            <div class="px-2.5 pb-2 pt-1 border-t border-[#8C6A4A]/35 space-y-0.5">
+                <div><strong>Objective:</strong> ${summary.objective}</div>
+                <div><strong>Constraints:</strong> ${summary.constraints}</div>
+                <div><strong>Out of Scope:</strong> ${summary.outOfScope}</div>
+            </div>
+        </details>
     `;
 }
 

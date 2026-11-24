@@ -27,7 +27,7 @@ export const chapter3 = {
         monsoonWindow: true
     },
     exec: { icon: '🏛️', subtitle: 'Your crew is restoring the Carpenter Street shophouse...' },
-    startGuidance: 'Decompose remaining <strong>Work Packages</strong>, tap <strong>Assign</strong> on ready Tasks, and watch <strong>Critical Path</strong> Dependencies.',
+    startGuidance: 'Decompose Work Packages, assign crew, and watch <strong>Critical Path</strong> links.',
     tutorial: {
         chapterLine: '🗓️ <strong>Ch 3 • Carpenter St. Kopitiam (RM 15,000 • 6 Weeks):</strong> Lead weekly <strong>Critical Path &amp; Control</strong>',
         lifecycleLine: '3️⃣ <strong>Level 3 • Weekly Schedule &amp; Control:</strong> Manage Dependencies, Critical Path, Monsoon Risk &amp; Change Requests.'
@@ -76,17 +76,14 @@ export const chapter3 = {
         title: 'Carpenter Street Kopitiam',
         place: 'Kuching • Carpenter Street Pre-War Shophouse',
         story: [
-            'Your Siniawan pavilion went viral. The <strong>Carpenter Street Heritage Guild</strong> now trusts you with its biggest job yet: restoring a pre-war shophouse kopitiam.',
-            'This time the work runs in <strong>weeks, not days</strong>, and Tasks depend on each other. Some can’t start until others finish. Stakeholders will have opinions, and monsoon season is on its way.',
-            'You’re no longer just planning the project. You’re <strong>steering it</strong>.'
+            'The <strong>Carpenter Street Heritage Guild</strong> wants a pre-war kopitiam restored in <strong>6 weeks</strong>. Manage task dependencies, monsoon weather, and stakeholder requests.'
         ],
         stats: [['💰', 'Budget', 'RM 15,000'], ['📅', 'Time', '6 Weeks'], ['🛟', 'Reserve', 'RM 2,000']],
-        skillLabel: 'New skills this chapter',
+        skillLabel: 'New skills',
         skills: [
-            '🔗 <strong>Dependencies &amp; Critical Path:</strong> start the Tasks that unlock everything else first.',
-            '🛟 <strong>Contingency Reserve:</strong> a dedicated RM 2,000 cushion. Spend it wisely.',
-            '🌧️ <strong>Risk &amp; Change Control:</strong> expect surprises, and decide what to accept, mitigate or refuse.',
-            '⏩ <strong>Schedule Crashing:</strong> pay extra and tire your crew to speed up a Task.'
+            '🔗 <strong>Critical Path:</strong> finish prerequisite tasks first to unlock downstream work.',
+            '🛟 <strong>Reserve &amp; Monsoon Risk:</strong> spend RM 2,000 reserve wisely to avoid weather delays.',
+            '⏩ <strong>Change Control &amp; Crashing:</strong> protect scope or trade money/stamina for speed.'
         ],
         carryTitle: '',
         carryFrom: () => '',
@@ -421,14 +418,14 @@ export const chapter3 = {
                 bodyHtml: `
                     ${renderCharterReferenceBox(st.signedCharterSummary)}
                     <div>
-                        A neighborhood committee representative visits Carpenter Street: <em>“Since your crew is already restoring the shophouse facade, can you also build a <strong>street-side acoustic performance stage</strong> for opening night? We’re hoping you can fit it into your existing budget and Week 6 deadline—unless you insist on a formal guild budget amendment.”</em>
+                        Neighborhood Committee asks: <em>“Since your crew is on-site, can you also add a <strong>street-side acoustic stage</strong> for opening night? Ideally within your existing budget and Week 6 deadline—unless a formal guild amendment is required.”</em>
                     </div>
                 `,
                 actions: [
-                    { id: 'accept_free', title: '1. Accept within current plan (RM 0 extra budget, Week 6)', desc: 'Squeeze the acoustic stage into the active build using existing budget and deadline.', disabled: false },
-                    { id: 'reject', title: '2. Decline politely — Out of Scope', desc: 'Cite the approved Charter boundary and keep the project focused on the kopitiam.', disabled: false },
-                    { id: 'backlog', title: '3. Defer to Phase 2 Backlog', desc: 'Record the stage for a future phase so current Scope and Week 6 Schedule stay protected.', disabled: false },
-                    { id: 'change_request', title: '4. Negotiate Formal Change Request (+RM 2,000, +1 Week)', desc: 'Re-baseline Budget, Schedule, and Scope together with +RM 2,000, +1 Week, and 1 Stage Task.', disabled: false }
+                    { id: 'accept_free', title: '1. Accept within current plan (RM 0, Week 6)', desc: 'Squeeze the acoustic stage into the active build using current budget and time.', disabled: false },
+                    { id: 'reject', title: '2. Decline politely — Out of Scope', desc: 'Point to the approved Charter boundary and keep focus on the kopitiam.', disabled: false },
+                    { id: 'backlog', title: '3. Defer to Phase 2 Backlog', desc: 'Log the stage for Phase 2 so Scope and Week 6 stay intact.', disabled: false },
+                    { id: 'change_request', title: '4. Formal Change Request (+RM 2,000, +1 Wk)', desc: 'Re-baseline Budget, Schedule, and Scope (+RM 2,000, +1 Wk, +1 Stage task).', disabled: false }
                 ]
             }),
             onResolve: (st, choice, api) => {
@@ -486,18 +483,18 @@ export const chapter3 = {
                     emojiHtml: uiIcon('rain', 'w-6 h-6 text-[#1E4063]'),
                     tag: 'Week 3 • Risk Forecast',
                     title: 'Monsoon Rain Forecast',
-                    bodyHtml: `Heavy monsoon squalls are forecast across <strong>Weeks 3–4</strong> over Carpenter Street! Unprotected outdoor Carpentry risks losing a full week during the monsoon window. You have <strong>RM ${st.contingencyReserve.toLocaleString()}</strong> in your <strong>Contingency Reserve</strong>.`,
+                    bodyHtml: `Monsoon squalls hit in <strong>Weeks 3–4</strong>! Unprotected outdoor Carpentry risks losing a full week. Contingency Reserve: <strong>RM ${st.contingencyReserve.toLocaleString()}</strong>.`,
                     actions: [
                         {
                             id: 'mitigate',
-                            title: '1. Risk Mitigation: Deploy Heavy-Duty Tarps (-RM 1,200 Reserve)',
-                            desc: 'Use Contingency Reserve to shelter all outdoor shophouse work across Weeks 3–4 (0 rain delay).',
+                            title: '1. Mitigate: Deploy Heavy-Duty Tarps (-RM 1,200 Reserve)',
+                            desc: 'Shelter all outdoor work across Weeks 3–4 (0 rain delay).',
                             disabled: !canAffordTarp
                         },
                         {
                             id: 'accept',
-                            title: '2. Absorb Risk (RM 0 Reserve, Risk Delay in Weeks 3–4)',
-                            desc: 'Keep your Contingency Reserve intact and accept weather exposure on outdoor work.',
+                            title: '2. Absorb Risk (RM 0 Reserve)',
+                            desc: 'Keep Reserve intact and accept weather delay risk in Weeks 3–4.',
                             disabled: false
                         }
                     ]

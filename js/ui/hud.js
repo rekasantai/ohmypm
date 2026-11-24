@@ -2,6 +2,7 @@
 import { CHAPTERS, getMaxTotalStars, getTotalEarnedStars } from '../chapters/index.js';
 import { uiIcon } from '../core/constants.js';
 import { getChapterCfg, store } from '../core/state.js';
+import { isMobileViewport } from './feedback.js';
 
 export function renderChapterBar() {
     if (typeof document === 'undefined') return;
@@ -80,6 +81,11 @@ export function renderHUD() {
 
     const ctxBanner = document.getElementById('context-banner');
     if (!ctxBanner) return;
+    if (isMobileViewport() && cfg.mode === 'agile_sprint') {
+        ctxBanner.classList.add('hidden');
+        ctxBanner.innerHTML = '';
+        return;
+    }
     const bannerHtml = cfg.renderContextBanner(st, store.ui.contextExpanded, { uiIcon });
     if (bannerHtml) {
         ctxBanner.classList.remove('hidden');

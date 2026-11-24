@@ -1,7 +1,7 @@
 // Layer 4: Core Game Engine — turn execution, event dispatch, user actions & view orchestration.
 import { getChapter } from '../chapters/index.js';
 import { getL4Metrics, getL4SprintNumber } from '../chapters/ch4-agile.js';
-import { clearToasts, highlightDependencyTask, injectBrandingElements, isMobileViewport, showToast, syncMobileShellClasses, updateGuidance } from '../ui/feedback.js';
+import { clearToasts, highlightDependencyTask, injectBrandingElements, isMobileViewport, showToast, syncGuidanceClamp, syncMobileShellClasses, updateGuidance } from '../ui/feedback.js';
 import { renderWorkspace } from '../ui/board.js';
 import { renderDiorama } from '../ui/diorama.js';
 import { renderDock } from '../ui/dock.js';
@@ -60,6 +60,9 @@ export function renderAll() {
 export function handleViewportChange() {
     RetinaConfetti.resizeCanvas();
     syncMobileShellClasses();
+    syncGuidanceClamp();
+    renderHUD();
+    renderWorkspace();
     renderMobileSheet();
 }
 
@@ -119,9 +122,59 @@ export function toggleContextBanner() {
     renderHUD();
 }
 
+export function toggleGuidanceExpand() {
+    if (!isMobileViewport()) return;
+    SoundFX.woodClick();
+    store.ui.guidanceExpanded = !store.ui.guidanceExpanded;
+    syncGuidanceClamp();
+}
+
+export function stepCharterDeck(delta) {
+    const st = store.state;
+    if (!st || !st.statements) return;
+    const placedIds = Object.values(st.charterBuckets || {}).flatMap(b => b.filledIds || []);
+    const remaining = st.statements.filter(s => !placedIds.includes(s.id));
+    if (remaining.length <= 1) return;
+    SoundFX.woodClick();
+    const cur = Math.max(0, Math.min(store.ui.charterDeckIdx || 0, remaining.length - 1));
+    const next = (cur + delta + remaining.length) % remaining.length;
+    store.ui.charterDeckIdx = next;
+    st.selectedStatementId = remaining[next].id;
+    renderWorkspace();
+}
+
+export function stepWbsDeck(delta) {
+    const st = store.state;
+    if (!st || !st.wbsCards) return;
+    const placedIds = Object.values(st.wbsBuckets || {}).flatMap(b => b.filledIds || []);
+    const remaining = st.wbsCards.filter(c => !placedIds.includes(c.id));
+    if (remaining.length <= 1) return;
+    SoundFX.woodClick();
+    const cur = Math.max(0, Math.min(store.ui.wbsDeckIdx || 0, remaining.length - 1));
+    const next = (cur + delta + remaining.length) % remaining.length;
+    store.ui.wbsDeckIdx = next;
+    st.selectedWbsCardId = remaining[next].id;
+    renderWorkspace();
+}
+
+export function setAgileMobileTab(tab) {
+    if (!['sprint', 'backlog', 'done'].includes(tab)) return;
+    SoundFX.woodClick();
+    store.ui.agileMobileTab = tab;
+    renderWorkspace();
+}
+
 export function focusDependencyTask(depTaskId, event) {
     if (event) event.stopPropagation();
     SoundFX.woodClick();
+    const cfg = getChapterCfg();
+    if (cfg && cfg.mode === 'agile_sprint' && isMobileViewport()) {
+        const depTask = (store.state.tasks || []).find(t => t.id === depTaskId);
+        if (depTask) {
+            store.ui.agileMobileTab = depTask.done ? 'done' : depTask.inSprint ? 'sprint' : 'backlog';
+            renderWorkspace();
+        }
+    }
     highlightDependencyTask(depTaskId);
 }
 
@@ -132,6 +185,10 @@ export function switchLevel(lvl) {
     SoundFX.woodClick();
     clearActiveRun();
     store.ui.contextExpanded = false;
+    store.ui.guidanceExpanded = false;
+    store.ui.charterDeckIdx = 0;
+    store.ui.wbsDeckIdx = 0;
+    store.ui.agileMobileTab = 'backlog';
     store.ui.mobileSiteExpanded = false;
     store.ui.mobileExecPeek = false;
     store.ui.mobileArtisanSheetId = null;
@@ -466,6 +523,9 @@ export function pullTaskToSprint(taskId, event) {
     }
 
     task.inSprint = true;
+    if (isMobileViewport() && (m.activeSprintCount + 1) >= wipLimit) {
+        store.ui.agileMobileTab = 'sprint';
+    }
     SoundFX.woodClick();
     saveActiveRun();
     showToast(`📥 Pulled "${task.title}" into Sprint ${getL4SprintNumber(st.day)}`, 'success');
@@ -541,7 +601,14 @@ export function openTaskAssignPicker(taskId, event) {
         SoundFX.alertPop();
         const unmetTasks = getUnmetDependencyTasks(task, st);
         const unmet = getUnmetDependencies(task, st).join(' & ');
-        if (unmetTasks[0]) highlightDependencyTask(unmetTasks[0].id);
+        if (unmetTasks[0]) {
+            const cfg = getChapterCfg();
+            if (cfg && cfg.mode === 'agile_sprint' && isMobileViewport()) {
+                store.ui.agileMobileTab = unmetTasks[0].done ? 'done' : unmetTasks[0].inSprint ? 'sprint' : 'backlog';
+                renderWorkspace();
+            }
+            highlightDependencyTask(unmetTasks[0].id);
+        }
         showToast(`🔒 Dependency locked! Finish ${unmet} first.`, 'warn');
         updateGuidance(`🔒 Dependency Locked! Complete <strong>${unmet}</strong> first (highlighted in amber).`);
         return;

@@ -55,7 +55,7 @@ export const chapter4 = {
         monsoonWindow: false
     },
     exec: { icon: '🌊', subtitle: 'Your crew is delivering Sprint work on the Kuching Waterfront...' },
-    startGuidance: '<strong>Sprint 1 Planning:</strong> Pull up to <strong>3 high-value items</strong> from the Product Backlog (prioritize <strong>Must-Have</strong> core pavilion work first!), assign your crew, then run the Sprint turn.',
+    startGuidance: '<strong>Sprint 1:</strong> Pull up to <strong>3 Must/Should items</strong>, assign crew, then run Sprint.',
     tutorial: {
         chapterLine: '🌊 <strong>Ch 4 • Waterfront Festival (RM 50,000 • 3 Sprints):</strong> Lead <strong>Hybrid Agile Sprints &amp; Quality</strong>',
         lifecycleLine: '4️⃣ <strong>Level 4 • Hybrid Agile &amp; Quality:</strong> Prioritize MoSCoW Value under a fixed launch date, prevent Defects &amp; adapt in Sprint Reviews.'
@@ -112,17 +112,14 @@ export const chapter4 = {
         title: 'Waterfront Festival Pavilion',
         place: 'Kuching Waterfront • Sungai Sarawak & Darul Hana',
         story: [
-            'Word of your Carpenter Street restoration reached the <strong>Sarawak Tourism &amp; Heritage Council</strong>. They have one flagship job left: the <strong>Waterfront Heritage Festival Pavilion</strong> facing Darul Hana Bridge.',
-            'Opening Night cannot slip — you have <strong>RM 50,000 and 3 two-week Sprints (6 turns)</strong>, and the wish-list has way more ideas than time! You’ll pull high-value items using <strong>MoSCoW prioritization</strong> and adapt at live <strong>Sprint Reviews</strong>.',
-            'Careful: pushing burned-out or rushed artisans leaves behind <strong>Quality Defects</strong> that block Festival Value until fixed!'
+            'The <strong>Sarawak Tourism Council</strong> locked Opening Night in <strong>3 Sprints (6 turns)</strong> on a RM 50,000 cap. Deliver top Festival Value with zero Quality Defects.'
         ],
         stats: [['💰', 'Budget', 'RM 50,000'], ['🔄', 'Time-Box', '3 Sprints'], ['👥', 'Crew', '3 Artisans']],
-        skillLabel: 'New skills this chapter',
+        skillLabel: 'New skills',
         skills: [
-            '🎯 <strong>MoSCoW Value Prioritization:</strong> Must-Haves + high-value Should-Haves beat costly Could-Have traps.',
-            '📦 <strong>WIP-Limited Sprint Planning:</strong> pull up to <strong>3 active items</strong> per Sprint.',
-            '🔧 <strong>Quality &amp; Rework:</strong> fatigue or unshielded crashing creates Defects that block launch value.',
-            '🤝 <strong>Sprint Reviews:</strong> welcome high-value feedback between Sprints by re-prioritizing the Backlog.'
+            '🎯 <strong>MoSCoW Value:</strong> Must-Haves + high-Value Should-Haves beat costly Could-Haves.',
+            '📦 <strong>WIP Limit (3):</strong> pull up to 3 active items per Sprint.',
+            '🔧 <strong>Zero Defects &amp; Reviews:</strong> avoid fatigued rushing and adapt between Sprints.'
         ],
         carryTitle: '',
         carryFrom: () => '',
@@ -533,13 +530,13 @@ export const chapter4 = {
                             <strong>📊 Sprint 1 Increment:</strong> ${m4.verifiedValue}/100 Value delivered · Must-Haves ${m4.mustDone}/${m4.mustTotal} · Open Defects ${m4.openDefects}
                         </div>
                         <div>
-                            The Tourism Council Director inspects your Waterfront increment: <em>“Families loved our riverfront showcase! Could you add a <strong>Shaded Family Storytelling Deck</strong> (+20 Festival Value, Culinary, 1 Turn, RM 4,000) for Sprints 2–3? Opening Night stays locked at Turn 6.”</em>
+                            Tourism Director review: <em>“Families love it! Add a <strong>Shaded Storytelling Deck</strong> (+20 Val, Culinary, 1 Turn, RM 4,000)? Turn 6 Launch stays fixed.”</em>
                         </div>
                     `,
                     actions: [
-                        { id: 'backlog', title: '1. Add to Product Backlog & Re-prioritize (RM 4,000 when pulled)', desc: 'Place the high-Value item on the Backlog so you can swap out lower-Value features intentionally.', disabled: false },
-                        { id: 'expedite', title: '2. Expedite Immediately with Rush Setup (RM 6,500 when started)', desc: 'Push directly into Active Sprint with express contractor markup (+RM 2,500 cost).', disabled: false },
-                        { id: 'decline', title: '3. Decline — Keep Initial Backlog Frozen (RM 0)', desc: 'Turn down Sprint Review feedback and stick strictly to the Day 1 backlog list.', disabled: false }
+                        { id: 'backlog', title: '1. Add to Product Backlog (RM 4,000)', desc: 'Queue on Backlog to pull intentionally next Sprint.', disabled: false },
+                        { id: 'expedite', title: '2. Expedite into Sprint Now (RM 6,500)', desc: 'Rush straight into Sprint with +RM 2,500 express fee.', disabled: false },
+                        { id: 'decline', title: '3. Decline — Freeze Initial Backlog (RM 0)', desc: 'Skip Sprint Review feedback and keep original list.', disabled: false }
                     ]
                 };
             },
@@ -590,20 +587,20 @@ export const chapter4 = {
                             Must-Haves: <strong>${m4.mustDone}/${m4.mustTotal}</strong> · Verified Value: <strong>${m4.verifiedValue}/100</strong> · Open Defects: <strong>${m4.openDefects}</strong>
                         </div>
                         <div>
-                            With 1 Sprint left before Opening Night, a Council QA Inspector offers a formal pre-check. Fixing any open Defect now prevents launch-blocking rework in Sprint 3, or you can save the fee and inspect with your own crew.
+                            Final Sprint ahead! A Council QA Inspector can check quality now—or keep the fee and inspect with your crew.
                         </div>
                     `,
                     actions: [
                         {
                             id: 'qa_inspect',
-                            title: '1. Commission Formal QA Pre-Inspection (-RM 2,000)',
-                            desc: 'Clears 1 open Quality Defect immediately (if any) and shields Sprint 3 Schedule Crashing from defects.',
+                            title: '1. Formal QA Pre-Inspection (-RM 2,000)',
+                            desc: 'Clears 1 open Defect now and shields Sprint 3 Crashing.',
                             disabled: !canAffordQA
                         },
                         {
                             id: 'self_check',
-                            title: '2. Run Standard Crew Self-Check (RM 0)',
-                            desc: 'Keep RM 2,000 in operating budget; keep crew rested above 35% to finish Sprint 3 cleanly.',
+                            title: '2. Crew Self-Check (RM 0)',
+                            desc: 'Save RM 2,000; keep crew ≥ 35% stamina for Sprint 3.',
                             disabled: false
                         }
                     ]

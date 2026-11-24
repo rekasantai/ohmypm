@@ -18,6 +18,14 @@ class MockClassList {
     }
     add(...cls) { cls.forEach(c => this.set.add(c)); }
     remove(...cls) { cls.forEach(c => this.set.delete(c)); }
+    toggle(c, force) {
+        if (force === undefined) {
+            if (this.set.has(c)) { this.set.delete(c); return false; }
+            this.set.add(c); return true;
+        }
+        if (force) { this.set.add(c); return true; }
+        this.set.delete(c); return false;
+    }
     contains(c) { return this.set.has(c); }
     toString() { return Array.from(this.set).join(' '); }
 }
@@ -109,6 +117,7 @@ const {
     L4_REWORK_COST,
     PREFS_KEY,
     SAVE_KEY,
+    renderCharterReferenceBox,
     uiIcon
 } = await import('../js/core/constants.js');
 const {
@@ -120,7 +129,8 @@ const {
     store
 } = await import('../js/core/state.js');
 const { ARTWORK_HELPERS } = await import('../js/ui/artwork.js');
-const { buildCareerMapMarkup } = await import('../js/ui/modals.js');
+const { buildCareerMapMarkup, openRetrospective } = await import('../js/ui/modals.js');
+const { renderDock } = await import('../js/ui/dock.js');
 const {
     advanceToNextLevel,
     assignArtisanToTask,
@@ -137,9 +147,13 @@ const {
     selectCareerChapter,
     selectStatement,
     selectWbsCard,
+    setAgileMobileTab,
     startWorkday,
+    stepCharterDeck,
+    stepWbsDeck,
     switchLevel,
     toggleFastTurn,
+    toggleGuidanceExpand,
     toggleRestBreak,
     toggleTaskCrash
 } = await import('../js/core/engine.js');
@@ -577,15 +591,93 @@ runTest('10. Fast-Turn Mode persistence, Career Map & Mobile Chip unclipped name
 
     // Verify unclipped mobile artisan chip puts name on its own row without stamina% on same line
     store.state.phase = 'execution';
-    import('../js/ui/dock.js').then(({ renderDock }) => {
-        renderDock();
-        const dockHtml = getMockEl('artisans-dock').innerHTML;
-        assert.ok(dockHtml.includes('>Salmah</span>'), 'Mobile chip displays full unclipped Salmah');
-    });
+    renderDock();
+    const dockHtml = getMockEl('artisans-dock').innerHTML;
+    assert.ok(dockHtml.includes('>Salmah</span>'), 'Mobile chip displays full unclipped Salmah');
 });
 
-// Wait one tick for dynamic import promise in Test 10
-await new Promise(r => setTimeout(r, 20));
+runTest('11. Mobile Usability: Focused Decks, Agile Tabs, Idle Preview Hide & Collapsible Details', () => {
+    // 1. Collapsible Charter Baseline reference helper
+    const charterBox = renderCharterReferenceBox('Scope: Kopitiam Hall');
+    assert.ok(charterBox.includes('<details'), 'Charter reference box uses collapsible <details>');
+    assert.ok(!charterBox.includes('<details open'), 'Charter reference box starts collapsed');
+    assert.ok(charterBox.includes('Check Approved Charter Baseline'), 'Charter reference summary label present');
+
+    // 2. Idle #turn-preview-strip hides when no actions are queued, shows once assigned
+    switchLevel(3);
+    assert.ok(getMockEl('turn-preview-strip').classList.contains('hidden'), 'Idle turn preview strip should be hidden');
+    decomposeWorkPackage('wp-structural');
+    assignArtisanToTask('t1', 'lim');
+    assert.ok(!getMockEl('turn-preview-strip').classList.contains('hidden'), 'Turn preview strip appears after task assignment');
+
+    // 3. Mobile viewport (375px) Focused Decks, Agile segmented tabs, guidance clamp & collapsed Retro reflection
+    try {
+        globalThis.window.innerWidth = 375;
+
+        // L1 Charter Focused Deck
+        switchLevel(1);
+        let ws = getMockEl('charter-workspace').innerHTML;
+        assert.ok(ws.includes('Card 1/8'), 'Mobile L1 renders Card 1/8 Focused Deck');
+        stepCharterDeck(1);
+        ws = getMockEl('charter-workspace').innerHTML;
+        assert.ok(ws.includes('Card 2/8'), 'stepCharterDeck(1) advances to Card 2/8');
+        const activeStmt = store.state.statements.find(s => s.id === store.state.selectedStatementId);
+        handleCharterBucketClick(activeStmt.targetBucket);
+        ws = getMockEl('charter-workspace').innerHTML;
+        assert.match(ws, /Card \d+\/7/, 'Placing one charter card shrinks remaining deck count to 7');
+
+        // L2 WBS Focused Deck
+        switchLevel(2);
+        ws = getMockEl('charter-workspace').innerHTML;
+        assert.ok(ws.includes('Scope Card 1/7'), 'Mobile L2 renders Scope Card 1/7 Focused Deck');
+        stepWbsDeck(1);
+        ws = getMockEl('charter-workspace').innerHTML;
+        assert.ok(ws.includes('Scope Card 2/7'), 'stepWbsDeck(1) advances to Scope Card 2/7');
+        const activeWbs = store.state.wbsCards.find(c => c.id === store.state.selectedWbsCardId);
+        handleWbsBucketClick(activeWbs.targetBucket);
+        ws = getMockEl('charter-workspace').innerHTML;
+        assert.match(ws, /Scope Card \d+\/6/, 'Placing one WBS card shrinks remaining deck count to 6');
+
+        // Guidance 1-line expand toggle on mobile
+        assert.equal(store.ui.guidanceExpanded, false);
+        toggleGuidanceExpand();
+        assert.equal(store.ui.guidanceExpanded, true);
+        assert.ok(getMockEl('guidance-strip').classList.contains('guidance-expanded'));
+
+        // L4 Agile segmented tabs + hidden duplicate context banner + WIP=3 auto-switch to Sprint
+        switchLevel(4);
+        assert.ok(getMockEl('context-banner').classList.contains('hidden'), 'L4 context banner stays hidden on mobile');
+        ws = getMockEl('wbs-tree-workspace').innerHTML;
+        assert.ok(ws.includes('id="agile-mobile-tabs"'), 'Mobile L4 renders segmented tabs');
+        assert.equal(store.ui.agileMobileTab, 'backlog');
+        setAgileMobileTab('done');
+        assert.equal(store.ui.agileMobileTab, 'done');
+        setAgileMobileTab('backlog');
+        pullTaskToSprint('l4-t1');
+        pullTaskToSprint('l4-t5');
+        assert.equal(store.ui.agileMobileTab, 'backlog');
+        pullTaskToSprint('l4-t6'); // Hits WIP limit 3 -> auto-switches to Sprint tab
+        assert.equal(store.ui.agileMobileTab, 'sprint');
+
+        // Retro Reflection starts collapsed on mobile
+        openRetrospective({
+            won: true, outcomeTag: 'Done', stars: 3, headline: 'Success', subline: 'Nice',
+            summaryLines: ['All good'], metrics: [{ label: 'Score', value: '100' }],
+            debriefPoints: ['Point 1'], reflectionQuestion: 'Why did agile help?'
+        });
+        assert.ok(!getMockEl('retro-reflection-section').innerHTML.includes('<details open'), 'Mobile retro reflection starts collapsed');
+    } finally {
+        globalThis.window.innerWidth = 1280;
+    }
+
+    // Desktop Retro Reflection starts open
+    openRetrospective({
+        won: true, outcomeTag: 'Done', stars: 3, headline: 'Success', subline: 'Nice',
+        summaryLines: ['All good'], metrics: [{ label: 'Score', value: '100' }],
+        debriefPoints: ['Point 1'], reflectionQuestion: 'Why did agile help?'
+    });
+    assert.ok(getMockEl('retro-reflection-section').innerHTML.includes('<details open'), 'Desktop retro reflection starts expanded');
+});
 
 const failed = results.filter(r => !r.passed);
 console.log(`\nSummary: ${results.length - failed.length}/${results.length} test suites passed.`);

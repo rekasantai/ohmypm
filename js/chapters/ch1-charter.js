@@ -27,7 +27,7 @@ export const chapter1 = {
         monsoonWindow: false
     },
     exec: { icon: '☕', subtitle: 'Your crew is building at Siniawan Night Market...' },
-    startGuidance: 'Tap a statement from Auntie Mei, then tap its matching <strong>Project Charter</strong> slot.',
+    startGuidance: 'Tap a matching <strong>Project Charter</strong> slot for each card.',
     tutorial: {
         chapterLine: '📜 <strong>Ch 1 • Main Bazaar Cart (RM 500 • 3 Days):</strong> Draft a <strong>Project Charter</strong>',
         lifecycleLine: '1️⃣ <strong>Level 1 • Project Charter:</strong> Lock down Objective, Constraints, Success Criteria &amp; Out of Scope.'
@@ -71,12 +71,11 @@ export const chapter1 = {
         title: 'Main Bazaar Coffee Cart',
         place: 'Kuching • Main Bazaar Five-Foot Way',
         story: [
-            'Freshly certified in Kuching, you open your heritage-restoration practice with a small but important job: <strong>Auntie Mei’s compact coffee cart</strong> on the Main Bazaar five-foot way.',
-            'Auntie Mei has plenty of ideas and very little on paper. Before anyone picks up a saw, you need everyone to agree on <strong>what</strong> is being built, <strong>how much</strong> it can cost, and <strong>what is not included</strong>.'
+            'Open your Kuching practice with <strong>Auntie Mei’s coffee cart</strong> on Main Bazaar. Lock down what is in—and out of—scope before building begins.'
         ],
         stats: [['💰', 'Budget', 'RM 500'], ['📅', 'Time', '3 Days'], ['👥', 'Crew', 'Just you']],
-        skillLabel: 'New skill this chapter',
-        skills: ['📜 <strong>Project Charter:</strong> sort Auntie Mei’s statements into Objective, Constraints, Success Criteria &amp; Out of Scope.'],
+        skillLabel: 'New skill',
+        skills: ['📜 <strong>Project Charter:</strong> sort Objective, Constraints, Success Criteria &amp; Out of Scope.'],
         carryTitle: '',
         carryFrom: () => '',
         cta: 'Begin Chapter 1 ☕'

@@ -28,8 +28,12 @@ import {
     startWorkday,
     swapTaskArtisan,
     switchLevel,
+    setAgileMobileTab,
+    stepCharterDeck,
+    stepWbsDeck,
     toggleContextBanner,
     toggleFastTurn,
+    toggleGuidanceExpand,
     toggleMobileSiteDrawer,
     toggleMute,
     toggleRestBreak,
@@ -85,7 +89,11 @@ const WINDOW_EXPORTS = {
     handleArtisanCardTap,
     openMobileArtisanSheet,
     closeMobileSheet,
-    toggleContextBanner
+    toggleContextBanner,
+    toggleGuidanceExpand,
+    stepCharterDeck,
+    stepWbsDeck,
+    setAgileMobileTab
 };
 
 if (typeof window !== 'undefined') {

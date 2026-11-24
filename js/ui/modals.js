@@ -67,7 +67,7 @@ export function getTutorialSteps() {
             `,
             body: `
                 <p class="text-xs text-[#241B15] leading-relaxed">
-                    Grow your Sarawakian heritage restoration reputation across <strong>${CHAPTERS.length} progressively bigger commissions</strong>—each unlocking higher stakes and real <strong>Project Management</strong> tools:
+                    Grow your Sarawak practice across <strong>${CHAPTERS.length} commissions</strong>, unlocking deeper <strong>PM</strong> tools:
                 </p>
                 <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
                     ${CHAPTERS.map(ch => `<div>${ch.tutorial.chapterLine}</div>`).join('')}
@@ -93,7 +93,7 @@ export function getTutorialSteps() {
             `,
             body: `
                 <p class="text-xs text-[#241B15] leading-relaxed">
-                    Every project balances <strong>Scope</strong>, <strong>Schedule</strong>, and <strong>Budget</strong>. Earn client referrals by mastering each stage:
+                    Balance <strong>Scope, Schedule &amp; Budget</strong> across every lifecycle stage:
                 </p>
                 <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
                     ${CHAPTERS.map(ch => `<div>${ch.tutorial.lifecycleLine}</div>`).join('')}
@@ -124,11 +124,11 @@ export function getTutorialSteps() {
             `,
             body: `
                 <p class="text-xs text-[#241B15] leading-relaxed">
-                    Tap <strong>Assign</strong> on any ready Task to pick a team member (<strong>Uncle Lim</strong>, <strong>Kak Salmah</strong>, or <strong>Danny</strong>). Matching specialists save a full turn—and assigned artisans automatically continue multi-day work until finished or fatigued (&lt;35% stamina).
+                    Tap <strong>Assign</strong> on ready Tasks (<strong>Uncle Lim</strong>, <strong>Kak Salmah</strong>, <strong>Danny</strong>). Specialists save a turn and auto-continue until done or &lt;35% stamina.
                 </p>
                 <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
-                    <div>☕ Schedule <strong>Rest Breaks</strong> before stamina drops below 35% to prevent <strong>Burnout</strong> (-50% speed).</div>
-                    <div>🗓️ Advance turn-by-turn across daily builds (L2), weekly control (L3), and Hybrid Agile Sprints (L4)!</div>
+                    <div>☕ Use <strong>Rest</strong> before &lt;35% stamina to prevent <strong>Burnout</strong> (-50% speed).</div>
+                    <div>🗓️ Progress from daily builds (L2) to weekly control (L3) &amp; Agile Sprints (L4).</div>
                 </div>
             `
         }
@@ -487,27 +487,36 @@ export function openRetrospective(isVictory) {
     st.retroChoice = { wentWell: 0, toImprove: 0 };
     const retroSection = document.getElementById('retro-reflection-section');
     if (retroSection) {
+        const openAttr = isMobileViewport() ? '' : ' open';
         retroSection.innerHTML = `
-            <div>
-                <label class="block text-[10.5px] font-bold text-[#2E6F40] mb-1">✅ Project Retrospective — What Went Well</label>
-                <div class="grid grid-cols-1 gap-1">
-                    ${lvlRetro.well.map((txt, idx) => `
-                        <button type="button" onclick="selectRetro('wentWell', ${idx}, this)" class="retro-opt-well min-h-[36px] text-left text-[11px] leading-snug p-2 rounded-xl ${idx === 0 ? 'border-2 border-[#2E6F40] bg-[#FFF9E6]' : 'border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#2E6F40]/10'} transition cursor-pointer">
-                            ${txt}
-                        </button>
-                    `).join('')}
+            <details${openAttr} class="rounded-xl border border-[#8C6A4A]/50 bg-[#FAF5EB] p-2">
+                <summary class="flex items-center justify-between gap-2 text-[11px] font-bold text-[#5C3A21] cursor-pointer list-none">
+                    <span>📝 Team Reflection Prompts (Optional)</span>
+                    <svg viewBox="0 0 16 16" class="details-chev w-3.5 h-3.5 text-[#7A5434] transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+                </summary>
+                <div class="mt-2 pt-2 border-t border-[#8C6A4A]/30 space-y-1.5">
+                    <div>
+                        <label class="block text-[10.5px] font-bold text-[#2E6F40] mb-1">✅ What Went Well</label>
+                        <div class="grid grid-cols-1 gap-1">
+                            ${lvlRetro.well.map((txt, idx) => `
+                                <button type="button" onclick="selectRetro('wentWell', ${idx}, this)" class="retro-opt-well min-h-[36px] text-left text-[11px] leading-snug p-2 rounded-xl ${idx === 0 ? 'border-2 border-[#2E6F40] bg-[#FFF9E6]' : 'border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#2E6F40]/10'} transition cursor-pointer">
+                                    ${txt}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10.5px] font-bold text-[#C85A32] mb-1">📝 What to Improve</label>
+                        <div class="grid grid-cols-1 gap-1">
+                            ${lvlRetro.improve.map((txt, idx) => `
+                                <button type="button" onclick="selectRetro('toImprove', ${idx}, this)" class="retro-opt-improve min-h-[36px] text-left text-[11px] leading-snug p-2 rounded-xl ${idx === 0 ? 'border-2 border-[#C85A32] bg-[#FFF9E6]' : 'border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#C85A32]/10'} transition cursor-pointer">
+                                    ${txt}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div>
-                <label class="block text-[10.5px] font-bold text-[#C85A32] mb-1">📝 Project Retrospective — What to Improve</label>
-                <div class="grid grid-cols-1 gap-1">
-                    ${lvlRetro.improve.map((txt, idx) => `
-                        <button type="button" onclick="selectRetro('toImprove', ${idx}, this)" class="retro-opt-improve min-h-[36px] text-left text-[11px] leading-snug p-2 rounded-xl ${idx === 0 ? 'border-2 border-[#C85A32] bg-[#FFF9E6]' : 'border-[1.5px] border-[#8C6A4A] bg-white hover:bg-[#C85A32]/10'} transition cursor-pointer">
-                            ${txt}
-                        </button>
-                    `).join('')}
-                </div>
-            </div>
+            </details>
         `;
     }
 

@@ -27,7 +27,7 @@ export const chapter2 = {
         monsoonWindow: false
     },
     exec: { icon: '🏮', subtitle: 'Your crew is building at Siniawan Night Market...' },
-    startGuidance: '<strong>Step 1 (WBS 100% Rule):</strong> Tap a deliverable card, then tap its matching <strong>WBS Work Package</strong> (or Out of Scope).',
+    startGuidance: '<strong>Step 1 (WBS 100%):</strong> Match each scope card to its <strong>Work Package</strong> or Out of Scope.',
     tutorial: {
         chapterLine: '📦 <strong>Ch 2 • Siniawan Stall (RM 2,500 • 6 Days):</strong> Build via <strong>WBS 100% Rule</strong>',
         lifecycleLine: '2️⃣ <strong>Level 2 • Work Breakdown Structure (WBS):</strong> Decompose Work Packages &amp; multi-day Tasks (100% Rule).'
@@ -77,16 +77,13 @@ export const chapter2 = {
         title: 'Siniawan Night Market Stall',
         place: 'Siniawan, Bau • Heritage Night Market',
         story: [
-            'Word travels fast in Kuching. Auntie Mei’s regulars can’t stop talking about her cart, and the <strong>Siniawan Heritage Committee</strong> has taken notice.',
-            'They want a multi-bay <strong>Kek Lapis &amp; Teh Tarik pavilion</strong> for the night market: five times the budget and far too much to keep in your head. Uncle Lim, Kak Salmah and Danny are on board, but a one-page charter won’t be enough anymore.',
-            'Before work begins, you must break the whole job down so that <strong>nothing is missed and nothing extra sneaks in</strong>.'
+            'The <strong>Siniawan Heritage Committee</strong> hired your 3-artisan crew for a 5× larger night-market pavilion. Break every deliverable down so nothing is missed—and extras stay out.'
         ],
         stats: [['💰', 'Budget', 'RM 2,500'], ['📅', 'Time', '6 Days'], ['👥', 'Crew', '3 Artisans']],
-        skillLabel: 'New skills this chapter',
+        skillLabel: 'New skills',
         skills: [
-            '📦 <strong>Work Breakdown Structure (WBS):</strong> map every deliverable into Work Packages using the <strong>100% Rule</strong>.',
-            '⚡ <strong>Assign &amp; Stamina:</strong> pick specialists to save a full day, let them continue multi-day work, and rest before burnout.',
-            '🚫 <strong>Out of Scope:</strong> some deliverables don’t belong, so keep them out of the WBS.'
+            '📦 <strong>WBS 100% Rule:</strong> sort every deliverable into Work Packages—exclude out-of-scope traps.',
+            '⚡ <strong>Specialists &amp; Rest:</strong> matching skills saves a full day; rest above 35% stamina.'
         ],
         carryTitle: '📜 Carried over from your signed Charter',
         carryFrom: (st) => {
@@ -481,14 +478,14 @@ export const chapter2 = {
                 bodyHtml: `
                     ${renderCharterReferenceBox(st.signedCharterSummary)}
                     <div>
-                        A Siniawan Heritage Committee member checks the pavilion: <em>“Before night-market opening, please add <strong>bilingual Bahasa &amp; English price labels</strong> to the menu board and <strong>food-safe sneeze guards</strong> on the Kek Lapis display so visitors can read prices and food meets hygiene rules. Materials are <strong>RM 150</strong>, same 6-day opening.”</em>
+                        Committee visit: <em>“Before opening, please add <strong>bilingual price labels</strong> and <strong>food-safe sneeze guards</strong> for the Kek Lapis display. Materials cost <strong>RM 150</strong>, same 6-day deadline.”</em>
                     </div>
                 `,
                 actions: [
-                    { id: 'accept', title: '1. Accept within current plan (-RM 150 materials)', desc: 'Cover materials from spare operating budget while keeping the 6-day opening.', disabled: false },
-                    { id: 'reject', title: '2. Decline — Out of Scope (RM 0)', desc: 'Turn down the request and finish the pavilion without labels or sneeze guards.', disabled: false },
-                    { id: 'backlog', title: '3. Defer to Phase 2 Backlog (RM 0)', desc: 'Log price labels and sneeze guards for after the night-market opening.', disabled: false },
-                    { id: 'change_request', title: '4. Request Formal Change Order (+RM 150, +1 Day)', desc: 'Ask the committee to amend the contract and extend the deadline by 1 day.', disabled: false }
+                    { id: 'accept', title: '1. Accept within plan (-RM 150)', desc: 'Cover RM 150 from spare budget; keep 6-day opening.', disabled: false },
+                    { id: 'reject', title: '2. Decline — Out of Scope (RM 0)', desc: 'Finish the pavilion without price labels or sneeze guards.', disabled: false },
+                    { id: 'backlog', title: '3. Defer to Phase 2 Backlog (RM 0)', desc: 'Log labels and hygiene guards for after opening night.', disabled: false },
+                    { id: 'change_request', title: '4. Formal Change Order (+RM 150, +1 Day)', desc: 'Ask the committee to amend scope and extend deadline.', disabled: false }
                 ]
             }),
             onResolve: (st, choice, api) => {
@@ -533,18 +530,18 @@ export const chapter2 = {
                     emojiHtml: uiIcon('hammer', 'w-6 h-6 text-[#5C3A21]'),
                     tag: 'Day 4 • Schedule vs. Budget Trade-Off',
                     title: 'Bau Sawmill Pre-Cut Roof Offer',
-                    bodyHtml: 'A Bau timber supplier has a pre-cut canopy roof kit ready today. Buying it for <strong>RM 150</strong> immediately completes <strong>+50% of Install Pitched Canopy Roof</strong> (saving 1 full workday), or you can stick with manual framing at <strong>RM 0</strong>.',
+                    bodyHtml: 'A Bau sawmill has a pre-cut canopy kit ready today: pay <strong>RM 150</strong> for <strong>+50% Canopy Roof progress</strong> (saves 1 day), or build manually at <strong>RM 0</strong>.',
                     actions: [
                         {
                             id: 'buy',
-                            title: '1. Buy Pre-Cut Roof Kit (-RM 150, +50% Canopy Roof progress)',
-                            desc: canAffordKit ? 'Spend RM 150 spare budget to save a workday on the roof.' : 'Insufficient spare operating budget after reserving remaining Tasks.',
+                            title: '1. Buy Pre-Cut Kit (-RM 150, +50% Roof)',
+                            desc: canAffordKit ? 'Trade RM 150 spare budget to save 1 workday.' : 'Insufficient spare budget after reserving remaining Tasks.',
                             disabled: !canAffordKit
                         },
                         {
                             id: 'decline',
-                            title: '2. Stick with Standard Build (RM 0, keep budget intact)',
-                            desc: `Keep your remaining RM ${st.budget.toLocaleString()} budget and assemble the roof manually.`,
+                            title: '2. Standard Manual Build (RM 0)',
+                            desc: `Save RM ${st.budget.toLocaleString()} budget and frame the roof manually.`,
                             disabled: false
                         }
                     ]

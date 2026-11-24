@@ -42,6 +42,10 @@ export const store = {
     },
     ui: {
         contextExpanded: false,
+        guidanceExpanded: false,
+        charterDeckIdx: 0,
+        wbsDeckIdx: 0,
+        agileMobileTab: 'backlog',
         mobileSiteExpanded: false,
         mobileExecPeek: false,
         mobileArtisanSheetId: null,

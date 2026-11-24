@@ -185,9 +185,9 @@ export function renderTaskCard(task, opts = {}) {
         `;
 
     const statusSectionHtml = isDefect
-        ? `<p class="ts-micro text-[#991B1B] font-bold mt-1">⚠️ Quality Defect — +${task.value} Value paused until 1-Turn QA Rework (-RM ${reworkCost.toLocaleString()})</p>`
+        ? `<p class="ts-micro text-[#991B1B] font-bold mt-1">⚠️ Defect (+${task.value} Val paused · 1t QA -RM ${reworkCost.toLocaleString()})</p>`
         : !unlocked
-            ? `<p class="ts-micro text-[#943011] font-semibold mt-1">Requires: ${unmetNames.join(' &amp; ')} <span class="underline opacity-80">↗ Locate</span></p>`
+            ? `<p class="ts-micro text-[#943011] font-semibold mt-1">🔒 Needs: ${unmetNames.join(' &amp; ')} <span class="underline opacity-85">↗</span></p>`
             : task.progress > 0 && !isDone
                 ? `
                     <div class="mt-1.5">

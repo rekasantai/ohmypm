@@ -25,12 +25,13 @@ export function renderTurnPreviewStrip() {
         return;
     }
 
-    strip.classList.remove('hidden');
     const preview = computeTurnPreview(st, cfg);
     if (!preview.hasActions) {
-        strip.innerHTML = '<div class="ts-micro text-[#7A5434] font-medium text-center leading-tight">Tap Assign on a Task (or ☕ Rest) to preview turn spend.</div>';
+        strip.classList.add('hidden');
+        strip.innerHTML = '';
         return;
     }
+    strip.classList.remove('hidden');
 
     const parts = [];
     const spendCls = preview.overBudget ? 'text-[#B91C1C] font-extrabold' : 'text-[#3D2412] font-bold';
