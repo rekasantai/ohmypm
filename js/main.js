@@ -1,6 +1,7 @@
 // Layer 5: Application Entrypoint — exposes UI handlers to DOM onclick attributes and boots app.
 import {
     advanceToNextLevel,
+    approveRiskRegister,
     assignArtisanToTask,
     authorizeProjectCharter,
     bootApp,
@@ -24,6 +25,7 @@ import {
     returnTaskToBacklog,
     selectCareerChapter,
     selectRetro,
+    selectRiskStrategy,
     selectStatement,
     selectWbsCard,
     startWorkday,
@@ -31,6 +33,7 @@ import {
     switchLevel,
     setAgileMobileTab,
     stepCharterDeck,
+    stepRiskDeck,
     stepWbsDeck,
     toggleCompletedWp,
     toggleContextBanner,
@@ -97,10 +100,13 @@ const WINDOW_EXPORTS = {
     toggleContextBanner,
     toggleGuidanceExpand,
     stepCharterDeck,
+    stepRiskDeck,
     stepWbsDeck,
     setAgileMobileTab,
     toggleCompletedWp,
-    pullAndAssignTask
+    pullAndAssignTask,
+    selectRiskStrategy,
+    approveRiskRegister
 };
 
 if (typeof window !== 'undefined') {
@@ -126,6 +132,7 @@ if (typeof document !== 'undefined') {
             getAgileTab: () => store.ui.agileMobileTab,
             onStepCharter: stepCharterDeck,
             onStepWbs: stepWbsDeck,
+            onStepRisk: stepRiskDeck,
             onSetAgileTab: setAgileMobileTab,
             onCloseSheet: closeMobileSheet
         });

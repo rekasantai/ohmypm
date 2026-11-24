@@ -45,6 +45,7 @@ export const store = {
         guidanceExpanded: false,
         charterDeckIdx: 0,
         wbsDeckIdx: 0,
+        riskDeckIdx: 0,
         agileMobileTab: 'backlog',
         expandedCompletedWps: {},
         mobileSiteExpanded: false,
@@ -103,11 +104,27 @@ export function loadProgress() {
         if (!raw) return;
         const data = JSON.parse(raw);
         if (!data || typeof data !== 'object') return;
-        getChapterIds().forEach(id => {
-            const stars = Number(data.levelStars && data.levelStars[id]);
-            if (Number.isInteger(stars) && stars >= 0 && stars <= 3) store.levelStars[id] = stars;
-            if (data.completedLevels && data.completedLevels[id] === true) store.completedLevels[id] = true;
-        });
+        if (!data.v || Number(data.v) < 2) {
+            // Legacy v:1 (or pre-versioned) save: migrate old Ch 4 (Hybrid Agile) -> Ch 5; new Ch 4 (Risk) starts fresh
+            [1, 2, 3].forEach(id => {
+                const stars = Number(data.levelStars && data.levelStars[id]);
+                if (Number.isInteger(stars) && stars >= 0 && stars <= 3) store.levelStars[id] = stars;
+                if (data.completedLevels && data.completedLevels[id] === true) store.completedLevels[id] = true;
+            });
+            const oldAgileStars = Number(data.levelStars && data.levelStars[4]);
+            if (Number.isInteger(oldAgileStars) && oldAgileStars >= 0 && oldAgileStars <= 3) {
+                store.levelStars[5] = oldAgileStars;
+            }
+            if (data.completedLevels && data.completedLevels[4] === true) {
+                store.completedLevels[5] = true;
+            }
+        } else {
+            getChapterIds().forEach(id => {
+                const stars = Number(data.levelStars && data.levelStars[id]);
+                if (Number.isInteger(stars) && stars >= 0 && stars <= 3) store.levelStars[id] = stars;
+                if (data.completedLevels && data.completedLevels[id] === true) store.completedLevels[id] = true;
+            });
+        }
     } catch (_err) {
         // Storage unavailable or corrupted: start fresh without breaking the game.
     }
@@ -118,7 +135,7 @@ export function saveProgress() {
     if (!storage) return;
     try {
         storage.setItem(SAVE_KEY, JSON.stringify({
-            v: 1,
+            v: 2,
             completedLevels: store.completedLevels,
             levelStars: store.levelStars
         }));
@@ -195,7 +212,7 @@ export function saveActiveRun() {
         if ('bouncedWbsCardId' in st) cleanState.bouncedWbsCardId = null;
 
         storage.setItem(ACTIVE_RUN_KEY, JSON.stringify({
-            v: 1,
+            v: 2,
             level: Number(st.level),
             baselineSig: store.levelBaselineSig,
             savedAt: Date.now(),
@@ -214,7 +231,7 @@ export function loadActiveRun() {
         const raw = storage.getItem(ACTIVE_RUN_KEY);
         if (!raw) return null;
         const data = JSON.parse(raw);
-        if (!data || data.v !== 1 || !data.state || typeof data.state !== 'object') return null;
+        if (!data || data.v !== 2 || !data.state || typeof data.state !== 'object') return null;
         const lvl = Number(data.level);
         const chapter = CHAPTER_BY_ID[lvl];
         if (!chapter || Number(data.state.level) !== lvl) return null;

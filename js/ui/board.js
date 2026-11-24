@@ -1,5 +1,5 @@
 // Layer 3: Workspace View Renderers (Charter, WBS Builder, Inline WBS Tree, Agile Sprint Board).
-import { getL4Metrics, getL4SprintNumber } from '../chapters/ch4-agile.js';
+import { getL4Metrics, getL4SprintNumber } from '../chapters/ch5-agile.js';
 import { getMoSCoWBadge, getSkillBadgeColor, getSkillIconName, uiIcon } from '../core/constants.js';
 import { getChapterCfg, getUnmetDependencyTasks, isTaskUnlocked, store } from '../core/state.js';
 import { getArtisanPortraitSVG } from './artwork.js';
@@ -558,6 +558,117 @@ export function renderInlineWBSTree() {
     container.innerHTML = stepBannerHtml + treeHtml;
 }
 
+export function renderRiskRegister() {
+    if (typeof document === 'undefined') return;
+    const container = document.getElementById('charter-workspace');
+    if (!container) return;
+    const st = store.state;
+    const mobile = isMobileViewport();
+    const risks = st.riskRegister || [];
+    const plannedCount = risks.filter(r => Boolean(r.selectedStrategy)).length;
+
+    const severityStyle = (sev) => {
+        if (sev === 'high') return { badge: '🔴 High Threat', cls: 'bg-[#FEE2E2] text-[#991B1B] border-[#B91C1C]/40' };
+        if (sev === 'med') return { badge: '🟠 Med Threat', cls: 'bg-[#FEF3C7] text-[#7A5404] border-[#C58F2A]/50' };
+        if (sev === 'opp') return { badge: '✨ Opportunity', cls: 'bg-[#E6F4EA] text-[#1B4226] border-[#2E6F40]/45' };
+        return { badge: '🟢 Low Threat', cls: 'bg-[#F1E7D3] text-[#3D2412] border-[#8C6A4A]/50' };
+    };
+
+    const renderCard = (risk) => {
+        const meta = severityStyle(risk.severity);
+        const currentOpt = risk.options.find(o => o.id === risk.selectedStrategy);
+        const refundedAvail = (st.contingencyReserve || 0) + (currentOpt ? currentOpt.cost : 0);
+
+        return `
+            <div class="paper-card rounded-xl p-2.5 sm:p-3 bg-[#FFFDF9] border-[1.5px] ${risk.selectedStrategy ? 'border-[#2E6F40]' : 'border-[#8C6A4A]'} space-y-2">
+                <div class="flex items-start justify-between gap-2">
+                    <div class="min-w-0">
+                        <div class="flex items-center flex-wrap gap-1.5">
+                            <span class="ts-micro font-bold font-mono-crisp px-1.5 py-0.5 rounded bg-[#3D2412] text-[#F6D365]">${risk.code}</span>
+                            <span class="ts-micro font-bold px-1.5 py-0.5 rounded border ${meta.cls}">${meta.badge}</span>
+                            <span class="ts-micro font-semibold text-[#5A4D41]">${risk.probLabel} · ${risk.impactLabel}</span>
+                        </div>
+                        <h4 class="ts-body sm:text-sm font-bold text-[#241B15] mt-1">${risk.title}</h4>
+                        <p class="ts-micro text-[#5A4D41] leading-snug">${risk.desc}</p>
+                    </div>
+                </div>
+                <div class="space-y-1.5 pt-1 border-t border-[#8C6A4A]/25">
+                    ${risk.options.map(opt => {
+                        const isSel = risk.selectedStrategy === opt.id;
+                        const canAfford = opt.cost <= refundedAvail;
+                        const disabled = !canAfford && !isSel;
+                        return `
+                            <button type="button" onclick="selectRiskStrategy('${risk.id}', '${opt.id}')" ${disabled ? 'disabled' : ''} class="w-full min-h-[44px] px-2.5 py-1.5 rounded-xl border-[1.5px] text-left transition flex items-center justify-between gap-2 ${isSel ? 'bg-[#EFF6F1] border-[#2E6F40] ring-2 ring-[#2E6F40]/20 cursor-pointer' : disabled ? 'bg-[#EFE6D4] border-[#8C6A4A]/40 opacity-50 cursor-not-allowed' : 'bg-[#FAF5EB] hover:bg-[#F1E7D3] border-[#8C6A4A]/70 cursor-pointer'}">
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="ts-caption font-bold text-[#241B15]">${opt.tag}</span>
+                                        <span class="ts-micro font-semibold text-[#5C3A21]">${opt.label}</span>
+                                    </div>
+                                    <div class="ts-micro text-[#5A4D41] leading-snug">${opt.desc}</div>
+                                </div>
+                                <span class="shrink-0 ts-micro font-bold font-mono-crisp px-2 py-1 rounded-lg ${isSel ? 'bg-[#2E6F40] text-white' : 'bg-white border border-[#8C6A4A]/45 text-[#3D2412]'}">
+                                    ${opt.cost > 0 ? `-RM ${opt.cost.toLocaleString()}` : 'RM 0'}
+                                </span>
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    };
+
+    const headerHtml = `
+        <div class="paper-card rounded-xl p-2.5 sm:p-3 bg-[#FFFDF9] border-[#C58F2A] flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+                ${getArtisanPortraitSVG('ranger', 30)}
+                <div class="min-w-0">
+                    <div class="ts-caption font-bold text-[#5C3A21] truncate">Forestry Risk Register · ${plannedCount}/${risks.length} Planned</div>
+                    <div class="hidden sm:block ts-micro text-[#5A4D41]">Balance Threats &amp; Opportunities while keeping Reserve for surprises</div>
+                </div>
+            </div>
+            <span class="shrink-0 px-2 py-1 rounded-lg font-mono-crisp ts-micro font-bold ${st.contingencyReserve > 0 ? 'bg-[#EFF6F1] text-[#235732] border border-[#2E6F40]/40' : 'bg-[#FEE2E2] text-[#991B1B] border border-[#B91C1C]/40'}">
+                🛟 RM ${st.contingencyReserve.toLocaleString()}
+            </span>
+        </div>
+    `;
+
+    let cardsBodyHtml = '';
+    if (mobile && risks.length > 0) {
+        const idx = ((store.ui.riskDeckIdx % risks.length) + risks.length) % risks.length;
+        store.ui.riskDeckIdx = idx;
+        const active = risks[idx];
+        const pillsHtml = risks.map((r, i) => `
+            <button type="button" onclick="stepRiskDeck(${i - idx})" class="px-2 py-1 rounded-md ts-micro font-bold font-mono-crisp border cursor-pointer ${i === idx ? 'bg-[#5C3A21] text-[#F6D365] border-[#241B15]' : r.selectedStrategy ? 'bg-[#EFF6F1] text-[#235732] border-[#2E6F40]/45' : 'bg-[#F1E7D3] text-[#5C3A21] border-[#8C6A4A]/50'}">
+                ${r.code}${r.selectedStrategy ? ' ✓' : ''}
+            </button>
+        `).join('');
+
+        cardsBodyHtml = `
+            <div data-swipe-deck="risk" class="swipe-surface space-y-2">
+                <div class="flex items-center justify-between gap-1.5">
+                    <div class="flex items-center gap-1 flex-wrap">${pillsHtml}</div>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button type="button" onclick="stepRiskDeck(-1)" aria-label="Previous risk" class="min-w-[34px] min-h-[32px] rounded-lg bg-[#F1E7D3] border border-[#8C6A4A]/70 text-xs font-bold text-[#3D2412] cursor-pointer">◀</button>
+                        <button type="button" onclick="stepRiskDeck(1)" aria-label="Next risk" class="min-w-[34px] min-h-[32px] rounded-lg bg-[#F1E7D3] border border-[#8C6A4A]/70 text-xs font-bold text-[#3D2412] cursor-pointer">▶</button>
+                    </div>
+                </div>
+                ${renderCard(active)}
+            </div>
+        `;
+    } else {
+        cardsBodyHtml = `<div class="grid grid-cols-1 xl:grid-cols-2 gap-2.5">${risks.map(renderCard).join('')}</div>`;
+    }
+
+    const sealHtml = st.riskPlanAuthorized ? `
+        <div class="paper-card rounded-xl p-2.5 bg-[#EFF6F1] border-2 border-[#2E6F40] flex items-center justify-between animate-seal">
+            <span class="ts-caption font-bold text-[#235732]">Risk Plan &amp; Reserve Locked</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#2E6F40] text-white ts-micro font-bold tracking-wider">APPROVED</span>
+        </div>
+    ` : '';
+
+    container.innerHTML = `${headerHtml}${cardsBodyHtml}${sealHtml}`;
+}
+
 export function renderWorkspace() {
     if (typeof document === 'undefined') return;
     const charterWs = document.getElementById('charter-workspace');
@@ -575,6 +686,10 @@ export function renderWorkspace() {
         charterWs.classList.remove('hidden');
         wbsTreeWs.classList.add('hidden');
         renderWbsBuilder();
+    } else if (cfg.mode === 'risk_predictive' && st.phase === 'risk_plan') {
+        charterWs.classList.remove('hidden');
+        wbsTreeWs.classList.add('hidden');
+        renderRiskRegister();
     } else if (cfg.mode === 'agile_sprint') {
         charterWs.classList.add('hidden');
         wbsTreeWs.classList.remove('hidden');

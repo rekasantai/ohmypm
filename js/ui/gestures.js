@@ -24,6 +24,7 @@ export function initMobileGestures({
     getAgileTab,
     onStepCharter,
     onStepWbs,
+    onStepRisk,
     onSetAgileTab,
     onCloseSheet
 } = {}) {
@@ -76,6 +77,8 @@ export function initMobileGestures({
                 onStepCharter(dir === 'left' ? 1 : -1);
             } else if (deckType === 'wbs' && typeof onStepWbs === 'function') {
                 onStepWbs(dir === 'left' ? 1 : -1);
+            } else if (deckType === 'risk' && typeof onStepRisk === 'function') {
+                onStepRisk(dir === 'left' ? 1 : -1);
             } else if (
                 typeof getMode === 'function' &&
                 getMode() === 'agile_sprint' &&

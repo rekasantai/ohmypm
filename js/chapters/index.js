@@ -2,9 +2,10 @@
 import { chapter1 } from './ch1-charter.js';
 import { chapter2 } from './ch2-wbs.js';
 import { chapter3 } from './ch3-control.js';
-import { chapter4 } from './ch4-agile.js';
+import { chapter4 } from './ch4-risk.js';
+import { chapter5 } from './ch5-agile.js';
 
-export const CHAPTERS = [chapter1, chapter2, chapter3, chapter4];
+export const CHAPTERS = [chapter1, chapter2, chapter3, chapter4, chapter5];
 export const CHAPTER_BY_ID = Object.fromEntries(CHAPTERS.map(ch => [ch.id, ch]));
 
 export function getChapter(id) {

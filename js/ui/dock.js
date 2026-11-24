@@ -1,5 +1,5 @@
 // Layer 3: Sticky Bottom Dock (Unclipped Mobile Team Chips, Pre-Turn Impact Preview & Primary CTA).
-import { getL4SprintNumber } from '../chapters/ch4-agile.js';
+import { getL4SprintNumber } from '../chapters/ch5-agile.js';
 import { uiIcon } from '../core/constants.js';
 import {
     allWorkPackagesDecomposed,
@@ -19,7 +19,7 @@ export function renderTurnPreviewStrip() {
 
     const st = store.state;
     const cfg = getChapterCfg();
-    if (cfg.mode === 'charter' || (cfg.mode === 'wbs_predictive' && st.phase === 'wbs_build')) {
+    if (cfg.mode === 'charter' || (cfg.mode === 'wbs_predictive' && st.phase === 'wbs_build') || (cfg.mode === 'risk_predictive' && st.phase === 'risk_plan')) {
         strip.classList.add('hidden');
         strip.innerHTML = '';
         return;
@@ -86,6 +86,21 @@ export function renderDock() {
         primaryBtn.innerHTML = allMapped
             ? `${uiIcon('box', 'w-4 h-4')}<span>Approve WBS &amp; Start Build →</span>`
             : `${uiIcon('box', 'w-4 h-4')}<span>Map All ${st.wbsCards.length} Scope Cards (${totalPlaced}/${st.wbsCards.length})</span>`;
+        return;
+    }
+
+    if (cfg.mode === 'risk_predictive' && st.phase === 'risk_plan') {
+        artisanWrapper.classList.add('hidden');
+        renderTurnPreviewStrip();
+        const risks = st.riskRegister || [];
+        const plannedCount = risks.filter(r => Boolean(r.selectedStrategy)).length;
+        const allPlanned = risks.length > 0 && plannedCount === risks.length;
+        primaryBtn.className = allPlanned
+            ? 'btn-tactile w-full min-h-[46px] py-3 rounded-xl bg-[#2E6F40] hover:bg-[#235732] text-white font-bold text-sm border-2 border-[#1B4226] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer'
+            : 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-not-allowed';
+        primaryBtn.innerHTML = allPlanned
+            ? `${uiIcon('shield', 'w-4 h-4')}<span>Approve Risk Plan &amp; Start Build →</span>`
+            : `${uiIcon('shield', 'w-4 h-4')}<span>Plan All ${risks.length} Risks (${plannedCount}/${risks.length})</span>`;
         return;
     }
 

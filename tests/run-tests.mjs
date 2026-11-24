@@ -110,7 +110,7 @@ const {
     getMaxTotalStars,
     getTotalEarnedStars
 } = await import('../js/chapters/index.js');
-const { getL4Metrics } = await import('../js/chapters/ch4-agile.js');
+const { getL4Metrics } = await import('../js/chapters/ch5-agile.js');
 const {
     ACTIVE_RUN_KEY,
     CRASH_COST,
@@ -136,6 +136,7 @@ const { buildCareerMapMarkup, openRetrospective } = await import('../js/ui/modal
 const { renderDock } = await import('../js/ui/dock.js');
 const {
     advanceToNextLevel,
+    approveRiskRegister,
     assignArtisanToTask,
     authorizeProjectCharter,
     bootApp,
@@ -149,11 +150,13 @@ const {
     resolveChapterEvent,
     returnTaskToBacklog,
     selectCareerChapter,
+    selectRiskStrategy,
     selectStatement,
     selectWbsCard,
     setAgileMobileTab,
     startWorkday,
     stepCharterDeck,
+    stepRiskDeck,
     stepWbsDeck,
     switchLevel,
     toggleCompletedWp,
@@ -241,10 +244,11 @@ runTest('1. Chapter Registry & Contract Validation across all registered chapter
         assert.ok(ch.intro && Array.isArray(ch.intro.story) && ch.intro.story.length > 0);
     });
 
-    // Portrait assets present on disk
-    ['lim', 'salmah', 'danny', 'auntie-mei', 'committee', 'director'].forEach(pid => {
+    // Portrait & new backdrop assets present on disk
+    ['lim', 'salmah', 'danny', 'auntie-mei', 'committee', 'ranger', 'director'].forEach(pid => {
         assert.ok(fs.existsSync(path.join(ROOT, `assets/portrait-${pid}.jpg`)), `Missing portrait-${pid}.jpg`);
     });
+    assert.ok(fs.existsSync(path.join(ROOT, 'assets/bg-l4-rainforest.jpg')), 'Missing bg-l4-rainforest.jpg');
 });
 
 runTest('2. GitHub Pages relative paths & window onclick handler bindings intact', () => {
@@ -279,18 +283,31 @@ runTest('2. GitHub Pages relative paths & window onclick handler bindings intact
 // =========================================================================
 // 2. GAMEPLAY & PERSISTENCE REGRESSIONS (L1 - L4)
 // =========================================================================
-runTest('3. Legacy localStorage progress migration (3-level and 4-level)', () => {
+runTest('3. Legacy v1 -> v2 localStorage progress migration (4->5 Agile shift) and v2 load', () => {
     mockLocalStorage.clear();
     mockLocalStorage.setItem(SAVE_KEY, JSON.stringify({
         v: 1,
-        completedLevels: { 1: true, 2: true, 3: true },
-        levelStars: { 1: 3, 2: 2, 3: 3 }
+        completedLevels: { 1: true, 2: true, 3: true, 4: true },
+        levelStars: { 1: 3, 2: 2, 3: 3, 4: 3 }
     }));
     loadProgress();
     assert.equal(store.completedLevels[1], true);
     assert.equal(store.completedLevels[3], true);
-    assert.equal(store.completedLevels[4], false);
+    assert.equal(store.completedLevels[4], false, 'New Ch 4 (Risk) starts incomplete after v1 migration');
     assert.equal(store.levelStars[4], 0);
+    assert.equal(store.completedLevels[5], true, 'Old Ch 4 (Agile) migrates to Ch 5');
+    assert.equal(store.levelStars[5], 3);
+    assert.equal(getTotalEarnedStars(store.levelStars), 11);
+
+    // Native v2 save loads all 5 chapters directly
+    mockLocalStorage.setItem(SAVE_KEY, JSON.stringify({
+        v: 2,
+        completedLevels: { 1: true, 4: true, 5: true },
+        levelStars: { 1: 3, 4: 2, 5: 3 }
+    }));
+    loadProgress();
+    assert.equal(store.levelStars[4], 2);
+    assert.equal(store.levelStars[5], 3);
     assert.equal(getTotalEarnedStars(store.levelStars), 8);
 
     // Corrupted JSON resilience
@@ -435,9 +452,9 @@ runTest('6. Chapter 3 Critical Path, Dependency Jump, Monsoon Mitigation & NEW L
     assert.ok(l3Hints.hints.some(h => /Critical Path/i.test(h.title)));
 });
 
-runTest('7. Chapter 4 Hybrid Agile WIP Limit, Quality Defect Rework & Optimal 3-Star Launch', () => {
+runTest('7. Chapter 5 Hybrid Agile WIP Limit, Quality Defect Rework & Optimal 3-Star Launch', () => {
     mockLocalStorage.clear();
-    switchLevel(4);
+    switchLevel(5);
     store.prefs.fastTurn = true;
 
     // WIP Limit = 3 check + return to backlog
@@ -488,11 +505,11 @@ runTest('7. Chapter 4 Hybrid Agile WIP Limit, Quality Defect Rework & Optimal 3-
     assert.equal(m4.canLaunch, true);
     assert.ok(m4.verifiedValue >= 100);
     assert.equal(store.state.defectsCreated, 0);
-    const mastery4 = getChapter(4).evaluateMastery(store.state, true, 0, store.state.budget);
-    assert.equal(mastery4.stars, 3, 'Expected 3 stars on optimal L4 run');
+    const mastery4 = getChapter(5).evaluateMastery(store.state, true, 0, store.state.budget);
+    assert.equal(mastery4.stars, 3, 'Expected 3 stars on optimal L5 run');
 
     // Defect creation + QA Rework verification
-    switchLevel(4);
+    switchLevel(5);
     store.prefs.fastTurn = true;
     pullTaskToSprint('l4-t5'); // Effort 1, cost 5000
     assignArtisanToTask('l4-t5', 'danny');
@@ -542,14 +559,14 @@ runTest('8. Mid-Chapter Auto-Save & Browser-Reload Resume (and Defeat Cleanup)',
 });
 
 runTest('9. Pre-Turn Impact Preview calculations (spend, burnout, defect risk)', () => {
-    switchLevel(4);
+    switchLevel(5);
     pullTaskToSprint('l4-t5'); // cost 5000
     pullTaskToSprint('l4-t6'); // cost 4500
     assignArtisanToTask('l4-t5', 'danny');
     assignArtisanToTask('l4-t6', 'salmah');
     toggleTaskCrash('l4-t5'); // +1500 crash cost, unshielded
 
-    let preview = computeTurnPreview(store.state, getChapter(4));
+    let preview = computeTurnPreview(store.state, getChapter(5));
     assert.equal(preview.hasActions, true);
     assert.equal(preview.plannedSpend, 5000 + 1500 + 4500);
     assert.equal(preview.overBudget, false);
@@ -562,7 +579,7 @@ runTest('9. Pre-Turn Impact Preview calculations (spend, burnout, defect risk)',
     pullTaskToSprint('l4-t1');
     assignArtisanToTask('l4-t1', 'lim');
     toggleRestBreak('salmah');
-    preview = computeTurnPreview(store.state, getChapter(4));
+    preview = computeTurnPreview(store.state, getChapter(5));
     assert.ok(preview.burnedOutActive.includes('Lim'));
     assert.ok(preview.restingNames.includes('Salmah'));
 });
@@ -583,11 +600,13 @@ runTest('10. Fast-Turn Mode persistence, Career Map & Mobile Chip unclipped name
     store.completedLevels[2] = true;
     store.levelStars[3] = 3;
     store.completedLevels[3] = true;
+    store.levelStars[4] = 3;
+    store.completedLevels[4] = true;
     const career = buildCareerMapMarkup();
-    assert.equal(career.earned, 9);
+    assert.equal(career.earned, 12);
     assert.equal(career.maxStars, getMaxTotalStars());
-    assert.equal(career.completedCount, 3);
-    assert.equal(getCareerRank(9, 12).title, 'Principal Guild PM');
+    assert.equal(career.completedCount, 4);
+    assert.equal(getCareerRank(12, 15).title, 'Principal Guild PM');
     assert.ok(career.passportBadgesHtml.includes('Project Charter Architect'));
 
     // Switching via Career Map modal closes modal and switches chapter
@@ -649,9 +668,9 @@ runTest('11. Mobile Usability: Focused Decks, Agile Tabs, Idle Preview Hide & Co
         assert.equal(store.ui.guidanceExpanded, true);
         assert.ok(getMockEl('guidance-strip').classList.contains('guidance-expanded'));
 
-        // L4 Agile segmented tabs + hidden duplicate context banner + WIP=3 auto-switch to Sprint
-        switchLevel(4);
-        assert.ok(getMockEl('context-banner').classList.contains('hidden'), 'L4 context banner stays hidden on mobile');
+        // L5 Agile segmented tabs + hidden duplicate context banner + WIP=3 auto-switch to Sprint
+        switchLevel(5);
+        assert.ok(getMockEl('context-banner').classList.contains('hidden'), 'Agile context banner stays hidden on mobile');
         ws = getMockEl('wbs-tree-workspace').innerHTML;
         assert.ok(ws.includes('id="agile-mobile-tabs"'), 'Mobile L4 renders segmented tabs');
         assert.equal(store.ui.agileMobileTab, 'backlog');
@@ -703,9 +722,9 @@ runTest('12. Mobile Gameplay Optimizations: Smart CTA, Completed WP Auto-Collaps
     toggleRestBreak('danny');
     assert.ok(!getMockEl('btn-primary-action').innerHTML.includes('Idle'), 'Full team engagement clears Idle badge');
 
-    // L4 empty sprint CTA
-    switchLevel(4);
-    assert.ok(getMockEl('btn-primary-action').innerHTML.includes('Pull Sprint Items First (3 Ready)'), 'Empty L4 sprint prompts pulling items first');
+    // Agile empty sprint CTA
+    switchLevel(5);
+    assert.ok(getMockEl('btn-primary-action').innerHTML.includes('Pull Sprint Items First (3 Ready)'), 'Empty agile sprint prompts pulling items first');
 
     // 2. Mobile Completed WP auto-collapse & L4 Sprint Cues + Pull & Assign
     try {
@@ -728,8 +747,8 @@ runTest('12. Mobile Gameplay Optimizations: Smart CTA, Completed WP Auto-Collaps
         toggleCompletedWp('wp-structural');
         assert.ok(getMockEl('wbs-tree-workspace').innerHTML.includes('id="wp-collapsed-wp-structural"'), 'Tapping again collapses completed WP');
 
-        // L4 Sprint unassigned badge & Pull & Assign
-        switchLevel(4);
+        // Agile Sprint unassigned badge & Pull & Assign
+        switchLevel(5);
         pullTaskToSprint('l4-t1');
         ws = getMockEl('wbs-tree-workspace').innerHTML;
         assert.ok(ws.includes('>1</span>'), 'Sprint tab displays unassigned count badge while on Backlog tab');
@@ -767,6 +786,100 @@ runTest('12. Mobile Gameplay Optimizations: Smart CTA, Completed WP Auto-Collaps
         if (prevNavDesc) Object.defineProperty(globalThis, 'navigator', prevNavDesc);
         else delete globalThis.navigator;
     }
+});
+
+runTest('13. Chapter 4 Risk Management: Risk Register, Reserve Math, Mobile Deck, Live Triggers & 3-Star Completion', () => {
+    mockLocalStorage.clear();
+    switchLevel(4);
+    store.prefs.fastTurn = true;
+    assert.equal(store.state.phase, 'risk_plan');
+    assert.equal(store.state.contingencyReserve, 6000);
+
+    // Mobile focused 1-card Risk Deck navigation
+    try {
+        globalThis.window.innerWidth = 375;
+        renderWorkspace();
+        let ws = getMockEl('charter-workspace').innerHTML;
+        assert.ok(ws.includes('data-swipe-deck="risk"'), 'Mobile Ch 4 renders swipeable 1-card Risk Deck');
+        assert.ok(ws.includes('Monsoon River Surge') && !ws.includes('Timber Sawmill Default'), 'Mobile shows R-01 card first');
+        stepRiskDeck(1);
+        ws = getMockEl('charter-workspace').innerHTML;
+        assert.ok(ws.includes('Timber Sawmill Default'), 'stepRiskDeck(1) advances to R-02');
+    } finally {
+        globalThis.window.innerWidth = 1280;
+    }
+
+    // Strategy selection, refunding & Reserve sizing math
+    selectRiskStrategy('rsk-flood', 'avoid'); // Reserve 6000 -> 1500
+    assert.equal(store.state.contingencyReserve, 1500);
+    selectRiskStrategy('rsk-flood', 'mitigate'); // Refunds 4500, charges 2500 -> Reserve 3500
+    assert.equal(store.state.contingencyReserve, 3500);
+    selectRiskStrategy('rsk-timber', 'transfer'); // -1500 -> Reserve 2000
+    selectRiskStrategy('rsk-paint', 'accept'); // 0 -> Reserve 2000
+    selectRiskStrategy('rsk-grant', 'exploit'); // -1000 -> Reserve 1000
+    assert.equal(store.state.contingencyReserve, 1000);
+    assert.equal(store.state.riskOptimalCount, 4);
+
+    // Cannot start execution while unplanned, then approves cleanly
+    approveRiskRegister();
+    assert.equal(store.state.riskPlanAuthorized, true);
+    store.state.phase = 'execution';
+
+    // Week 1: Pilings (Lim), Timber (Danny), Tea Kitchen (Salmah)
+    assignArtisanToTask('r1', 'lim');
+    assignArtisanToTask('r3', 'danny');
+    assignArtisanToTask('r5', 'salmah');
+    startWorkday(); // Day 1 -> 2
+
+    // Week 2 Event: Flood blocked cleanly by Cofferdam Mitigation
+    assert.equal(store.ui.activeEvent.id, 'l4_risk_monsoon');
+    const preMonsoonBudget = store.state.budget;
+    resolveChapterEvent('ok');
+    assert.equal(store.state.budget, preMonsoonBudget);
+    assert.equal(store.state.contingencyReserve, 1000);
+
+    // Week 2: r1 continues (Lim -> 100%), rest Danny, Salmah starts r4 (60%)
+    toggleRestBreak('danny');
+    assignArtisanToTask('r4', 'salmah');
+    startWorkday(); // Day 2 -> 3
+
+    // Week 3 Event: Eco-Grant Exploited (+RM 4,000 Budget & +15% crew stamina)
+    assert.equal(store.ui.activeEvent.id, 'l4_risk_opportunity');
+    const preGrantBudget = store.state.budget;
+    resolveChapterEvent('claim_full');
+    assert.equal(store.state.budget, preGrantBudget + 4000);
+
+    // Week 3: Rest Lim & Salmah, Danny completes r4 (60% -> 100%)
+    toggleRestBreak('lim');
+    toggleRestBreak('salmah');
+    assignArtisanToTask('r4', 'danny');
+    startWorkday(); // Day 3 -> 4
+
+    // Week 4 Event: Sawmill default absorbed by Surety Bond Transfer
+    assert.equal(store.ui.activeEvent.id, 'l4_risk_supplier');
+    const preSupplierBudget = store.state.budget;
+    resolveChapterEvent('bond_paid');
+    assert.equal(store.state.budget, preSupplierBudget);
+
+    // Week 4: Lim builds r2 Canopy Walk (100%)
+    assignArtisanToTask('r2', 'lim');
+    startWorkday(); // Day 4 -> 5
+
+    // Week 5 Event: Unknown-Unknown Hornbill Nest funded cleanly by spared RM 1,000 Reserve
+    assert.equal(store.ui.activeEvent.id, 'l4_risk_unknown');
+    const preUnknownBudget = store.state.budget;
+    resolveChapterEvent('reroute');
+    assert.equal(store.state.contingencyReserve, 0, 'Spared RM 1,000 Reserve absorbed Unknown-Unknown cleanly');
+    assert.equal(store.state.budget, preUnknownBudget, 'Direct budget untouched when Reserve covered Unknown-Unknown');
+
+    // Week 5: Danny finishes r6 Sign-off -> All 6 tasks complete 1 week early!
+    assignArtisanToTask('r6', 'danny');
+    startWorkday();
+
+    const ch4 = getChapter(4);
+    assert.equal(ch4.isFinished(store.state), true);
+    assert.equal(store.state.burnoutIncidents, 0);
+    assert.equal(ch4.evaluateMastery(store.state, true, 1, store.state.budget).stars, 3, 'Expected 3 stars on optimal Ch 4 Risk run');
 });
 
 const failed = results.filter(r => !r.passed);

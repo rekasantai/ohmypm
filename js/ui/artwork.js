@@ -21,7 +21,7 @@ export function getGameIconSVG(size = 34) {
 }
 
 export function getArtisanPortraitSVG(id, size = 28, opts = {}) {
-    const safeId = ['lim', 'salmah', 'danny', 'auntie-mei', 'committee', 'director'].includes(id) ? id : 'danny';
+    const safeId = ['lim', 'salmah', 'danny', 'auntie-mei', 'committee', 'ranger', 'director'].includes(id) ? id : 'danny';
     const isFatigued = Boolean(opts && opts.fatigued);
     const isResting = Boolean(opts && opts.resting);
     const isWorking = Boolean(opts && opts.working);
@@ -35,6 +35,8 @@ export function getArtisanPortraitSVG(id, size = 28, opts = {}) {
         fallbackInner = `<rect x="1" y="1" width="30" height="30" rx="8" fill="#FAF5EB" stroke="#2E6F40" stroke-width="1.5"/><circle cx="16" cy="18" r="7.5" fill="#E6B894" stroke="#241B15" stroke-width="1.4"/><path d="M8.5 15 C8.5 8.5, 23.5 8.5, 23.5 15 Z" fill="#CBD5E1" stroke="#241B15" stroke-width="1.3"/><circle cx="13.8" cy="17.5" r="1" fill="#241B15"/><circle cx="18.2" cy="17.5" r="1" fill="#241B15"/><path d="M13.8 21 Q16 22.8 18.2 21" stroke="#241B15" stroke-width="1.3" fill="none" stroke-linecap="round"/>`;
     } else if (safeId === 'committee') {
         fallbackInner = `<rect x="1" y="1" width="30" height="30" rx="8" fill="#FFF9E6" stroke="#C58F2A" stroke-width="1.5"/><circle cx="16" cy="18" r="7.5" fill="#D9A377" stroke="#241B15" stroke-width="1.4"/><path d="M9 14 C9 9, 23 9, 23 14 Z" fill="#475569" stroke="#241B15" stroke-width="1.3"/><rect x="11" y="15.8" width="4" height="3" rx="0.8" fill="none" stroke="#241B15" stroke-width="1.1"/><rect x="17" y="15.8" width="4" height="3" rx="0.8" fill="none" stroke="#241B15" stroke-width="1.1"/>`;
+    } else if (safeId === 'ranger') {
+        fallbackInner = `<rect x="1" y="1" width="30" height="30" rx="8" fill="#E6F2EA" stroke="#2E6F40" stroke-width="1.5"/><circle cx="16" cy="18.5" r="6.8" fill="#D9A377" stroke="#241B15" stroke-width="1.3"/><path d="M7 14 H25 L22 9 H10 Z" fill="#4D7C0F" stroke="#241B15" stroke-width="1.3"/><circle cx="13.8" cy="18" r="1" fill="#241B15"/><circle cx="18.2" cy="18" r="1" fill="#241B15"/><path d="M14 21 Q16 22.8 18 21" stroke="#241B15" stroke-width="1.2" fill="none" stroke-linecap="round"/><rect x="19" y="23" width="6" height="4" rx="1" fill="#F6D365" stroke="#241B15" stroke-width="0.9"/>`;
     } else if (safeId === 'director') {
         fallbackInner = `<rect x="1" y="1" width="30" height="30" rx="8" fill="#E6F4F1" stroke="#0F766E" stroke-width="1.5"/><path d="M7 29 C7 22, 25 22, 25 29 Z" fill="#134E4A" stroke="#241B15" stroke-width="1.3"/><path d="M12 22 L16 29 L20 22" fill="#FFFDF9" stroke="#C58F2A" stroke-width="1.1"/><circle cx="16" cy="16" r="6.2" fill="#DFAA82" stroke="#241B15" stroke-width="1.3"/><path d="M9.2 16 C9.2 8.5, 22.8 8.5, 22.8 16 C22.8 12.2, 9.2 12.2, 9.2 16 Z" fill="#1E293B" stroke="#241B15" stroke-width="1.2"/><circle cx="13.8" cy="15.5" r="0.9" fill="#241B15"/><circle cx="18.2" cy="15.5" r="0.9" fill="#241B15"/><path d="M14 18.5 Q16 20 18 18.5" stroke="#241B15" stroke-width="1.2" fill="none" stroke-linecap="round"/>`;
     } else {

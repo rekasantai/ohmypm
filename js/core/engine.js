@@ -1,6 +1,6 @@
 // Layer 4: Core Game Engine — turn execution, event dispatch, user actions & view orchestration.
 import { getChapter } from '../chapters/index.js';
-import { getL4Metrics, getL4SprintNumber } from '../chapters/ch4-agile.js';
+import { getL4Metrics, getL4SprintNumber } from '../chapters/ch5-agile.js';
 import { clearToasts, highlightDependencyTask, injectBrandingElements, isMobileViewport, showToast, syncGuidanceClamp, syncMobileShellClasses, updateGuidance } from '../ui/feedback.js';
 import { renderWorkspace } from '../ui/board.js';
 import { renderDiorama } from '../ui/diorama.js';
@@ -195,6 +195,7 @@ export function switchLevel(lvl) {
     store.ui.guidanceExpanded = false;
     store.ui.charterDeckIdx = 0;
     store.ui.wbsDeckIdx = 0;
+    store.ui.riskDeckIdx = 0;
     store.ui.agileMobileTab = 'backlog';
     store.ui.expandedCompletedWps = {};
     store.ui.mobileSiteExpanded = false;
@@ -509,6 +510,89 @@ export function approveWbsBaseline() {
         updateGuidance('<strong>Step 2:</strong> Tap <strong>⚡ Assign</strong> on ready WBS Tasks (complete prerequisite tasks first!), then tap <strong>☀️ Start Workday</strong>.');
         renderAll();
     }, 1050);
+}
+
+// ---- Chapter 4: Interactive Risk Register Actions ----
+export function stepRiskDeck(delta) {
+    const st = store.state;
+    if (!st || !Array.isArray(st.riskRegister) || st.riskRegister.length <= 1) return;
+    SoundFX.woodClick();
+    const len = st.riskRegister.length;
+    const cur = Math.max(0, Math.min(store.ui.riskDeckIdx || 0, len - 1));
+    store.ui.riskDeckIdx = (cur + delta + len) % len;
+    renderWorkspace();
+}
+
+export function selectRiskStrategy(riskId, strategyId) {
+    const st = store.state;
+    if (!st || st.isExecuting || st.phase !== 'risk_plan' || st.riskPlanAuthorized) return;
+    const risk = (st.riskRegister || []).find(r => r.id === riskId);
+    if (!risk) return;
+    const nextOpt = (risk.options || []).find(o => o.id === strategyId);
+    if (!nextOpt) return;
+
+    const prevOpt = (risk.options || []).find(o => o.id === risk.selectedStrategy);
+    const prevCost = prevOpt ? prevOpt.cost : 0;
+    const availableWithRefund = (st.contingencyReserve || 0) + prevCost;
+
+    if (nextOpt.cost > availableWithRefund) {
+        SoundFX.alertPop();
+        showToast(`⚠️ Need RM ${nextOpt.cost.toLocaleString()} Reserve (have RM ${availableWithRefund.toLocaleString()}).`, 'warn');
+        updateGuidance(`⚠️ <strong>Insufficient Reserve:</strong> Switch another risk response or pick a lower-cost option (Reserve available: <strong>RM ${availableWithRefund.toLocaleString()}</strong>).`);
+        return;
+    }
+
+    st.contingencyReserve = availableWithRefund - nextOpt.cost;
+    risk.selectedStrategy = nextOpt.id;
+    st.riskOptimalCount = (st.riskRegister || []).filter(r => r.selectedStrategy === r.optimalId).length;
+    SoundFX.woodClick();
+
+    const idx = st.riskRegister.findIndex(r => r.id === riskId);
+    if (idx >= 0) store.ui.riskDeckIdx = idx;
+
+    const plannedCount = st.riskRegister.filter(r => Boolean(r.selectedStrategy)).length;
+    if (plannedCount === st.riskRegister.length) {
+        showToast(`All ${st.riskRegister.length} risks planned! (RM ${st.contingencyReserve.toLocaleString()} Reserve kept)`, 'success');
+        updateGuidance(`All ${st.riskRegister.length} risks planned! Keep spare Reserve for surprises, then tap <strong>Approve Risk Plan &amp; Start Build</strong>.`);
+    } else {
+        if (isMobileViewport()) {
+            const nextUnplanned = st.riskRegister.findIndex(r => !r.selectedStrategy);
+            if (nextUnplanned >= 0) store.ui.riskDeckIdx = nextUnplanned;
+        }
+        updateGuidance(`<strong>${risk.code} ${risk.title}:</strong> Set to <strong>${nextOpt.tag}</strong> (${plannedCount}/${st.riskRegister.length} planned · Reserve <strong>RM ${st.contingencyReserve.toLocaleString()}</strong>).`);
+    }
+
+    saveActiveRun();
+    renderHUD();
+    renderDiorama();
+    renderWorkspace();
+    renderDock();
+}
+
+export function approveRiskRegister() {
+    const st = store.state;
+    if (!st || st.isExecuting || st.phase !== 'risk_plan') return;
+    const risks = st.riskRegister || [];
+    const plannedCount = risks.filter(r => Boolean(r.selectedStrategy)).length;
+    if (plannedCount < risks.length) {
+        SoundFX.alertPop();
+        showToast(`Plan all ${risks.length} Risk Register items first (${plannedCount}/${risks.length}).`, 'warn');
+        updateGuidance(`Choose a response for all <strong>${risks.length} Risk Register</strong> cards before starting Week 1 build.`);
+        return;
+    }
+
+    st.riskPlanAuthorized = true;
+    SoundFX.authorizeSeal();
+    showToast(`🛡️ Risk Plan Approved! (RM ${st.contingencyReserve.toLocaleString()} Reserve ready)`, 'success');
+    updateGuidance('🛡️ <strong>Risk Plan Approved!</strong> Starting Week 1 execution along Sungai Semenggoh...');
+    renderWorkspace();
+
+    setTimeout(() => {
+        st.phase = 'execution';
+        saveActiveRun();
+        updateGuidance('<strong>Phase 2 — Execution:</strong> Start <strong>Pilings</strong>, <strong>Timber</strong> &amp; <strong>Tea Kitchen</strong> in Week 1!');
+        renderAll();
+    }, 950);
 }
 
 // ---- Agile Sprint Pull & Return ----
@@ -852,6 +936,10 @@ export function handlePrimaryCTA() {
     }
     if (cfg.mode === 'wbs_predictive' && st.phase === 'wbs_build') {
         approveWbsBaseline();
+        return;
+    }
+    if (cfg.mode === 'risk_predictive' && st.phase === 'risk_plan') {
+        approveRiskRegister();
         return;
     }
     startWorkday();

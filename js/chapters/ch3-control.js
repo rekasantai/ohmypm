@@ -53,7 +53,7 @@ export const chapter3 = {
         }),
         actions: (win) => win
             ? [
-                { label: 'Next Chapter: Waterfront Festival (RM 50,000 • Agile) →', onclick: 'advanceToNextLevel(4)', style: 'primary' },
+                { label: 'Next Chapter: Borneo Rainforest Eco-Lodge (RM 28,000 • Risk) →', onclick: 'advanceToNextLevel(4)', style: 'primary' },
                 { label: '🔄 Replay Level 3', onclick: 'replayCurrentLevel()', style: 'secondary' }
             ]
             : [

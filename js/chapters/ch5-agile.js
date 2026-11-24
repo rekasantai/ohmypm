@@ -1,8 +1,8 @@
-// Chapter 4: Kuching Waterfront Festival Pavilion (Hybrid Agile Sprints, MoSCoW Value & Quality Control)
+// Chapter 5: Kuching Waterfront Festival Pavilion (Hybrid Agile Sprints, MoSCoW Value & Quality Control)
 import { L4_REWORK_COST } from '../core/constants.js';
 import { getArtisanPortraitSVG, renderDioramaLayerWrapper } from '../ui/artwork.js';
 
-const SUBTITLE = 'Level 4 • Waterfront Festival (RM 50,000 • 3 Sprints)';
+const SUBTITLE = 'Level 5 • Waterfront Festival (RM 50,000 • 3 Sprints)';
 
 export function getL4SprintNumber(day = 1) {
     return Math.min(3, Math.ceil(Math.max(1, day) / 2));
@@ -32,10 +32,10 @@ export function getL4Metrics(st) {
     return { verifiedValue, mustTotal, mustDone, openDefects, activeSprintCount, canLaunch };
 }
 
-export const chapter4 = {
-    id: 4,
-    order: 4,
-    shortLabel: 'L4 Agile',
+export const chapter5 = {
+    id: 5,
+    order: 5,
+    shortLabel: 'L5 Agile',
     title: 'Waterfront Festival Pavilion',
     domain: 'Hybrid Agile • Value & Quality',
     emoji: '🌊',
@@ -57,11 +57,11 @@ export const chapter4 = {
     exec: { icon: '🌊', subtitle: 'Your crew is delivering Sprint work on the Kuching Waterfront...' },
     startGuidance: '<strong>Sprint 1:</strong> Pull up to <strong>3 Must/Should items</strong>, assign crew, then run Sprint.',
     tutorial: {
-        chapterLine: '🌊 <strong>Ch 4 • Waterfront Festival (RM 50,000 • 3 Sprints):</strong> Lead <strong>Hybrid Agile Sprints &amp; Quality</strong>',
-        lifecycleLine: '4️⃣ <strong>Level 4 • Hybrid Agile &amp; Quality:</strong> Prioritize MoSCoW Value under a fixed launch date, prevent Defects &amp; adapt in Sprint Reviews.'
+        chapterLine: '🌊 <strong>Ch 5 • Waterfront Festival (RM 50,000 • 3 Sprints):</strong> Lead <strong>Hybrid Agile Sprints &amp; Quality</strong>',
+        lifecycleLine: '5️⃣ <strong>Level 5 • Hybrid Agile &amp; Quality:</strong> Prioritize MoSCoW Value under a fixed launch date, prevent Defects &amp; adapt in Sprint Reviews.'
     },
     brief: {
-        tag: 'Chapter 4 • Hybrid Agile Finale (RM 50,000 • 3 Sprints)',
+        tag: 'Chapter 5 • Hybrid Agile Finale (RM 50,000 • 3 Sprints)',
         title: 'Kuching Waterfront Heritage Festival Pavilion',
         text: (st) => {
             const m = getL4Metrics(st);
@@ -74,7 +74,7 @@ export const chapter4 = {
         }
     },
     retro: {
-        phaseTag: () => '🏆 Chapter 4 Complete • Hybrid Agile Finale',
+        phaseTag: () => '🏆 Chapter 5 Complete • Hybrid Agile Finale',
         headline: (win) => win ? 'Waterfront Festival Pavilion Launched! 🌊' : 'Opening Night Missed Launch Target',
         sub: (win) => win
             ? 'On Opening Night along Sungai Sarawak, visitors pack every verified exhibit—you balanced Predictive discipline with Agile value & zero-defect Quality!'
@@ -83,16 +83,16 @@ export const chapter4 = {
             icon: win ? '🏆' : '🔄',
             title: win ? 'Certified Hybrid PM Master' : 'Agile & Quality Practitioner',
             desc: win
-                ? 'Mastered the complete PM journey from Project Charter & WBS to Critical Path Control and value-driven Hybrid Agile Sprints with zero-defect Quality.'
+                ? 'Mastered the complete PM journey from Project Charter & WBS to Critical Path Control, Risk Register Reserves, and Hybrid Agile Sprints.'
                 : 'MoSCoW prioritization focuses limited Sprint capacity on Must-Haves and high-value Should-Haves while protecting Definition of Done.'
         }),
         actions: (win) => win
             ? [
-                { label: '🔄 Replay Level 4', onclick: 'replayCurrentLevel()', style: 'primary' },
+                { label: '🔄 Replay Level 5', onclick: 'replayCurrentLevel()', style: 'primary' },
                 { label: '📜 Restart Career from Level 1', onclick: 'advanceToNextLevel(1)', style: 'secondary' }
             ]
             : [
-                { label: '🔄 Retry Level 4', onclick: 'replayCurrentLevel()', style: 'retry' },
+                { label: '🔄 Retry Level 5', onclick: 'replayCurrentLevel()', style: 'retry' },
                 { label: '📜 Restart Career from Level 1', onclick: 'advanceToNextLevel(1)', style: 'secondary' }
             ]
     },
@@ -107,7 +107,7 @@ export const chapter4 = {
         ]
     },
     intro: {
-        tag: 'Chapter 4 • Hybrid Agile Finale',
+        tag: 'Chapter 5 • Hybrid Agile Finale',
         emoji: '🌊',
         title: 'Waterfront Festival Pavilion',
         place: 'Kuching Waterfront • Sungai Sarawak & Darul Hana',
@@ -123,12 +123,12 @@ export const chapter4 = {
         ],
         carryTitle: '',
         carryFrom: () => '',
-        cta: 'Begin Chapter 4 🌊'
+        cta: 'Begin Chapter 5 🌊'
     },
 
     createState() {
         return {
-            level: 4,
+            level: 5,
             subtitle: SUBTITLE,
             phase: 'execution',
             day: 1,
