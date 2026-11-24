@@ -128,7 +128,7 @@ export function getTutorialSteps() {
                 </p>
                 <div class="bg-[#FAF5EB] p-2.5 rounded-xl border border-[#8C6A4A]/60 text-[11px] text-[#3D2412] space-y-1">
                     <div>☕ Use <strong>Rest</strong> before &lt;35% stamina to prevent <strong>Burnout</strong> (-50% speed).</div>
-                    <div>🗓️ Progress from daily builds (L2) to weekly control (L3) &amp; Agile Sprints (L4).</div>
+                    <div>🗓️ Progress from daily builds (L2) to weekly control &amp; risk (L3–L4) and Agile Sprints (L5).</div>
                 </div>
             `
         }
@@ -329,10 +329,16 @@ export function renderCareerMap() {
             <div class="h-1.5 w-full rounded-full bg-[#E6D9C2] overflow-hidden mb-2">
                 <div class="h-full rounded-full bg-[#C58F2A] transition-all duration-300" style="width:${pct}%;"></div>
             </div>
-            <div class="ts-micro font-medium text-[#5A4D41] mb-2">${rank.nextHint}</div>
-            <div class="grid grid-cols-2 gap-1.5">
-                ${passportBadgesHtml}
-            </div>
+            <div class="ts-micro font-medium text-[#5A4D41] mb-1.5">${rank.nextHint}</div>
+            <details class="mt-1.5">
+                <summary class="flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg bg-white/80 border border-[#C58F2A]/50 ts-micro font-bold text-[#5C3A21] cursor-pointer list-none">
+                    <span>🏅 PM Principle Badges (${completedCount}/${CHAPTERS.length} Unlocked)</span>
+                    <svg viewBox="0 0 16 16" class="details-chev w-3.5 h-3.5 text-[#7A5434] shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+                </summary>
+                <div class="grid grid-cols-2 gap-1.5 mt-1.5">
+                    ${passportBadgesHtml}
+                </div>
+            </details>
         </div>
 
         <!-- Scrollable Chapter Selector Cards -->
