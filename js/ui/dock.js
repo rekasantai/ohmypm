@@ -93,19 +93,42 @@ export function renderDock() {
     renderTurnPreviewStrip();
 
     const wbsReady = allWorkPackagesDecomposed(st);
+    const preview = computeTurnPreview(st, cfg);
     if (!wbsReady) {
         primaryBtn.className = 'w-full min-h-[46px] py-3 rounded-xl bg-[#9C8368] text-[#FFFDF8] font-bold text-sm border-2 border-[#7A5434] flex items-center justify-center gap-2 cursor-pointer';
         primaryBtn.innerHTML = `${uiIcon('lock', 'w-4 h-4')}<span>Step 1: Decompose All Work Packages First</span>`;
-    } else if (cfg.mode === 'agile_sprint') {
-        primaryBtn.className = 'btn-tactile w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
-        const ctaText = st.day >= st.maxDays
-            ? `Final Turn: Launch Opening Night! (${st.day} of ${st.maxDays})`
-            : `Start Sprint ${getL4SprintNumber(st.day)} Turn (${st.day} of ${st.maxDays})`;
-        primaryBtn.innerHTML = `${uiIcon('calendar', 'w-4 h-4')}<span>${ctaText}</span>`;
     } else {
-        const turnIconName = cfg.time.unit === 'Week' ? 'calendar' : 'sun';
-        primaryBtn.className = 'btn-tactile w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
-        primaryBtn.innerHTML = `${uiIcon(turnIconName, 'w-4 h-4')}<span>Start ${getWorkTurnLabel()} (${getTimeUnit(false)} ${st.day} of ${st.maxDays})</span>`;
+        const turnIconName = cfg.mode === 'agile_sprint'
+            ? 'calendar'
+            : (cfg.time.unit === 'Week' ? 'calendar' : 'sun');
+        const ctaBase = cfg.mode === 'agile_sprint'
+            ? (st.day >= st.maxDays
+                ? `Final Turn: Launch Opening Night! (${st.day} of ${st.maxDays})`
+                : `Start Sprint ${getL4SprintNumber(st.day)} Turn (${st.day} of ${st.maxDays})`)
+            : `Start ${getWorkTurnLabel()} (${getTimeUnit(false)} ${st.day} of ${st.maxDays})`;
+
+        if (!preview.hasActions) {
+            primaryBtn.className = 'btn-tactile w-full min-h-[46px] py-3 rounded-xl bg-[#8C6A4A] hover:bg-[#7A5434] text-[#FFFDF8] font-bold text-sm border-2 border-[#5C3A21] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
+            const noSprintItems = cfg.mode === 'agile_sprint' &&
+                st.tasks.filter(t => t.inSprint && (t.progress < 100 || t.hasDefect)).length === 0;
+            const idleLabel = noSprintItems
+                ? `Pull Sprint Items First (${preview.idleArtisanCount} Ready)`
+                : `Assign Team or Rest (${preview.idleArtisanCount} Ready)`;
+            primaryBtn.innerHTML = `${uiIcon(turnIconName, 'w-4 h-4')}<span>${idleLabel}</span>`;
+        } else if (preview.overBudget) {
+            primaryBtn.className = 'btn-tactile w-full min-h-[46px] py-3 rounded-xl bg-[#B91C1C] hover:bg-[#991B1B] text-white font-bold text-sm border-2 border-[#7F1D1D] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
+            primaryBtn.innerHTML = `${uiIcon(turnIconName, 'w-4 h-4')}<span>${ctaBase}</span><span class="px-1.5 py-0.5 rounded bg-black/25 text-[10px] font-extrabold shrink-0">⚠️ Over Budget</span>`;
+        } else if (preview.idleWithReadyWork > 0) {
+            primaryBtn.className = 'btn-tactile w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
+            primaryBtn.innerHTML = `${uiIcon(turnIconName, 'w-4 h-4')}<span>${ctaBase}</span><span class="px-1.5 py-0.5 rounded bg-[#241B15]/25 text-[10px] font-extrabold shrink-0">${preview.idleWithReadyWork} Idle</span>`;
+        } else {
+            primaryBtn.className = 'btn-tactile w-full min-h-[46px] py-3 rounded-xl bg-[#C85A32] hover:bg-[#B24D28] text-white font-bold text-sm border-2 border-[#7A2A10] border-b-4 flex items-center justify-center gap-2 transition cursor-pointer';
+            const riskPill = (preview.burnedOutActive.length > 0 || preview.willCreateDefectCount > 0)
+                ? '<span class="px-1.5 py-0.5 rounded bg-[#241B15]/25 text-[10px] font-extrabold shrink-0">⚠️ Risk</span>'
+                : '';
+            const suffix = riskPill ? '' : ' →';
+            primaryBtn.innerHTML = `${uiIcon(turnIconName, 'w-4 h-4')}<span>${ctaBase}${suffix}</span>${riskPill}`;
+        }
     }
 
     const dock = document.getElementById('artisans-dock');

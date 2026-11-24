@@ -15,6 +15,7 @@ import {
     handleWbsBucketClick,
     openMobileArtisanSheet,
     openTaskAssignPicker,
+    pullAndAssignTask,
     pullTaskToSprint,
     replayCurrentLevel,
     requestLevelSwitch,
@@ -31,6 +32,7 @@ import {
     setAgileMobileTab,
     stepCharterDeck,
     stepWbsDeck,
+    toggleCompletedWp,
     toggleContextBanner,
     toggleFastTurn,
     toggleGuidanceExpand,
@@ -49,6 +51,9 @@ import {
     openTutorialModal,
     startChapterFromIntro
 } from './ui/modals.js';
+import { getChapterCfg, store } from './core/state.js';
+import { isMobileViewport } from './ui/feedback.js';
+import { initMobileGestures } from './ui/gestures.js';
 
 const WINDOW_EXPORTS = {
     openTutorialModal,
@@ -93,7 +98,9 @@ const WINDOW_EXPORTS = {
     toggleGuidanceExpand,
     stepCharterDeck,
     stepWbsDeck,
-    setAgileMobileTab
+    setAgileMobileTab,
+    toggleCompletedWp,
+    pullAndAssignTask
 };
 
 if (typeof window !== 'undefined') {
@@ -110,10 +117,24 @@ if (typeof document !== 'undefined') {
         handleGlobalKeydown(e, { closeMobileSheetFn: closeMobileSheet });
     });
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', bootApp);
-    } else {
+    const bootWithGestures = () => {
         bootApp();
+        initMobileGestures({
+            isMobile: isMobileViewport,
+            isExecuting: () => Boolean(store.state && store.state.isExecuting),
+            getMode: () => getChapterCfg().mode,
+            getAgileTab: () => store.ui.agileMobileTab,
+            onStepCharter: stepCharterDeck,
+            onStepWbs: stepWbsDeck,
+            onSetAgileTab: setAgileMobileTab,
+            onCloseSheet: closeMobileSheet
+        });
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bootWithGestures);
+    } else {
+        bootWithGestures();
     }
 }
 

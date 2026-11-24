@@ -164,6 +164,13 @@ export function setAgileMobileTab(tab) {
     renderWorkspace();
 }
 
+export function toggleCompletedWp(wpId) {
+    if (!store.ui.expandedCompletedWps) store.ui.expandedCompletedWps = {};
+    store.ui.expandedCompletedWps[wpId] = !store.ui.expandedCompletedWps[wpId];
+    SoundFX.woodClick();
+    renderWorkspace();
+}
+
 export function focusDependencyTask(depTaskId, event) {
     if (event) event.stopPropagation();
     SoundFX.woodClick();
@@ -189,6 +196,7 @@ export function switchLevel(lvl) {
     store.ui.charterDeckIdx = 0;
     store.ui.wbsDeckIdx = 0;
     store.ui.agileMobileTab = 'backlog';
+    store.ui.expandedCompletedWps = {};
     store.ui.mobileSiteExpanded = false;
     store.ui.mobileExecPeek = false;
     store.ui.mobileArtisanSheetId = null;
@@ -533,6 +541,19 @@ export function pullTaskToSprint(taskId, event) {
     renderAll();
 }
 
+export function pullAndAssignTask(taskId, event) {
+    if (event) event.stopPropagation();
+    const st = store.state;
+    const task = st && st.tasks ? st.tasks.find(t => t.id === taskId) : null;
+    if (!task) return;
+    if (!task.inSprint) pullTaskToSprint(taskId, event);
+    if (!task.inSprint) return;
+    if (isMobileViewport()) {
+        store.ui.agileMobileTab = 'sprint';
+    }
+    openTaskAssignPicker(taskId);
+}
+
 export function returnTaskToBacklog(taskId, event) {
     if (event) event.stopPropagation();
     const st = store.state;
@@ -866,6 +887,25 @@ export function startWorkday() {
     const restingArtisans = st.artisans.filter(a => a.resting);
     if (activeAssignments.length === 0 && restingArtisans.length === 0) {
         SoundFX.alertPop();
+        if (isMobileViewport()) {
+            if (cfg.mode === 'agile_sprint') {
+                const activeSprintTasks = st.tasks.filter(t => t.inSprint && (t.progress < 100 || t.hasDefect));
+                if (activeSprintTasks.length === 0) {
+                    store.ui.agileMobileTab = 'backlog';
+                    renderWorkspace();
+                    showToast('Pull at least one Backlog item into Sprint first.', 'warn');
+                    updateGuidance('Switch to <strong>Backlog</strong> and tap <strong>+ Pull</strong> or <strong>⚡ Pull &amp; Assign</strong>.');
+                    return;
+                }
+                store.ui.agileMobileTab = 'sprint';
+                renderWorkspace();
+                const firstSprintTask = activeSprintTasks.find(t => !t.assignedArtisanId && (t.hasDefect || isTaskUnlocked(t, st)));
+                if (firstSprintTask) highlightDependencyTask(firstSprintTask.id);
+            } else {
+                const firstTask = st.tasks.find(t => t.progress < 100 && !t.assignedArtisanId && isTaskUnlocked(t, st));
+                if (firstTask) highlightDependencyTask(firstTask.id);
+            }
+        }
         showToast('Assign a Task or schedule a Rest Break first.', 'warn');
         updateGuidance(`Assign a Task or schedule a <strong>☕ Rest Break</strong> before starting the ${turnWord}.`);
         return;

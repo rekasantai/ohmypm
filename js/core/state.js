@@ -46,6 +46,7 @@ export const store = {
         charterDeckIdx: 0,
         wbsDeckIdx: 0,
         agileMobileTab: 'backlog',
+        expandedCompletedWps: {},
         mobileSiteExpanded: false,
         mobileExecPeek: false,
         mobileArtisanSheetId: null,
@@ -315,7 +316,10 @@ export function computeTurnPreview(st = store.state, chapter = getChapterCfg(st 
         burnedOutActive: [],
         willTireNames: [],
         defectRiskCount: 0,
-        willCreateDefectCount: 0
+        willCreateDefectCount: 0,
+        idleArtisanCount: 0,
+        readyUnassignedTasksCount: 0,
+        idleWithReadyWork: 0
     };
     if (!st || !Array.isArray(st.artisans) || !Array.isArray(st.tasks) || !chapter) return empty;
 
@@ -370,6 +374,15 @@ export function computeTurnPreview(st = store.state, chapter = getChapterCfg(st 
         }
     });
 
+    const idleArtisanCount = st.artisans.filter(a => !a.assignedTaskId && !a.resting).length;
+    const readyUnassignedTasksCount = st.tasks.filter(t =>
+        (!caps.wipLimit || t.inSprint) &&
+        (t.progress < 100 || t.hasDefect) &&
+        !t.assignedArtisanId &&
+        (t.hasDefect || isTaskUnlocked(t, st))
+    ).length;
+    const idleWithReadyWork = Math.min(idleArtisanCount, readyUnassignedTasksCount);
+
     return {
         hasActions: assignedCount > 0 || restingNames.length > 0,
         assignedCount,
@@ -379,6 +392,9 @@ export function computeTurnPreview(st = store.state, chapter = getChapterCfg(st 
         burnedOutActive,
         willTireNames,
         defectRiskCount,
-        willCreateDefectCount
+        willCreateDefectCount,
+        idleArtisanCount,
+        readyUnassignedTasksCount,
+        idleWithReadyWork
     };
 }

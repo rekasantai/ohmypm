@@ -512,6 +512,10 @@ details[open] .details-chev {
     transform: rotate(180deg);
 }
 
+.swipe-surface {
+    touch-action: pan-y;
+}
+
 #celebration-canvas {
     position: fixed;
     inset: 0;

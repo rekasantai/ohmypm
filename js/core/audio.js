@@ -35,21 +35,34 @@ function playTone(freq, type, duration, vol = 0.12, delay = 0) {
     osc.stop(ctx.currentTime + delay + duration + 0.02);
 }
 
+export function haptic(pattern = 10) {
+    if (muted || typeof navigator === 'undefined' || typeof navigator.vibrate !== 'function') return;
+    try {
+        navigator.vibrate(pattern);
+    } catch (_err) {
+        // Ignore browser vibration restrictions before user gesture or on unsupported devices
+    }
+}
+
 export const SoundFX = {
     woodClick() {
+        haptic(8);
         playTone(220, 'triangle', 0.09, 0.14);
         playTone(140, 'sine', 0.07, 0.1, 0.02);
     },
     authorizeSeal() {
+        haptic([18, 30, 24]);
         playTone(150, 'triangle', 0.12, 0.22);
         playTone(95, 'sine', 0.16, 0.25, 0.02);
         playTone(587.33, 'sine', 0.28, 0.1, 0.08);
     },
     coffeeClink() {
+        haptic(12);
         playTone(1320, 'sine', 0.18, 0.08);
         playTone(1760, 'sine', 0.22, 0.06, 0.05);
     },
     taskComplete() {
+        haptic([12, 25, 18]);
         playTone(523.25, 'sine', 0.2, 0.1, 0);
         playTone(659.25, 'sine', 0.2, 0.1, 0.09);
         playTone(783.99, 'triangle', 0.35, 0.12, 0.18);
@@ -59,6 +72,7 @@ export const SoundFX = {
         playTone(554.37, 'sine', 0.35, 0.06, 0.08);
     },
     alertPop() {
+        haptic([20, 35, 20]);
         playTone(392, 'triangle', 0.16, 0.11);
         playTone(493.88, 'triangle', 0.22, 0.11, 0.1);
     },

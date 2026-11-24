@@ -16,6 +16,7 @@ import {
     store
 } from '../core/state.js';
 import { getArtisanPortraitSVG } from './artwork.js';
+import { isMobileViewport } from './feedback.js';
 
 export function renderInlineArtisanPicker(task, { unitShort, isDefect, reworkCost }) {
     const st = store.state;
@@ -105,6 +106,17 @@ export function renderTaskCard(task, opts = {}) {
     const isAgile = Boolean(opts.variant === 'agile');
     const isDefect = Boolean(task.hasDefect);
     const isDone = !isDefect && task.progress >= 100;
+    if (isDone && !isAgile && isMobileViewport()) {
+        return `
+            <div id="card-${task.id}" class="rounded-xl px-2.5 py-1.5 bg-[#EFF6F1] border-[1.5px] border-[#2E6F40] border-l-4 border-l-[#2E6F40] flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5 min-w-0">
+                    <span class="shrink-0 text-[#2E6F40] flex items-center">${uiIcon('check', 'w-3.5 h-3.5')}</span>
+                    <span class="ts-caption font-bold text-[#2E6F40] line-through truncate">${task.title}</span>
+                </div>
+                <span class="shrink-0 ts-micro font-bold text-[#235732]">Done</span>
+            </div>
+        `;
+    }
     const unlocked = isDefect ? true : isTaskUnlocked(task, st);
     const assignedArtisan = st.artisans.find(a => a.id === task.assignedArtisanId) || null;
     const unmetTasks = unlocked ? [] : getUnmetDependencyTasks(task, st);

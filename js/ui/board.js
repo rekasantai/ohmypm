@@ -1,7 +1,7 @@
 // Layer 3: Workspace View Renderers (Charter, WBS Builder, Inline WBS Tree, Agile Sprint Board).
 import { getL4Metrics, getL4SprintNumber } from '../chapters/ch4-agile.js';
 import { getMoSCoWBadge, getSkillBadgeColor, getSkillIconName, uiIcon } from '../core/constants.js';
-import { getChapterCfg, getUnmetDependencyTasks, store } from '../core/state.js';
+import { getChapterCfg, getUnmetDependencyTasks, isTaskUnlocked, store } from '../core/state.js';
 import { getArtisanPortraitSVG } from './artwork.js';
 import { isMobileViewport } from './feedback.js';
 import { renderTaskCard } from './task-card.js';
@@ -25,7 +25,7 @@ export function renderCharter() {
             const isBounced = st.bouncedStatementId === active.id;
 
             statementsHtml = `
-                <div class="paper-card rounded-xl p-2.5 bg-[#FFFDF9] border-[#C58F2A]">
+                <div data-swipe-deck="charter" class="swipe-surface paper-card rounded-xl p-2.5 bg-[#FFFDF9] border-[#C58F2A]">
                     <div class="flex items-center justify-between gap-2 mb-1.5">
                         <div class="flex items-center gap-2 min-w-0">
                             ${getArtisanPortraitSVG('auntie-mei', 28)}
@@ -151,7 +151,7 @@ export function renderWbsBuilder() {
             const isBounced = st.bouncedWbsCardId === active.id;
 
             cardsHtml = `
-                <div class="paper-card rounded-xl p-2.5 bg-[#FFFDF9] border-[#C58F2A]">
+                <div data-swipe-deck="wbs" class="swipe-surface paper-card rounded-xl p-2.5 bg-[#FFFDF9] border-[#C58F2A]">
                     <div class="flex items-center justify-between gap-2 mb-1.5">
                         <span class="ts-caption font-bold text-[#5C3A21] truncate">📋 Scope Card ${idx + 1}/${remainingCards.length}</span>
                         <div class="flex items-center gap-1 shrink-0">
@@ -282,6 +282,8 @@ export function renderAgileBoard() {
         .filter(t => !t.inSprint && t.progress < 100 && !t.hasDefect)
         .sort((a, b) => (priorityRank[a.priority] ?? 9) - (priorityRank[b.priority] ?? 9));
     const verifiedTasks = st.tasks.filter(t => t.progress >= 100 && !t.hasDefect);
+    const unassignedSprintCount = activeTasks.filter(t => !t.assignedArtisanId && (t.hasDefect || isTaskUnlocked(t, st))).length;
+    const hasFreeArtisan = st.artisans.some(a => !a.assignedTaskId && !a.resting);
 
     const activeTab = ['sprint', 'backlog', 'done'].includes(store.ui.agileMobileTab)
         ? store.ui.agileMobileTab
@@ -316,10 +318,14 @@ export function renderAgileBoard() {
             : 'btn-tactile min-h-[38px] px-2 py-1.5 rounded-lg text-[#DECBA8] hover:bg-[#5C3A21] ts-micro font-bold cursor-pointer truncate';
     };
 
+    const sprintUnassignedBadge = (unassignedSprintCount > 0 && activeTab !== 'sprint')
+        ? ` <span class="inline-block ml-0.5 px-1.5 py-0.2 rounded-full bg-[#C85A32] text-white text-[9.5px] font-extrabold leading-tight align-middle">${unassignedSprintCount}</span>`
+        : '';
+
     const mobileTabsHtml = mobile ? `
         <div id="agile-mobile-tabs" role="tablist" aria-label="Sprint Board Views" class="grid grid-cols-3 gap-1 p-1 rounded-xl bg-[#3D2412] border border-[#8C5E35]">
             <button type="button" role="tab" aria-selected="${activeTab === 'sprint'}" onclick="setAgileMobileTab('sprint')" class="${tabBtnCls('sprint')}">
-                Sprint (${m4.activeSprintCount}/${wipLimit})
+                Sprint (${m4.activeSprintCount}/${wipLimit})${sprintUnassignedBadge}
             </button>
             <button type="button" role="tab" aria-selected="${activeTab === 'backlog'}" onclick="setAgileMobileTab('backlog')" class="${tabBtnCls('backlog')}">
                 Backlog (${backlogTasks.length})
@@ -365,6 +371,32 @@ export function renderAgileBoard() {
                     const unmetNames = unmetTasks.map(t => t.title);
                     const wipFull = m4.activeSprintCount >= wipLimit;
                     const isPulse = store.ui.highlightedTaskId === task.id;
+                    const showQuickAssign = mobile && !wipFull && unmetNames.length === 0 && hasFreeArtisan;
+                    if (showQuickAssign) {
+                        return `
+                            <div id="backlog-card-${task.id}" class="rounded-xl p-2.5 bg-[#FFFDF9] border-[1.5px] ${task.priority === 'could' ? 'border-[#9C8368] bg-[#F8F3E8]' : 'border-[#8C6A4A]'} ${isPulse ? 'dep-highlight-pulse' : ''}">
+                                <div class="min-w-0">
+                                    <div class="flex items-center flex-wrap gap-1.5">
+                                        ${getMoSCoWBadge(task.priority)}
+                                        <span class="ts-micro font-bold font-mono-crisp px-1.5 py-0.5 rounded bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/35">+${task.value} Val</span>
+                                        <span class="ts-caption font-bold text-[#241B15] leading-snug">${task.title}</span>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                                        <span class="inline-flex items-center gap-0.5 ts-micro font-bold px-1.5 py-0.5 rounded border ${getSkillBadgeColor(task.skill)}">${uiIcon(getSkillIconName(task.skill), 'w-2.5 h-2.5')}<span>${task.skill}</span></span>
+                                        <span class="ts-micro font-semibold font-mono-crisp text-[#5A4D41]">RM ${task.cost.toLocaleString()} · ${task.effort}t</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-1.5 mt-2 pt-2 border-t border-[#8C6A4A]/25">
+                                    <button type="button" onclick="pullTaskToSprint('${task.id}', event)" class="btn-tactile min-h-[40px] px-2.5 py-1.5 rounded-lg font-bold ts-caption border shadow-sm cursor-pointer bg-[#5C3A21] hover:bg-[#3D2412] text-white border-[#241B15]">
+                                        + Pull
+                                    </button>
+                                    <button type="button" onclick="pullAndAssignTask('${task.id}', event)" class="btn-tactile min-h-[40px] px-2.5 py-1.5 rounded-lg font-bold ts-caption border shadow-sm cursor-pointer bg-[#2E6F40] hover:bg-[#235732] text-white border-[#1B4226]">
+                                        ⚡ Pull &amp; Assign
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
                     return `
                         <div id="backlog-card-${task.id}" class="rounded-xl p-2 sm:p-2.5 bg-[#FFFDF9] border-[1.5px] ${task.priority === 'could' ? 'border-[#9C8368] bg-[#F8F3E8]' : 'border-[#8C6A4A]'} ${isPulse ? 'dep-highlight-pulse' : ''} flex items-center justify-between gap-2">
                             <div class="min-w-0 flex-1">
@@ -412,7 +444,7 @@ export function renderAgileBoard() {
             : activeTab === 'done'
                 ? doneHtml
                 : backlogHtml;
-        container.innerHTML = `${sprintBannerHtml}${mobileTabsHtml}${panelHtml}`;
+        container.innerHTML = `${sprintBannerHtml}${mobileTabsHtml}<div class="swipe-surface space-y-3" data-swipe-agile="1">${panelHtml}</div>`;
         return;
     }
 
@@ -429,6 +461,7 @@ export function renderInlineWBSTree() {
     const container = document.getElementById('wbs-tree-workspace');
     if (!container) return;
     const st = store.state;
+    const mobile = isMobileViewport();
     const totalWPs = st.workPackages.length;
     const decomposedCount = st.workPackages.filter(w => w.decomposed).length;
     const allDecomposed = decomposedCount === totalWPs;
@@ -451,6 +484,7 @@ export function renderInlineWBSTree() {
     const treeHtml = st.workPackages.map((wp, wpIdx) => {
         const wpTasks = wp.taskIds.map(id => st.tasks.find(t => t.id === id)).filter(Boolean);
         const wpDoneCount = wpTasks.filter(t => t.progress >= 100).length;
+        const wpAllDone = wpTasks.length > 0 && wpDoneCount === wpTasks.length;
 
         if (!wp.decomposed) {
             return `
@@ -472,6 +506,19 @@ export function renderInlineWBSTree() {
             `;
         }
 
+        const isCompletedExpanded = Boolean(store.ui.expandedCompletedWps && store.ui.expandedCompletedWps[wp.id]);
+        if (mobile && wpAllDone && !isCompletedExpanded) {
+            return `
+                <div id="wp-collapsed-${wp.id}" onclick="toggleCompletedWp('${wp.id}')" class="paper-card rounded-2xl px-3 py-2 bg-[#EFF6F1] border-[1.5px] border-[#2E6F40] flex items-center justify-between gap-2 cursor-pointer">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <span class="text-sm shrink-0">✅</span>
+                        <span class="ts-caption font-bold text-[#235732] truncate">WBS 1.${wpIdx + 1} · ${wp.title}</span>
+                    </div>
+                    <span class="shrink-0 ts-micro font-bold font-mono-crisp text-[#235732]">${wpDoneCount}/${wpTasks.length} Done ▾</span>
+                </div>
+            `;
+        }
+
         const childTasksHtml = wpTasks.map((task, tIdx) => {
             const wbsCode = `1.${wpIdx + 1}.${tIdx + 1}`;
             return `
@@ -483,9 +530,13 @@ export function renderInlineWBSTree() {
             `;
         }).join('');
 
+        const wpHeaderClickAttr = (mobile && wpAllDone) ? `onclick="toggleCompletedWp('${wp.id}')"` : '';
+        const wpHeaderCursorCls = (mobile && wpAllDone) ? 'cursor-pointer' : '';
+        const wpCollapseChev = (mobile && wpAllDone) ? ' ▴' : '';
+
         return `
             <div class="paper-card rounded-2xl p-2 sm:p-3 bg-[#FAF5EB] border-[1.5px] border-[#7A5434] animate-crisp-in">
-                <div class="flex items-center justify-between gap-2 pb-1.5 sm:pb-2 mb-1.5 sm:mb-2 border-b border-[#8C6A4A]/40">
+                <div ${wpHeaderClickAttr} class="flex items-center justify-between gap-2 pb-1.5 sm:pb-2 mb-1.5 sm:mb-2 border-b border-[#8C6A4A]/40 ${wpHeaderCursorCls}">
                     <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
                         <span class="text-base shrink-0">${wp.icon}</span>
                         <div class="min-w-0">
@@ -494,7 +545,7 @@ export function renderInlineWBSTree() {
                         </div>
                     </div>
                     <span class="shrink-0 ts-micro font-bold font-mono-crisp px-2 py-0.5 rounded bg-[#2E6F40]/15 text-[#235732] border border-[#2E6F40]/30">
-                        ${wpDoneCount}/${wpTasks.length} Done
+                        ${wpDoneCount}/${wpTasks.length} Done${wpCollapseChev}
                     </span>
                 </div>
                 <div class="space-y-1.5 sm:space-y-2">

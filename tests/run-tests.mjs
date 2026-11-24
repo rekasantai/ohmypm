@@ -129,6 +129,9 @@ const {
     store
 } = await import('../js/core/state.js');
 const { ARTWORK_HELPERS } = await import('../js/ui/artwork.js');
+const { haptic, setMuted } = await import('../js/core/audio.js');
+const { renderWorkspace } = await import('../js/ui/board.js');
+const { classifySwipe } = await import('../js/ui/gestures.js');
 const { buildCareerMapMarkup, openRetrospective } = await import('../js/ui/modals.js');
 const { renderDock } = await import('../js/ui/dock.js');
 const {
@@ -141,6 +144,7 @@ const {
     handleCharterBucketClick,
     handleWbsBucketClick,
     openTaskAssignPicker,
+    pullAndAssignTask,
     pullTaskToSprint,
     resolveChapterEvent,
     returnTaskToBacklog,
@@ -152,6 +156,7 @@ const {
     stepCharterDeck,
     stepWbsDeck,
     switchLevel,
+    toggleCompletedWp,
     toggleFastTurn,
     toggleGuidanceExpand,
     toggleRestBreak,
@@ -677,6 +682,91 @@ runTest('11. Mobile Usability: Focused Decks, Agile Tabs, Idle Preview Hide & Co
         debriefPoints: ['Point 1'], reflectionQuestion: 'Why did agile help?'
     });
     assert.ok(getMockEl('retro-reflection-section').innerHTML.includes('<details open'), 'Desktop retro reflection starts expanded');
+});
+
+runTest('12. Mobile Gameplay Optimizations: Smart CTA, Completed WP Auto-Collapse, Pull & Assign, Gestures & Haptics', () => {
+    // 1. Readiness math & Smart Primary CTA across L3 and L4
+    switchLevel(3);
+    store.state.workPackages.forEach(wp => decomposeWorkPackage(wp.id));
+    let preview = computeTurnPreview(store.state, getChapter(3));
+    assert.equal(preview.idleArtisanCount, 3);
+    assert.ok(preview.readyUnassignedTasksCount >= 2);
+    assert.equal(preview.idleWithReadyWork, Math.min(preview.idleArtisanCount, preview.readyUnassignedTasksCount));
+    assert.ok(getMockEl('btn-primary-action').innerHTML.includes('Assign Team or Rest (3 Ready)'), 'Idle CTA prompts team assignment');
+
+    // Partial assignment leaves ready work -> Idle badge
+    assignArtisanToTask('t1', 'lim');
+    assert.ok(getMockEl('btn-primary-action').innerHTML.includes('Idle'), 'Partial assignment CTA flags remaining Idle artisan for ready work');
+
+    // Full engagement removes Idle badge
+    assignArtisanToTask('t3', 'salmah');
+    toggleRestBreak('danny');
+    assert.ok(!getMockEl('btn-primary-action').innerHTML.includes('Idle'), 'Full team engagement clears Idle badge');
+
+    // L4 empty sprint CTA
+    switchLevel(4);
+    assert.ok(getMockEl('btn-primary-action').innerHTML.includes('Pull Sprint Items First (3 Ready)'), 'Empty L4 sprint prompts pulling items first');
+
+    // 2. Mobile Completed WP auto-collapse & L4 Sprint Cues + Pull & Assign
+    try {
+        globalThis.window.innerWidth = 375;
+
+        // L3 Completed WP auto-collapse
+        switchLevel(3);
+        const structWp = store.state.workPackages.find(w => w.id === 'wp-structural');
+        decomposeWorkPackage('wp-structural');
+        structWp.taskIds.forEach(id => {
+            const t = store.state.tasks.find(x => x.id === id);
+            if (t) t.progress = 100;
+        });
+        renderWorkspace();
+        let ws = getMockEl('wbs-tree-workspace').innerHTML;
+        assert.ok(ws.includes('id="wp-collapsed-wp-structural"'), 'Completed L3 WP auto-collapses on mobile');
+        toggleCompletedWp('wp-structural');
+        ws = getMockEl('wbs-tree-workspace').innerHTML;
+        assert.ok(!ws.includes('id="wp-collapsed-wp-structural"') && ws.includes('>Done</span>'), 'Tapping collapsed WP expands compact Done rows');
+        toggleCompletedWp('wp-structural');
+        assert.ok(getMockEl('wbs-tree-workspace').innerHTML.includes('id="wp-collapsed-wp-structural"'), 'Tapping again collapses completed WP');
+
+        // L4 Sprint unassigned badge & Pull & Assign
+        switchLevel(4);
+        pullTaskToSprint('l4-t1');
+        ws = getMockEl('wbs-tree-workspace').innerHTML;
+        assert.ok(ws.includes('>1</span>'), 'Sprint tab displays unassigned count badge while on Backlog tab');
+        pullAndAssignTask('l4-t5');
+        assert.equal(store.state.tasks.find(t => t.id === 'l4-t5').inSprint, true);
+        assert.equal(store.ui.agileMobileTab, 'sprint', 'Pull & Assign switches mobile tab to Sprint');
+        assert.equal(store.state.selectedAssignTaskId, 'l4-t5', 'Pull & Assign opens artisan picker for pulled task');
+    } finally {
+        globalThis.window.innerWidth = 1280;
+    }
+
+    // 3. Pure touch gesture classification
+    assert.equal(classifySwipe(-60, 5, 200), 'left');
+    assert.equal(classifySwipe(60, -8, 200), 'right');
+    assert.equal(classifySwipe(5, 80, 200), 'down');
+    assert.equal(classifySwipe(20, 15, 200), null);
+    assert.equal(classifySwipe(-60, 50, 200), null);
+    assert.equal(classifySwipe(-80, 0, 800), null);
+
+    // 4. Haptic micro-feedback respects mute toggle
+    const vibrateCalls = [];
+    const prevNavDesc = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+    try {
+        Object.defineProperty(globalThis, 'navigator', {
+            value: { vibrate: (p) => vibrateCalls.push(p) },
+            configurable: true
+        });
+        setMuted(false);
+        haptic(10);
+        setMuted(true);
+        haptic(15);
+        assert.deepEqual(vibrateCalls, [10], 'Haptics fire only when unmuted');
+    } finally {
+        setMuted(false);
+        if (prevNavDesc) Object.defineProperty(globalThis, 'navigator', prevNavDesc);
+        else delete globalThis.navigator;
+    }
 });
 
 const failed = results.filter(r => !r.passed);
